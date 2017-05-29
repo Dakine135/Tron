@@ -63,11 +63,18 @@ function displayText(){
     fill(0, 102, 153);
   }
 }
+
 function canvasSize() {
     var x = document.getElementById("canvasSizeform");
     canvasWidth = x.elements[0].value;
     canvasHeight = x.elements[1].value;
     createCanvas(canvasWidth,canvasHeight);
+}
+
+function setCanvasToWindow(){
+window.innerHeight;
+window.innerWidth;
+createCanvas((windowWidth - 20),(windowHeight - 200));
 }
 
 function keyPressed(){
