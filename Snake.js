@@ -93,6 +93,7 @@ function Snake(){
     ellipse(this.x, this.y, scl,scl);
 
     var prevPt;
+    var strokeStartWeight = scl/3;
     for(var i=0; i < this.tail.length; i++){
       var curPt = this.tail[i];
       if(prevPt == null){
@@ -100,7 +101,8 @@ function Snake(){
       }else{
         if(!curPt.jump){
           stroke(curPt.color);
-          strokeWeight(scl/5);
+          var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
+          strokeWeight(strokeVar);
           line(prevPt.x, prevPt.y, curPt.x, curPt.y);
 
         }

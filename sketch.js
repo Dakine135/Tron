@@ -1,4 +1,4 @@
-//test
+//Global Variables
 DEBUGBOOL = true;
 var s;
 var canvasHeight = 600;
@@ -13,7 +13,7 @@ var lastSpeed = speed;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
-
+//runs once at the beggining
 function setup(){
   createCanvas(canvasWidth,canvasHeight);
   s = new Snake();
@@ -21,6 +21,7 @@ function setup(){
   frameRate(60);
 }
 
+//draw function runs constantly, repeating at frameRate per second
 var previousTick = 0;
 var drawCount = 0;
 var updateCount = 0;
@@ -47,16 +48,17 @@ function draw(){
   document.getElementById("xPos").innerHTML = s.x;
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = speed*10;
-  document.getElementById("scale").innerHTML = scl;
+  document.getElementById("scl").innerHTML = scl;
 
 } //draw
 
+//displays text in the center of the screen
 function displayText(){
   if(pause){
     var textString = "Paused";
     var textHeight = height *.10;
     var textWidth = textHeight * (textString.length * 0.5);
-    console.log("textHeight, textWidth: ", textHeight, " , ", textWidth);
+    //console.log("textHeight, textWidth: ", textHeight, " , ", textWidth);
     textSize(textHeight);
     var cntrX = (width * 0.5) - (textWidth * 0.5);
     var cntrY = (height * 0.5); // + (textHeight * 0.5)
@@ -65,6 +67,7 @@ function displayText(){
   }
 }
 
+//function to apply canvas size from input boxes
 function canvasSize() {
     var x = document.getElementById("canvasSizeform");
     canvasWidth = x.elements[0].value;
@@ -72,12 +75,14 @@ function canvasSize() {
     createCanvas(canvasWidth,canvasHeight);
 }
 
+//Makes the canvas as big at the current browser window can handle
 function setCanvasToWindow(){
 window.innerHeight;
 window.innerWidth;
 createCanvas((windowWidth - 20),(windowHeight - 200));
 }
 
+//detects when keys are pressed and changes snakes direction
 function keyPressed(){
   var xdir = 0;
   var ydir = 0;
@@ -112,6 +117,7 @@ function keyReleased() {
   }
 }
 
+//change snake's color to random colors
 function chngCOLOR(){
   var r = Math.floor(Math.random() * 255) + 1;
   var g = Math.floor(Math.random() * 255) + 1;
@@ -124,6 +130,7 @@ function chngCOLOR(){
   s.intializeTailColor();
 }
 
+//change increment multiplier for snakes speed up or down
 function chngSPEED(input) {
   if ((speed+input)> 0){
     console.log("Button pressed: ", speed, ' + ', input);
@@ -135,14 +142,15 @@ function chngSPEED(input) {
   }
 }//END OF chngSPEED FUNCTION
 
+//pause and un-pause the game
 function StopStart(input) {
   DEBUG(input);
   if (input == 0){
     if (speed> 0){
       pause = true;
       console.log("Game Paused");
-      lastX= s.xspeed;
-      lastY= s.yspeed;
+      lastX= s.xdir;
+      lastY= s.ydir;
       lastSpeed = speed;
       speed = 0;
       s.dir(0, 0);
@@ -162,13 +170,17 @@ function StopStart(input) {
   }
 }//END OF StopStart FUNCTION
 
+//increase or decrease size of snake
 function Scale(input){
-  if(input == 1){
-    scl = scl + 5;
-  } else if (input == 0){
-    scl = scl -5;
-  }
+    scl = scl + input;
 }//END OF Scale FUNCTION
+
+//increase or decrease tail length
+function chngTail(input){
+  s.maxTailLength = s.maxTailLength + input;
+}//END of chngTail
+
+//reset canvas and snake properties 
 function Reset(){
   s;
   scl = 10;
@@ -192,6 +204,7 @@ function Reset(){
   s.currTailLength = 0; //length in pixels
   s.maxTailLength = 1000;
 }
+
 function DEBUG(input){
   if(DEBUGBOOL){
     if(input == null) input = "No Input"

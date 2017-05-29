@@ -14,8 +14,10 @@
     <button type="button" onclick="chngSPEED(0.1)">Speed +</button>
     <button type="button" onclick="StopStart(1)">Start</button>
     <button type="button" onclick="StopStart(0)">Stop</button>
-    <button type="button" onclick="Scale(1)">Size +</button>
-    <button type="button" onclick="Scale(0)">Size -</button>
+    <button type="button" onclick="Scale(5)">Size +</button>
+    <button type="button" onclick="Scale(-5)">Size -</button>
+    <button type="button" onclick="chngTail(100)">Tail +</button>
+    <button type="button" onclick="chngTail(-100)">Tail -</button>
     <br>
     <button type="button" onclick="Reset()">Reset</button>
     <form id="canvasSizeform" >
@@ -46,7 +48,7 @@
   </tr>
   <tr>
     <td>  Scale: </td>
-    <td id="scale">  DATA </td>
+    <td id="scl">  DATA </td>
   </tr>
 </table>
   </body>
