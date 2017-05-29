@@ -47,6 +47,7 @@ function draw(){
   document.getElementById("xPos").innerHTML = s.x;
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = speed*10;
+  document.getElementById("scale").innerHTML = scl;
 
 } //draw
 
@@ -110,13 +111,19 @@ function keyReleased() {
     s.dir(s.xdir,s.ydir);
   }
 }
-function chngCOLOR(){
-var r = Math.floor(Math.random() * 255) + 1;
-var g = Math.floor(Math.random() * 255) + 1;
-var b = Math.floor(Math.random() * 255) + 1;
-s.color = color(r,g,b);
 
+function chngCOLOR(){
+  var r = Math.floor(Math.random() * 255) + 1;
+  var g = Math.floor(Math.random() * 255) + 1;
+  var b = Math.floor(Math.random() * 255) + 1;
+  s.startColor = color(r,g,b);
+  r = Math.floor(Math.random() * 255) + 1;
+  g = Math.floor(Math.random() * 255) + 1;
+  b = Math.floor(Math.random() * 255) + 1;
+  s.endColor = color(r,g,b);
+  s.intializeTailColor();
 }
+
 function chngSPEED(input) {
   if ((speed+input)> 0){
     console.log("Button pressed: ", speed, ' + ', input);
@@ -158,7 +165,7 @@ function StopStart(input) {
 function Scale(input){
   if(input == 1){
     scl = scl + 5;
-  } else if (input = 0){
+  } else if (input == 0){
     scl = scl -5;
   }
 }//END OF Scale FUNCTION
@@ -172,12 +179,18 @@ function Reset(){
   lastSpeed = speed;
   startTime = new Date().getTime();
   currentTick = 0;
-  s.x = 300;
-  s.y = 300;
+  s.x = width/2;
+  s.y = height/2;
   s.xspeed = 0;
   s.yspeed = 0;
-  s.color = color(255,255,255);
-  s.trail = [];
+  s.tail = [];
+  s.currentColor = 0;
+  s.startColor = color(0, 0, 204);
+  s.endColor = color(102, 255, 255);
+  s.intializeTailColor();
+  s.colorDirection = true;
+  s.currTailLength = 0; //length in pixels
+  s.maxTailLength = 1000;
 }
 function DEBUG(input){
   if(DEBUGBOOL){
@@ -186,7 +199,6 @@ function DEBUG(input){
     console.log("Speed: ",speed);
     console.log("input: ",input);
     console.log("currentTick: ", currentTick);
-    console.log("Current RGB Value: ", s.color.levels[0], s.color.levels[1], s.color.levels[2] );
     console.log("END OF DEBUG");
   }
 }

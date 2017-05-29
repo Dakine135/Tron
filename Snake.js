@@ -5,26 +5,25 @@ function Snake(){
   this.ydir = 0;
   this.xspeed = 0;
   this.yspeed = 0;
-  this.color = color(255,255,255);
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
-  this.startColor = [0, 0, 204];
-  this.endColor = [102, 255, 255];
+  this.startColor = color(0, 0, 204);
+  this.endColor = color(102, 255, 255);
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = 1000;
 
   this.intializeTailColor = function(){
     var steps = 100;
-    var redDiff = this.endColor[0] - this.startColor[0];
-    var greenDiff = this.endColor[1] - this.startColor[1];
-    var BlueDiff = this.endColor[2] - this.startColor[2];
+    var redDiff = this.endColor.levels[0] - this.startColor.levels[0];
+    var greenDiff = this.endColor.levels[1] - this.startColor.levels[1];
+    var BlueDiff = this.endColor.levels[2] - this.startColor.levels[2];
 
     for(var i=0; i<steps; i++){
-      var currRed = this.startColor[0] + (redDiff * (i/steps));
-      var currGreen = this.startColor[1] + (greenDiff * (i/steps));
-      var currBlue = this.startColor[2] + (BlueDiff * (i/steps));
+      var currRed = this.startColor.levels[0] + (redDiff * (i/steps));
+      var currGreen = this.startColor.levels[1] + (greenDiff * (i/steps));
+      var currBlue = this.startColor.levels[2] + (BlueDiff * (i/steps));
       this.tailColors[i] = color(currRed, currGreen, currBlue);
     }
   }
@@ -68,7 +67,7 @@ function Snake(){
       }
     }
 
-    console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
+    //console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
 
     this.x = currX;
     this.y = currY;
@@ -89,8 +88,8 @@ function Snake(){
   }
 
   this.show = function(){
-    fill(this.startColor[0], this.startColor[1], this.startColor[2]); //used to be this.color
-    stroke(this.endColor[0], this.endColor[1], this.endColor[2]);
+    fill(this.startColor);
+    stroke(this.endColor);
     ellipse(this.x, this.y, scl,scl);
 
     var prevPt;
@@ -101,6 +100,7 @@ function Snake(){
       }else{
         if(!curPt.jump){
           stroke(curPt.color);
+          strokeWeight(scl/5);
           line(prevPt.x, prevPt.y, curPt.x, curPt.y);
 
         }
