@@ -1,3 +1,4 @@
+//test
 DEBUGBOOL = true;
 var s;
 var canvasHeight = 600;
