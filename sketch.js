@@ -16,8 +16,8 @@ var currentTick = 0;
 function setup(){
   createCanvas(canvasWidth,canvasHeight);
   s = new Snake();
+  s.intializeTailColor();
   frameRate(60);
-  food = createVector
 }
 
 var previousTick = 0;
@@ -31,7 +31,7 @@ function draw(){
   //console.log("currentTick: ", currentTick);
   background(50);
   if(currentTick == 0 && previousTick != currentTick) {
-    document.getElementById("drawCount").innerHTML = drawCount;
+    document.getElementById("drawCount").innerHTML = drawCount + " / " + updateCount;
     drawCount = 0;
     //console.log("updateCount: ", updateCount);
     updateCount = 0;

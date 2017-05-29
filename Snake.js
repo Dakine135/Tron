@@ -7,6 +7,19 @@ function Snake(){
   this.yspeed = 0;
   this.color = color(255,255,255);
   this.trail = [];
+  this.tailColors = [];
+
+  this.intializeTailColor = function(){
+    for(var n = 0; n < 100; n++) {
+        if(n < 100/3) {
+            this.tailColors[n] = color(255, 255/(n+1), 255/(n+1));
+        } else if(n < 2*100/3) {
+            this.tailColors[n] = color(255/(n-(100/3)), 255, 255/(n-(100/3)));
+        } else {
+            this.tailColors[n] = color(255/(n+1), 255/(n+1), 255);
+        }
+    }
+  }
 
   this.dir = function(x, y) {
     this.xdir = x;
@@ -48,6 +61,7 @@ function Snake(){
 
   this.show = function(){
     fill(this.color);
+    stroke(0, 0, 0);
     ellipse(this.x, this.y, scl,scl);
 
     var prevPt;
@@ -57,9 +71,9 @@ function Snake(){
         prevPt = curPt;
       }else{
         if(!curPt.jump){
-          fill(255, 204, 0);
+          stroke(255, 204, 0);
           line(prevPt.x, prevPt.y, curPt.x, curPt.y);
-          stroke(255);
+
         }
 
         prevPt = curPt;
