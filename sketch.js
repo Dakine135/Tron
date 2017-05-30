@@ -47,6 +47,9 @@ function draw(){
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = speed*10;
   document.getElementById("scl").innerHTML = scl;
+  document.getElementById("canvasWidthBox").value;
+  document.getElementById("canvasHeightBox").value;
+
 
 } //draw
 
@@ -178,7 +181,7 @@ function chngTail(input){
   s.maxTailLength = s.maxTailLength + input;
 }//END of chngTail
 
-//reset canvas and snake properties 
+//reset canvas and snake properties
 function Reset(){
   s;
   scl = 10;
@@ -201,6 +204,7 @@ function Reset(){
   s.colorDirection = true;
   s.currTailLength = 0; //length in pixels
   s.maxTailLength = 1000;
+  StopStart(1);
 }
 
 function DEBUG(input){
