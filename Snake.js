@@ -21,8 +21,8 @@ function Snake(){
 
   //stuff for pausing
   this.paused = false;
-  this.lastX= s.xdir;
-  this.lastY= s.ydir;
+  this.lastX= this.xdir;
+  this.lastY= this.ydir;
   //this.lastSpeed = speed;
 
 
@@ -121,11 +121,11 @@ function Snake(){
 
     }else{
       this.paused = true;
-      this.lastX= s.xdir;
-      this.lastY= s.ydir;
+      this.lastX= this.xdir;
+      this.lastY= this.ydir;
       //this.lastSpeed = speed;
       //this.speed = 0;
-      s.dir(0, 0);
+      this.dir(0, 0);
     }
   }
 
