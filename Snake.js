@@ -209,6 +209,7 @@ function Snake(){
 	  this.currTailLength = 0; //length in pixels
 	  this.maxTailLength = 1000;
     this.size = 10;
+    this.speedScale = 3;
   }//end reset
 
   this.pause = function(){
