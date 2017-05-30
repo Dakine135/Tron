@@ -14,6 +14,7 @@ var currentTick = 0;
 //runs once at the beggining
 function setup(){
   BOARD = new Board();
+  BOARD.init();
   s = new Snake();
   s.intializeTailColor();
   frameRate(60);
@@ -29,7 +30,6 @@ function draw(){
   var timeDiff = currentTime - startTime;
   currentTick = Math.floor((timeDiff % 1000) / 25);
   //console.log("currentTick: ", currentTick);
-  background(50);
   if(currentTick == 0 && previousTick != currentTick) {
     document.getElementById("drawCount").innerHTML = drawCount + " / " + updateCount;
     drawCount = 0;
@@ -47,8 +47,8 @@ function draw(){
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = speed*10;
   document.getElementById("scl").innerHTML = scl;
-  document.getElementById("canvasWidthBox").value;
-  document.getElementById("canvasHeightBox").value;
+  document.getElementById("canvasWidthBox").value = width;
+  document.getElementById("canvasHeightBox").value = height;
 
 
 } //draw
@@ -66,21 +66,6 @@ function displayText(){
     text(textString, cntrX, cntrY);
     fill(0, 102, 153);
   }
-}
-
-//function to apply canvas size from input boxes
-function canvasSize() {
-    var x = document.getElementById("canvasSizeform");
-    canvasWidth = x.elements[0].value;
-    canvasHeight = x.elements[1].value;
-    createCanvas(canvasWidth,canvasHeight);
-}
-
-//Makes the canvas as big at the current browser window can handle
-function setCanvasToWindow(){
-window.innerHeight;
-window.innerWidth;
-createCanvas((windowWidth - 20),(windowHeight - 200));
 }
 
 //detects when keys are pressed and changes snakes direction

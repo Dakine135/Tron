@@ -1,10 +1,15 @@
 function Snake(){
-  this.x = 50;
-  this.y = 50;
+  //starting position
+  this.x = width/2 - (scl/2);
+  this.y = height/2 - (scl/2);
+
+  //starting direction and speed
   this.xdir = 0;
   this.ydir = 0;
   this.xspeed = 0;
   this.yspeed = 0;
+
+  //tail and color stuff
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
