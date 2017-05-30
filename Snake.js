@@ -1,6 +1,6 @@
 function Snake(){
-  this.x = 300;
-  this.y = 300;
+  this.x = 50;
+  this.y = 50;
   this.xdir = 0;
   this.ydir = 0;
   this.xspeed = 0;

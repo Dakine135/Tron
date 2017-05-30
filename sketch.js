@@ -1,11 +1,9 @@
 //Global Variables
 DEBUGBOOL = true;
 var s;
-var canvasHeight = 600;
-var canvasWidth = 600;
+var BOARD;
 var pause = false;
 var scl = 10;
-var food;
 var speed = 0.6;
 var lastX = 0;
 var lastY = 0;
@@ -15,7 +13,7 @@ var currentTick = 0;
 
 //runs once at the beggining
 function setup(){
-  createCanvas(canvasWidth,canvasHeight);
+  BOARD = new Board();
   s = new Snake();
   s.intializeTailColor();
   frameRate(60);
