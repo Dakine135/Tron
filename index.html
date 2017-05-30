@@ -9,14 +9,14 @@
     <script src="snake.js" type="text/javascript"></script>
   </head>
   <body>
-    <button type="button" onclick="chngCOLOR()">Snake Color</button>
-    <button type="button" onclick="chngSPEED(-0.1)">Speed -</button>
-    <button type="button" onclick="chngSPEED(0.1)">Speed +</button>
+    <button type="button" onclick="s.chngColor()">Snake Color</button>
+    <button type="button" onclick="s.chngSpeed(-1)">Speed -</button>
+    <button type="button" onclick="s.chngSpeed(1)">Speed +</button>
     <button id="pauseButton" type="button" onclick="BOARD.pause()">Pause</button>
-    <button type="button" onclick="Scale(5)">Size +</button>
-    <button type="button" onclick="Scale(-5)">Size -</button>
-    <button type="button" onclick="chngTail(100)">Tail +</button>
-    <button type="button" onclick="chngTail(-100)">Tail -</button>
+    <button type="button" onclick="s.chngSize(5)">Size +</button>
+    <button type="button" onclick="s.chngSize(-5)">Size -</button>
+    <button type="button" onclick="s.chngTail(100)">Tail +</button>
+    <button type="button" onclick="s.chngTail(-100)">Tail -</button>
     <br>
     <button type="button" onclick="reset()">Reset</button>
     <form id="canvasSizeform" >
@@ -48,8 +48,8 @@
     <td id="drawCount">  DATA </td>
   </tr>
   <tr>
-    <td>  Scale: </td>
-    <td id="scl">  DATA </td>
+    <td>  Snake Size: </td>
+    <td id="snakeSize">  DATA </td>
   </tr>
 </table>
   </body>
