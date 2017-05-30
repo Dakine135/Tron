@@ -1,11 +1,13 @@
 function Board(){
-	//Board class variables
-	this.paused = false;
+	//canvas stuff
 	this.canvasWidth = 600;
 	this.canvasHeight = 600;
 	this.background = 50;
 	this.canvas;
+
+	//board stuff
 	this.matrix = [];
+	this.paused = false;
 
 
 	this.init = function() {
@@ -48,14 +50,15 @@ function Board(){
 //pause and un-pause the game
 	this.pause = function(){
 		if(this.paused){
-			this.paused = false;
-			speed = lastSpeed;
-			s.dir(lastX,lastY);
 			console.log("Game Resumed");
+			document.getElementById("pauseButton").innerHTML = "Pause";
+			this.paused = false;
+			s.pause();
 		}else{
+			console.log("Game Paused");
+			document.getElementById("pauseButton").innerHTML = "Resume";
 			this.paused = true;
 			s.pause();
-			console.log("Game Paused");
 		}
 	}//end pause
 
