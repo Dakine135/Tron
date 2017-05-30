@@ -8,6 +8,7 @@ function Snake(){
   this.ydir = 0;
   this.xspeed = 0;
   this.yspeed = 0;
+  this.speedScale = 0.6;
 
   //tail and color stuff
   this.tail = [];
@@ -21,10 +22,8 @@ function Snake(){
 
   //stuff for pausing
   this.paused = false;
-  this.lastX= s.xdir;
-  this.lastY= s.ydir;
-  //this.lastSpeed = speed;
-
+  this.lastX = this.xdir;
+  this.lastY = this.ydir;
 
   this.intializeTailColor = function(){
     var steps = 100;
@@ -43,8 +42,8 @@ function Snake(){
   this.dir = function(x, y) {
     this.xdir = x;
     this.ydir = y;
-    this.xspeed = x*speed;
-    this.yspeed = y*speed;
+    this.xspeed = x*this.speedScale;
+    this.yspeed = y*this.speedScale;
   }
 
   this.update = function() {
@@ -118,13 +117,11 @@ function Snake(){
   this.pause = function(){
     if(this.paused){
       this.paused = false;
-
+      s.dir(this.lastX,this.lastY);
     }else{
       this.paused = true;
-      this.lastX= s.xdir;
-      this.lastY= s.ydir;
-      //this.lastSpeed = speed;
-      //this.speed = 0;
+      this.lastX = s.xdir;
+      this.lastY = s.ydir;
       s.dir(0, 0);
     }
   }

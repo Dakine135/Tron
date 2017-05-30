@@ -2,12 +2,7 @@
 DEBUGBOOL = true;
 var s;
 var BOARD;
-var pause = false;
 var scl = 10;
-var speed = 0.6;
-var lastX = 0;
-var lastY = 0;
-var lastSpeed = speed;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
@@ -52,7 +47,7 @@ function draw(){
 function updateHTML(){
   document.getElementById("xPos").innerHTML = s.x;
   document.getElementById("yPos").innerHTML = s.y;
-  document.getElementById("xSpd").innerHTML = speed*10;
+  document.getElementById("xSpd").innerHTML = s.speedScale*10;
   document.getElementById("scl").innerHTML = scl;
 }
 
@@ -108,10 +103,10 @@ function chngCOLOR(){
 
 //change increment multiplier for snakes speed up or down
 function chngSPEED(input) {
-  if ((speed+input)> 0){
-    console.log("Button pressed: ", speed, ' + ', input);
-    console.log(Math.floor((speed+input)*100));
-    speed = Math.floor((speed+input)*100)/100;
+  if ((s.speedScale + input)> 0){
+    console.log("Button pressed: ", s.speedScale, ' + ', input);
+    console.log(Math.round((s.speedScale+input)*100));
+    s.speedScale = Math.round((s.speedScale+input)*100)/100;
     s.dir(s.xdir,s.ydir);
   } else {
     console.log("cannot reduce speed");
@@ -138,7 +133,7 @@ function DEBUG(input){
   if(DEBUGBOOL){
     if(input == null) input = "No Input"
     console.log("Debug");
-    console.log("Speed: ",speed);
+    console.log("Speed: ",s.speedScale);
     console.log("input: ",input);
     console.log("currentTick: ", currentTick);
     console.log("END OF DEBUG");
