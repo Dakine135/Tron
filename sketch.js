@@ -25,6 +25,7 @@ var previousTick = 0;
 var drawCount = 0;
 var updateCount = 0;
 function draw(){
+
   drawCount++;
   var currentTime = new Date().getTime();
   var timeDiff = currentTime - startTime;
@@ -39,24 +40,28 @@ function draw(){
   if (previousTick != currentTick){
     updateCount++;
      s.update();
+     BOARD.boardUpdate();
+
     previousTick = currentTick;
   }
   s.show();
   displayText();
+  updateHTML();
+} //draw
+
+function updateHTML(){
   document.getElementById("xPos").innerHTML = s.x;
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = speed*10;
   document.getElementById("scl").innerHTML = scl;
-  document.getElementById("canvasWidthBox").value = width;
-  document.getElementById("canvasHeightBox").value = height;
-
-
-} //draw
+}
 
 //displays text in the center of the screen
 function displayText(){
-  if(pause){
-    var textString = "Paused";
+  if(BOARD.paused){
+    fill(255, 204, 0);
+    stroke (255,255,255);
+    var textString = "Game Paused";
     var textHeight = height *.10;
     var textWidth = textHeight * (textString.length * 0.5);
     //console.log("textHeight, textWidth: ", textHeight, " , ", textWidth);
@@ -64,7 +69,7 @@ function displayText(){
     var cntrX = (width * 0.5) - (textWidth * 0.5);
     var cntrY = (height * 0.5); // + (textHeight * 0.5)
     text(textString, cntrX, cntrY);
-    fill(0, 102, 153);
+
   }
 }
 
@@ -85,23 +90,8 @@ function keyPressed(){
     //s.dir(1, 0);
     xdir++;
   }
-
   s.dir(xdir,ydir);
-
-
-  if (keyCode == 32){
-    speed = speed * 2;
-    s.dir(s.xdir,s.ydir);
-    console.log("Space Bar Pressed: ", speed);
-  }
 }//END OF keyP FUNCTION
-
-function keyReleased() {
-  if (keyCode === 32) {
-    speed = 1;
-    s.dir(s.xdir,s.ydir);
-  }
-}
 
 //change snake's color to random colors
 function chngCOLOR(){
@@ -128,34 +118,6 @@ function chngSPEED(input) {
   }
 }//END OF chngSPEED FUNCTION
 
-//pause and un-pause the game
-function StopStart(input) {
-  DEBUG(input);
-  if (input == 0){
-    if (speed> 0){
-      pause = true;
-      console.log("Game Paused");
-      lastX= s.xdir;
-      lastY= s.ydir;
-      lastSpeed = speed;
-      speed = 0;
-      s.dir(0, 0);
-    } else {
-
-      console.log("Game not running");
-    }
-  }else if (input == 1){
-    if (speed == 0){
-      pause = false;
-      console.log("Game Resumed");
-      speed = lastSpeed;
-      s.dir(lastX,lastY);
-    } else {
-      console.log("Game Already Running");
-    }
-  }
-}//END OF StopStart FUNCTION
-
 //increase or decrease size of snake
 function Scale(input){
     scl = scl + input;
@@ -167,29 +129,9 @@ function chngTail(input){
 }//END of chngTail
 
 //reset canvas and snake properties
-function Reset(){
-  s;
-  scl = 10;
-  food;
-  speed = 0.4;
-  lastX = 0;
-  lastY = 0;
-  lastSpeed = speed;
-  startTime = new Date().getTime();
-  currentTick = 0;
-  s.x = width/2;
-  s.y = height/2;
-  s.xspeed = 0;
-  s.yspeed = 0;
-  s.tail = [];
-  s.currentColor = 0;
-  s.startColor = color(0, 0, 204);
-  s.endColor = color(102, 255, 255);
-  s.intializeTailColor();
-  s.colorDirection = true;
-  s.currTailLength = 0; //length in pixels
-  s.maxTailLength = 1000;
-  StopStart(1);
+function reset() {
+  BOARD.resetBoard();
+  s.reset();
 }
 
 function DEBUG(input){

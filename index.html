@@ -19,13 +19,13 @@
     <button type="button" onclick="chngTail(100)">Tail +</button>
     <button type="button" onclick="chngTail(-100)">Tail -</button>
     <br>
-    <button type="button" onclick="Reset()">Reset</button>
+    <button type="button" onclick="reset()">Reset</button>
     <form id="canvasSizeform" >
   Canvas Width: <input id="canvasWidthBox" type="text" value="600"><br>
   Canvas Height: <input id="canvasHeightBox" type="text" value="600"><br>
 </form>
-<button onclick="canvasSize()">Set Canvas Size</button>
-<button onclick="setCanvasToWindow()">Fill Window</button>
+<button onclick="BOARD.canvasSize()">Set Canvas Size</button>
+<button onclick="BOARD.setCanvasToWindow()">Fill Window</button>
 
 <div id='CanvasContainer'></div>
 

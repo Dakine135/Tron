@@ -19,6 +19,13 @@ function Snake(){
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = 1000;
 
+  //stuff for pausing
+  this.paused = false;
+  this.lastX= s.xdir;
+  this.lastY= s.ydir;
+  //this.lastSpeed = speed;
+
+
   this.intializeTailColor = function(){
     var steps = 100;
     var redDiff = this.endColor.levels[0] - this.startColor.levels[0];
@@ -72,7 +79,7 @@ function Snake(){
       }
     }
 
-    //console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
+    // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
 
     this.x = currX;
     this.y = currY;
@@ -89,6 +96,36 @@ function Snake(){
     }else if (this.y <= -1){ //top wall
       this.y = height-scl;
         previousPosition.jump = true;
+    }
+  }//end update
+
+  //reset to defualt (refresh)
+  this.reset = function() {
+    this.x = width/2;
+	  this.y = height/2;
+	  this.xspeed = 0;
+	  this.yspeed = 0;
+	  this.tail = [];
+	  this.currentColor = 0;
+	  this.startColor = color(0, 0, 204);
+	  this.endColor = color(102, 255, 255);
+	  this.intializeTailColor();
+	  this.colorDirection = true;
+	  this.currTailLength = 0; //length in pixels
+	  this.maxTailLength = 1000;
+  }//end reset
+
+  this.pause = function(){
+    if(this.paused){
+      this.paused = false;
+
+    }else{
+      this.paused = true;
+      this.lastX= s.xdir;
+      this.lastY= s.ydir;
+      //this.lastSpeed = speed;
+      //this.speed = 0;
+      s.dir(0, 0);
     }
   }
 
