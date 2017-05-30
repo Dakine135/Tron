@@ -14,8 +14,8 @@ function Snake(){
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
-  this.startColor = color(0, 0, 204);
-  this.endColor = color(102, 255, 255);
+  this.startColor = color(194, 254, 34);
+  this.endColor = color(235, 29, 99);
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = 1000;
@@ -24,6 +24,7 @@ function Snake(){
   this.paused = false;
   this.lastX = this.xdir;
   this.lastY = this.ydir;
+  this.lastSpeedScale = this.speedScale;
 
   this.intializeTailColor = function(){
     var steps = 100;
@@ -83,13 +84,13 @@ function Snake(){
     this.x = currX;
     this.y = currY;
 
-    if (this.x >= (width - scl + 1)){ //right wall
+    if (this.x >= (width - (scl/2) + 1)){ //right wall
       this.x = 0;
       previousPosition.jump = true;
-    }else if (this.x <= -1){ //left wall
+    }else if (this.x <= (-1 + (scl*0.5)) ){ //left wall
       this.x = width-scl;
         previousPosition.jump = true;
-    }else if (this.y >= height -scl + 1){ //bottom wall
+    }else if (this.y >= height - (scl/2) + 1){ //bottom wall
       this.y = 0;
         previousPosition.jump = true;
     }else if (this.y <= -1){ //top wall
@@ -106,8 +107,8 @@ function Snake(){
 	  this.yspeed = 0;
 	  this.tail = [];
 	  this.currentColor = 0;
-	  this.startColor = color(0, 0, 204);
-	  this.endColor = color(102, 255, 255);
+	  this.startColor = color(194, 254, 34);
+	  this.endColor = color(235, 29, 99);
 	  this.intializeTailColor();
 	  this.colorDirection = true;
 	  this.currTailLength = 0; //length in pixels
@@ -117,20 +118,14 @@ function Snake(){
   this.pause = function(){
     if(this.paused){
       this.paused = false;
-      s.dir(this.lastX,this.lastY);
+      this.speedScale = this.lastSpeedScale;
+      this.dir(this.lastX,this.lastY);
     }else{
       this.paused = true;
-<<<<<<< HEAD
+      this.speedScale = 0;
       this.lastX= this.xdir;
       this.lastY= this.ydir;
-      //this.lastSpeed = speed;
-      //this.speed = 0;
       this.dir(0, 0);
-=======
-      this.lastX = s.xdir;
-      this.lastY = s.ydir;
-      s.dir(0, 0);
->>>>>>> d1288f053178c85fa0f735842a5e3373860f1673
     }
   }
 
