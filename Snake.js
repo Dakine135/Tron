@@ -133,13 +133,13 @@ function Snake(){
         this.x = 0;
         previousPosition.jump = true;
       }else if (this.x <= leftWall){ //left wall
-        this.x = width - this.size;
+        this.x = width;
           previousPosition.jump = true;
       }else if (this.y >= bottomWall){ //bottom wall
         this.y = 0;
           previousPosition.jump = true;
       }else if (this.y <= topWall){ //top wall
-        this.y = height - this.size;
+        this.y = height;
           previousPosition.jump = true;
       }
 
@@ -316,20 +316,18 @@ function Snake(){
     }
     var prevPt;
     var strokeStartWeight = this.size/3;
-    for(var i=0; i < this.tail.length; i++){
+    for(var i=0; i < (this.tail.length-1); i++){
       var curPt = this.tail[i];
       if(prevPt == null){
         prevPt = curPt;
       }else{
-        if(!curPt.jump){
+        if(!prevPt.jump){
           stroke(curPt.color);
           var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
           strokeWeight(strokeVar);
           // strokeWeight(strokeStartWeight);
           line(prevPt.x, prevPt.y, curPt.x, curPt.y);
-
         }
-
         prevPt = curPt;
       }
     }// end for loop that draws tail
