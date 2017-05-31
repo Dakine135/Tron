@@ -135,13 +135,13 @@ function Snake(){
       this.x = 0;
       previousPosition.jump = true;
     }else if (this.x <= leftWall){ //left wall
-      this.x = width - this.size;
+      this.x = width;
         previousPosition.jump = true;
     }else if (this.y >= bottomWall){ //bottom wall
       this.y = 0;
         previousPosition.jump = true;
     }else if (this.y <= topWall){ //top wall
-      this.y = height - this.size;
+      this.y = height;
         previousPosition.jump = true;
     }
   }//end update

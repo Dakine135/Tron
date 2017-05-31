@@ -26,9 +26,10 @@ function setup(){
   GUI.startOfGame = true;
   GUI.introSnake();
 }
+
 function mousePressed() {
   GUI.checkClicks();
-  console.log("clicked");
+  console.log("clicked", mouseX," , ", mouseY);
 }
 
 function keyPressed(){
@@ -69,6 +70,8 @@ function updateHTML(){
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = s.speedScale;
   document.getElementById("snakeSize").innerHTML = s.size;
+  document.getElementById("mouseXPos").innerHTML = mouseX;
+  document.getElementById("mouseYPos").innerHTML = mouseY;
 }
 
 //displays text in the center of the screen
