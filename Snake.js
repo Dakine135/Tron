@@ -193,7 +193,6 @@ function Snake(){
       this.y = height;
         previousPosition.jump = true;
     }
->>>>>>> f05e8a872dcb6636790767952d6a1a62a3705cf3
   }//end update
 
   this.newSegment = function(prevPos){
