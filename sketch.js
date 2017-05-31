@@ -1,6 +1,7 @@
 //Global Variables
-DEBUGBOOL = true;
+var DEBUGBOOL = false;
 var BOARD;
+var GUI;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
@@ -12,6 +13,7 @@ function setup(){
   BOARD = new Board();
   BOARD.init();
   BOARD.setCanvasToWindow();
+  GUI = new Menu();
   s = new Snake();
   s.setControls(
     UP_ARROW,
@@ -21,6 +23,14 @@ function setup(){
   );
   s.intializeTailColor();
   frameRate(60);
+
+  GUI.startOfGame = true;
+  GUI.introSnake();
+}
+
+function mousePressed() {
+  GUI.checkClicks();
+  console.log("clicked", mouseX," , ", mouseY);
 }
 
 function keyPressed(){
@@ -32,7 +42,6 @@ var previousTick = 0;
 var drawCount = 0;
 var updateCount = 0;
 function draw(){
-
   drawCount++;
   var currentTime = new Date().getTime();
   var timeDiff = currentTime - startTime;
@@ -48,6 +57,7 @@ function draw(){
     updateCount++;
      s.update();
      BOARD.boardUpdate();
+     GUI.drawGUI();
 
     previousTick = currentTick;
   }
@@ -61,6 +71,8 @@ function updateHTML(){
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = s.speedScale;
   document.getElementById("snakeSize").innerHTML = s.size;
+  document.getElementById("mouseXPos").innerHTML = mouseX;
+  document.getElementById("mouseYPos").innerHTML = mouseY;
 }
 
 //displays text in the center of the screen

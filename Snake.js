@@ -170,8 +170,30 @@ function Snake(){
       }
     }
 
-    console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
+    // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
 
+    this.x = currX;
+    this.y = currY;
+
+    //Wall wrapping code
+    var leftWall = -1;
+    var rightWall = width + 1;
+    var topWall = -1;
+    var bottomWall = height + 1;
+    if (this.x >= rightWall){ //right wall
+      this.x = 0;
+      previousPosition.jump = true;
+    }else if (this.x <= leftWall){ //left wall
+      this.x = width;
+        previousPosition.jump = true;
+    }else if (this.y >= bottomWall){ //bottom wall
+      this.y = 0;
+        previousPosition.jump = true;
+    }else if (this.y <= topWall){ //top wall
+      this.y = height;
+        previousPosition.jump = true;
+    }
+>>>>>>> f05e8a872dcb6636790767952d6a1a62a3705cf3
   }//end update
 
   this.newSegment = function(prevPos){

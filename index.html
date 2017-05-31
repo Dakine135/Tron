@@ -8,6 +8,7 @@
     <script src="sketch.js" type="text/javascript"></script>
     <script src="snake.js" type="text/javascript"></script>
     <script src="p5Collide2D/p5.collide2d.js" type="text/javascript"></script>
+    <script src="GUI.js" type="text/javascript"></script>
   </head>
   <body>
     <button type="button" onclick="s.chngColor()">Snake Color</button>
@@ -31,11 +32,18 @@
 
 <table>
   <tr>
-    <td> X: </td>
+    <td> Snake X: </td>
     <td id="xPos">  DATA </td>
 
-    <td> Y: </td>
+    <td> Snake Y: </td>
     <td id="yPos">  DATA </td>
+  </tr>
+  <tr>
+    <td> Mouse X: </td>
+    <td id="mouseXPos">  DATA </td>
+
+    <td> Mouse Y: </td>
+    <td id="mouseYPos">  DATA </td>
   </tr>
 </table>
   <table>
