@@ -23,6 +23,7 @@ function Menu(){
 
 //createTextButton(String, relativeWidth, relativeHeight, size)
 this.createTextButton = function(string, relX, relY, scale){
+  var hit = false;
   textSize(this.baseSize*scale);
   var stringWidth = textWidth(string);
   var marginWidth = 20;
@@ -43,8 +44,8 @@ this.createTextButton = function(string, relX, relY, scale){
 
 this.checkClicks = function(){
   if(this.startOfGame){
-    // if(mouseX >= ((width/2)-10) && mouseX <= ((width/2)+10) && (mouseY >= ((height/2)-10)) 
-    //&& mouseY <= ((height/2)+10)){
+  // if(mouseX >= ((width/2)-10) && mouseX <= ((width/2)+10) && (mouseY >= ((height/2)-10))
+  // && mouseY <= ((height/2)+10)){
   this.startOfGame = false;
   s.reset();
   console.log("Exit Start GUI");

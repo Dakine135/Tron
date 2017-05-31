@@ -71,8 +71,8 @@ function updateHTML(){
   document.getElementById("yPos").innerHTML = s.y;
   document.getElementById("xSpd").innerHTML = s.speedScale;
   document.getElementById("snakeSize").innerHTML = s.size;
-  document.getElementById("mouseXPos").innerHTML = mouseX;
-  document.getElementById("mouseYPos").innerHTML = mouseY;
+  document.getElementById("mouseXPos").innerHTML = Math.round(mouseX);
+  document.getElementById("mouseYPos").innerHTML = Math.round(mouseY);
 }
 
 //displays text in the center of the screen
