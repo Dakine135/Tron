@@ -27,7 +27,7 @@ function Snake(){
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = 1000;
-  this.maxSegmentDist = this.maxTailLength / 20;
+  this.maxSegmentDist = this.maxTailLength / 50;
 
   //stuff for pausing
   this.paused = false;
@@ -289,20 +289,19 @@ function Snake(){
   //returns the index of the tail that you collided width
   //returns -1 if did not collide
   this.checkCollisionWithTail = function(tailInput){
-    var output = -1;
     var tailIndex = 1;
-    while(output == -1 && tailIndex < (tailInput.length - 1)){
+    while(tailIndex < (tailInput.length - 1)){
       //collideLineCircle(x1, y1, x2, y2, cx, cy, diameter)
       var lineStartX = tailInput[tailIndex].x;
       var lineStartY = tailInput[tailIndex].y;
       var lineEndX = tailInput[tailIndex + 1].x;
       var lineEndY = tailInput[tailIndex + 1].y;
       var hit = collideLineCircle(lineStartX, lineStartY, lineEndX, lineEndY, this.x, this.y, this.size);
-      console.log("hit: ", hit);
-      if(hit) outpus = tailIndex;
+      //console.log("hit: ", hit);
+      if(hit) return tailIndex + 1;
       tailIndex++;
     }
-    return output;
+    return -1;
   }
 
   this.show = function(){
@@ -310,6 +309,11 @@ function Snake(){
     stroke(this.endColor);
     ellipse(this.x, this.y, this.size, this.size);
 
+    var collisionAt = this.checkCollisionWithTail(this.tail);
+    if(collisionAt > 0){
+      this.tail[collisionAt].color = color(255,255,255);
+      // console.log("collisionAt: ", collisionAt);
+    }
     var prevPt;
     var strokeStartWeight = this.size/3;
     for(var i=0; i < this.tail.length; i++){
@@ -319,9 +323,9 @@ function Snake(){
       }else{
         if(!curPt.jump){
           stroke(curPt.color);
-          // var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
-          // strokeWeight(strokeVar);
-          strokeWeight(strokeStartWeight);
+          var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
+          strokeWeight(strokeVar);
+          // strokeWeight(strokeStartWeight);
           line(prevPt.x, prevPt.y, curPt.x, curPt.y);
 
         }
@@ -329,11 +333,5 @@ function Snake(){
         prevPt = curPt;
       }
     }// end for loop that draws tail
-    // var collisionAt = this.checkCollisionWithTail(this.tail);
-    // if(collisionAt > 0){
-    //   fill(white);
-    //   stroke(white);
-    //   ellipse(this.tail[collisionAt].x, this.tail[collisionAt].y, this.size*2, this.size*2);
-    // }
   }//end show func
 }//end snake class
