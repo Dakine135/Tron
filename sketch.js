@@ -11,6 +11,7 @@ var s;
 function setup(){
   BOARD = new Board();
   BOARD.init();
+  BOARD.setCanvasToWindow();
   s = new Snake();
   s.setControls(
     UP_ARROW,

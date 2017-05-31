@@ -3,6 +3,7 @@ function Snake(){
   this.size = 10;
   this.x = width/2 - (this.size/2);
   this.y = height/2 - (this.size/2);
+  this.direction = "Stopped";
 
   //controls
   this.upButton;
@@ -26,6 +27,7 @@ function Snake(){
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = 1000;
+  this.maxSegmentDist = this.maxTailLength / 20;
 
   //stuff for pausing
   this.paused = false;
@@ -45,16 +47,12 @@ function Snake(){
     var xdir = 0;
     var ydir = 0;
     if (keyIsDown(this.upButton)){
-      //s.dir(0, -1);
       ydir--;
     }if (keyIsDown(this.downButton)) {
-      //s.dir(0, 1);
       ydir++;
     }if (keyIsDown(this.leftButton)) {
-      //s.dir(-1, 0);
       xdir--;
     }if (keyIsDown(this.rightButton)) {
-      //s.dir(1, 0);
       xdir++;
     }
     // if(Math.abs(xdir) == 1 && Math.abs(ydir) == 1 ){
@@ -87,6 +85,18 @@ function Snake(){
     this.ydir = y;
     this.xspeed = x*this.speedScale;
     this.yspeed = y*this.speedScale;
+
+    if(this.xspeed == 0 && this.yspeed == 0) this.direction = "Stopped";
+    else if(this.xspeed == 0 && this.yspeed < 0) this.direction = "N";
+    else if(this.xspeed > 0 && this.yspeed < 0) this.direction = "NE";
+    else if(this.xspeed > 0 && this.yspeed == 0) this.direction = "E";
+    else if(this.xspeed > 0 && this.yspeed > 0) this.direction = "SE";
+    else if(this.xspeed == 0 && this.yspeed > 0) this.direction = "S";
+    else if(this.xspeed < 0 && this.yspeed > 0) this.direction = "SW";
+    else if(this.xspeed < 0 && this.yspeed == 0) this.direction = "W";
+    else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
+    else console.log("ERROR in DIRECTION");
+    //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);
   }
 
   this.update = function() {
@@ -94,61 +104,90 @@ function Snake(){
     var currY = Math.floor(this.y + this.yspeed);
 
     if(currX != this.x || currY != this.y){ // dont change tail if you havent moved
-      var dist = Math.sqrt(Math.pow((currX-this.x), 2)+Math.pow((currY-this.y), 2));
+      var dist = Math.round(Math.sqrt(Math.pow((currX-this.x), 2)+Math.pow((currY-this.y), 2)));
       var previousPosition = {
         x: this.x,
         y: this.y,
         jump: false,
         dist: dist,
-        color: this.tailColors[this.currentColor]
+        color: this.tailColors[this.currentColor],
+        dir: this.direction
       };
       this.currTailLength = this.currTailLength + dist;
 
+      //changeing color
       if(this.currentColor == 0) this.colorDirection = true;
       else if(this.currentColor == (this.tailColors.length - 1)) this.colorDirection = false;
-
       if(this.colorDirection) this.currentColor++;
       else this.currentColor--;
 
+      this.x = currX;
+      this.y = currY;
+
+      //Wall wrapping code
+      var leftWall = -1;
+      var rightWall = width + 1;
+      var topWall = -1;
+      var bottomWall = height + 1;
+      if (this.x >= rightWall){ //right wall
+        this.x = 0;
+        previousPosition.jump = true;
+      }else if (this.x <= leftWall){ //left wall
+        this.x = width - this.size;
+          previousPosition.jump = true;
+      }else if (this.y >= bottomWall){ //bottom wall
+        this.y = 0;
+          previousPosition.jump = true;
+      }else if (this.y <= topWall){ //top wall
+        this.y = height - this.size;
+          previousPosition.jump = true;
+      }
+
+      //updateTail with new previousPosition
+      var newSegment = this.newSegment(previousPosition);
       if(this.currTailLength < this.maxTailLength){
-        this.tail.unshift(previousPosition);
+        if(newSegment){
+          this.tail.unshift(previousPosition);
+        }
+        else{
+          this.tail[0].x = previousPosition.x;
+          this.tail[0].y = previousPosition.y;
+          this.tail[0].dist = this.tail[0].dist + previousPosition.dist;
+        }
       } else{
         while(this.currTailLength > this.maxTailLength){
           var removedPoint = this.tail.pop();
           this.currTailLength = this.currTailLength - removedPoint.dist;
         }
-        this.tail.unshift(previousPosition);
+        if(newSegment){
+          this.tail.unshift(previousPosition);
+        }
+        else{
+          this.tail[0].x = previousPosition.x;
+          this.tail[0].y = previousPosition.y;
+          this.tail[0].dist = this.tail[0].dist + previousPosition.dist;
+        }
       }
     }
 
-    // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
+    console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
 
-    this.x = currX;
-    this.y = currY;
-
-    //Wall wrapping code
-    var leftWall = -1;
-    var rightWall = width + 1;
-    var topWall = -1;
-    var bottomWall = height + 1;
-    if (this.x >= rightWall){ //right wall
-      this.x = 0;
-      previousPosition.jump = true;
-    }else if (this.x <= leftWall){ //left wall
-      this.x = width - this.size;
-        previousPosition.jump = true;
-    }else if (this.y >= bottomWall){ //bottom wall
-      this.y = 0;
-        previousPosition.jump = true;
-    }else if (this.y <= topWall){ //top wall
-      this.y = height - this.size;
-        previousPosition.jump = true;
-    }
   }//end update
+
+  this.newSegment = function(prevPos){
+    if(prevPos.jump) return true;
+    if(this.tail.length <= 1) return true;
+    if(this.tail.length > 0){
+       if(this.tail[0].dist > this.maxSegmentDist) return true;
+       if(this.tail[0].dir != prevPos.dir) return true;
+     }
+    return false;
+  }
 
   //increase or decrease tail length
   this.chngTail = function(input){
     this.maxTailLength = this.maxTailLength + input;
+    this.maxSegmentDist = this.maxTailLength / 20;
   }
 
   //increase or decrease size of snake
@@ -226,6 +265,25 @@ function Snake(){
     }
   }
 
+  //returns the index of the tail that you collided width
+  //returns -1 if did not collide
+  this.checkCollisionWithTail = function(tailInput){
+    var output = -1;
+    var tailIndex = 1;
+    while(output == -1 && tailIndex < (tailInput.length - 1)){
+      //collideLineCircle(x1, y1, x2, y2, cx, cy, diameter)
+      var lineStartX = tailInput[tailIndex].x;
+      var lineStartY = tailInput[tailIndex].y;
+      var lineEndX = tailInput[tailIndex + 1].x;
+      var lineEndY = tailInput[tailIndex + 1].y;
+      var hit = collideLineCircle(lineStartX, lineStartY, lineEndX, lineEndY, this.x, this.y, this.size);
+      console.log("hit: ", hit);
+      if(hit) outpus = tailIndex;
+      tailIndex++;
+    }
+    return output;
+  }
+
   this.show = function(){
     fill(this.startColor);
     stroke(this.endColor);
@@ -240,14 +298,21 @@ function Snake(){
       }else{
         if(!curPt.jump){
           stroke(curPt.color);
-          var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
-          strokeWeight(strokeVar);
+          // var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
+          // strokeWeight(strokeVar);
+          strokeWeight(strokeStartWeight);
           line(prevPt.x, prevPt.y, curPt.x, curPt.y);
 
         }
 
         prevPt = curPt;
       }
-    }// end for loop
+    }// end for loop that draws tail
+    // var collisionAt = this.checkCollisionWithTail(this.tail);
+    // if(collisionAt > 0){
+    //   fill(white);
+    //   stroke(white);
+    //   ellipse(this.tail[collisionAt].x, this.tail[collisionAt].y, this.size*2, this.size*2);
+    // }
   }//end show func
 }//end snake class
