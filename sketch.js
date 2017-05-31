@@ -30,7 +30,7 @@ function setup(){
 
 function mousePressed() {
   GUI.checkClicks();
-  console.log("clicked", mouseX," , ", mouseY);
+  //console.log("clicked", mouseX," , ", mouseY);
 }
 
 function keyPressed(){

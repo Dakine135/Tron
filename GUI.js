@@ -1,6 +1,7 @@
 function Menu(){
   this.startOfGame = false;
   this.baseSize = 10;
+  this.liveButtons = new Map();
 
   this.drawGUI = function(){
     if(this.startOfGame){
@@ -15,14 +16,20 @@ function Menu(){
       text(textString, ((width/2)-(stringWidth/2)), (height/2));
       // console.log(stringWidth);
 
-      //Start Button
-      this.createTextButton("Start", 0.5, 0.55, 3);
+      //create start Button
+      var startButtonKey = this.createTextButton("Start", 0.5, 0.55, 3, function(){
+          this.startOfGame = false;
+          s.reset();
+          console.log("Exit Start GUI");
+          this.liveButtons.delete(startButtonKey);
+        }.bind(this)
+      );
 
-    }
-}
+    }//end this.startOfGame
+}//end drawGUI
 
 //createTextButton(String, relativeWidth, relativeHeight, size)
-this.createTextButton = function(string, relX, relY, scale){
+this.createTextButton = function(string, relX, relY, scale, callBack){
   var hit = false;
   textSize(this.baseSize*scale);
   var stringWidth = textWidth(string);
@@ -30,8 +37,8 @@ this.createTextButton = function(string, relX, relY, scale){
   var marginHeight = 20;
   var recWidth = stringWidth + marginWidth;
   var recHeight = textSize() + marginHeight;
-  var recX = (width * relX) - (recWidth/2);
-  var recY = (height * relY) - (recHeight/2);
+  var recX = Math.round((width * relX) - (recWidth/2));
+  var recY = Math.round((height * relY) - (recHeight/2));
 
   var roundness = 5;
   var textX = recX + (marginWidth/2);
@@ -40,17 +47,28 @@ this.createTextButton = function(string, relX, relY, scale){
   rect(recX,recY,recWidth,recHeight,roundness);
   fill(255, 255, 255);
   text(string,textX,textY);
+
+  var buttonClicked = function(){
+    //see if the mouse is in the rect
+    var hit = collidePointRect(mouseX,mouseY,recX,recY,recWidth,recHeight);
+    if(hit) callBack();
+  }
+
+  var buttonKey = recX.toString() + recY.toString();
+  this.liveButtons.set(buttonKey, buttonClicked);
+  return buttonKey;
+} //end createTextButton
+
+this.createText = function(){
+  
 }
 
 this.checkClicks = function(){
-  if(this.startOfGame){
-  // if(mouseX >= ((width/2)-10) && mouseX <= ((width/2)+10) && (mouseY >= ((height/2)-10))
-  // && mouseY <= ((height/2)+10)){
-  this.startOfGame = false;
-  s.reset();
-  console.log("Exit Start GUI");
-  }
-}
+  //console.log(this.liveButtons);
+  this.liveButtons.forEach(function(value){
+    value();
+  });
+}//end check Clicks
 
   //Start Menu Snake Movement
   this.introSnake = function() {
@@ -62,4 +80,4 @@ this.checkClicks = function(){
     s.dir(1,1);
   }//end snake intro
 
-}
+} // end class Menu
