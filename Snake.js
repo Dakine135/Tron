@@ -55,14 +55,6 @@ function Snake(){
     }if (keyIsDown(this.rightButton)) {
       xdir++;
     }
-    // if(Math.abs(xdir) == 1 && Math.abs(ydir) == 1 ){
-    //   console.log(xdir, " ", ydir);
-    //   if(xdir > 0) xdir = 0.7;
-    //   else xdir = -0.7;
-    //   if(ydir > 0) ydir = 0.7;
-    //   else ydir = -0.7;
-    //   console.log("=> ",xdir, " ", ydir);
-    // }
     this.dir(xdir,ydir);
   }//END OF keyP FUNCTION
 
@@ -96,7 +88,28 @@ function Snake(){
     else if(this.xspeed < 0 && this.yspeed == 0) this.direction = "W";
     else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
     else console.log("ERROR in DIRECTION");
+
+    //this.tail.unshift(this.createPreviousPosition(this.x,this.y,false));
     //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);
+  }
+
+  //currently just for turning and jumping
+  this.createPreviousPosition = function(x,y,jump){
+    var previousPosition = {
+      x: x,
+      y: y,
+      jump: jump,
+      dist: 0,
+      color: this.tailColors[this.currentColor],
+      dir: this.direction
+    };
+
+    if(this.currentColor == 0) this.colorDirection = true;
+    else if(this.currentColor == (this.tailColors.length - 1)) this.colorDirection = false;
+    if(this.colorDirection) this.currentColor++;
+    else this.currentColor--;
+
+    return previousPosition;
   }
 
   this.update = function() {
@@ -131,16 +144,20 @@ function Snake(){
       var bottomWall = height + 1;
       if (this.x >= rightWall){ //right wall
         this.x = 0;
-        previousPosition.jump = true;
+        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
+        //previousPosition.jump = true;
       }else if (this.x <= leftWall){ //left wall
         this.x = width;
-          previousPosition.jump = true;
+        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
+        //previousPosition.jump = true;
       }else if (this.y >= bottomWall){ //bottom wall
         this.y = 0;
-          previousPosition.jump = true;
+        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
+      //  previousPosition.jump = true;
       }else if (this.y <= topWall){ //top wall
         this.y = height;
-          previousPosition.jump = true;
+        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
+        //previousPosition.jump = true;
       }
 
       //updateTail with new previousPosition
@@ -172,35 +189,14 @@ function Snake(){
 
     // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
 
-    this.x = currX;
-    this.y = currY;
-
-    //Wall wrapping code
-    var leftWall = -1;
-    var rightWall = width + 1;
-    var topWall = -1;
-    var bottomWall = height + 1;
-    if (this.x >= rightWall){ //right wall
-      this.x = 0;
-      previousPosition.jump = true;
-    }else if (this.x <= leftWall){ //left wall
-      this.x = width;
-        previousPosition.jump = true;
-    }else if (this.y >= bottomWall){ //bottom wall
-      this.y = 0;
-        previousPosition.jump = true;
-    }else if (this.y <= topWall){ //top wall
-      this.y = height;
-        previousPosition.jump = true;
-    }
   }//end update
 
   this.newSegment = function(prevPos){
-    if(prevPos.jump) return true;
     if(this.tail.length <= 1) return true;
     if(this.tail.length > 0){
        if(this.tail[0].dist > this.maxSegmentDist) return true;
        if(this.tail[0].dir != prevPos.dir) return true;
+       if(this.tail[0].jump) return true;
      }
     return false;
   }
@@ -292,11 +288,13 @@ function Snake(){
     var tailIndex = 1;
     while(tailIndex < (tailInput.length - 1)){
       //collideLineCircle(x1, y1, x2, y2, cx, cy, diameter)
+      //collidePointLine(pointX, pointY, x, y, x2, y2, [buffer])
       var lineStartX = tailInput[tailIndex].x;
       var lineStartY = tailInput[tailIndex].y;
       var lineEndX = tailInput[tailIndex + 1].x;
       var lineEndY = tailInput[tailIndex + 1].y;
-      var hit = collideLineCircle(lineStartX, lineStartY, lineEndX, lineEndY, this.x, this.y, this.size);
+      var hit = collidePointLine(this.x, this.y, lineStartX, lineStartY, lineEndX, lineEndY, 0.5)
+      // var hit = collideLineCircle(lineStartX, lineStartY, lineEndX, lineEndY, this.x, this.y, this.size);
       //console.log("hit: ", hit);
       if(hit) return tailIndex + 1;
       tailIndex++;
