@@ -8,8 +8,13 @@ var currentTick = 0;
 //Snakes
 var s;
 
+function preload() {
+  bgMusic = loadSound('assets/Derezzed.mp3');
+}
 //runs once at the beggining
 function setup(){
+  bgMusic.setVolume(0.1);
+  bgMusic.play();
   BOARD = new Board();
   BOARD.init();
   BOARD.setCanvasToWindow();
