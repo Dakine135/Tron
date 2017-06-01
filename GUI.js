@@ -4,6 +4,7 @@ function Menu(){
   this.liveButtons = new Map();
 
   this.drawGUI = function(){
+    this.liveButtons.clear();
     if(this.startOfGame){
       /*Start Menu Canvas*/
       fill(5,13,16);
@@ -20,8 +21,6 @@ function Menu(){
       var startButtonKey = this.createTextButton("Start", 0.5, 0.55, 3, function(){
           this.startOfGame = false;
           s.reset();
-          console.log("Exit Start GUI");
-          this.liveButtons.delete(startButtonKey);
         }.bind(this)
       );
 
@@ -51,7 +50,10 @@ this.createTextButton = function(string, relX, relY, scale, callBack){
   var buttonClicked = function(){
     //see if the mouse is in the rect
     var hit = collidePointRect(mouseX,mouseY,recX,recY,recWidth,recHeight);
-    if(hit) callBack();
+    if(hit){
+      console.log(string, ' button clicked');
+      callBack();
+    }
   }
 
   var buttonKey = recX.toString() + recY.toString();
@@ -60,7 +62,7 @@ this.createTextButton = function(string, relX, relY, scale, callBack){
 } //end createTextButton
 
 this.createText = function(){
-  
+
 }
 
 this.checkClicks = function(){
