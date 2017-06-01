@@ -12,15 +12,14 @@
     <script src="GUI.js" type="text/javascript"></script>
   </head>
   <body>
-    <button type="button" onclick="s.chngColor()">Snake Color</button>
+    <!-- <button type="button" onclick="s.chngColor()">Snake Color</button>
     <button type="button" onclick="s.chngSpeed(-1)">Speed -</button>
-    <button type="button" onclick="s.chngSpeed(1)">Speed +</button>
+    <button type="button" onclick="s.chngSpeed(1)">Speed +</button> -->
     <button id="pauseButton" type="button" onclick="BOARD.pause()">Pause</button>
-    <button type="button" onclick="s.chngSize(5)">Size +</button>
+    <!-- <button type="button" onclick="s.chngSize(5)">Size +</button>
     <button type="button" onclick="s.chngSize(-5)">Size -</button>
     <button type="button" onclick="s.chngTail(100)">Tail +</button>
-    <button type="button" onclick="s.chngTail(-100)">Tail -</button>
-    <br>
+    <button type="button" onclick="s.chngTail(-100)">Tail -</button> -->
     <button type="button" onclick="reset()">Reset</button>
     <form id="canvasSizeform" >
   Canvas Width: <input id="canvasWidthBox" type="text" value="600"><br>
@@ -28,10 +27,24 @@
 </form>
 <button onclick="BOARD.canvasSize()">Set Canvas Size</button>
 <button onclick="BOARD.setCanvasToWindow()">Fill Window</button>
+<table>
+<!-- <tr>
+  <td>  Speed: </td>
+  <td id="xSpd">  DATA </td>
+</tr> -->
+<tr>
+  <td>  FrameRate: </td>
+  <td id="drawCount">  DATA </td>
+</tr>
+<!-- <tr>
+  <td>  Snake Size: </td>
+  <td id="snakeSize">  DATA </td>
+</tr> -->
+</table>
 
 <div id='CanvasContainer'></div>
 
-<table>
+<!-- <table>
   <tr>
     <td> Snake X: </td>
     <td id="xPos">  DATA </td>
@@ -46,22 +59,7 @@
     <td> Mouse Y: </td>
     <td id="mouseYPos">  DATA </td>
   </tr>
-</table>
-  <table>
-  <tr>
-    <td>  Speed: </td>
-    <td id="xSpd">  DATA </td>
-
-  </tr>
-  <tr>
-    <td>  FrameRate: </td>
-    <td id="drawCount">  DATA </td>
-  </tr>
-  <tr>
-    <td>  Snake Size: </td>
-    <td id="snakeSize">  DATA </td>
-  </tr>
-</table>
+</table> -->
   </body>
 
 </html>

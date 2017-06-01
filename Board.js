@@ -9,6 +9,9 @@ function Board(){
 	this.matrix = [];
 	this.paused = false;
 
+	//snake stuff
+	this.snakes = [];
+
 
 	this.init = function() {
 		this.canvas = createCanvas(this.canvasWidth,this.canvasHeight);
@@ -20,6 +23,9 @@ function Board(){
 
 	this.boardUpdate = function() {
 		background(50);
+		this.snakes.forEach(function(s){
+			s.update();
+		});
 	}//end boardUpdate
 
 	this.resetBoard = function() {
@@ -43,7 +49,7 @@ function Board(){
 	//Makes the canvas as big at the current browser window can handle
 	this.setCanvasToWindow = function(){
 		this.canvasWidth = window.innerWidth - 35;
-		this.canvasHeight = window.innerHeight -230;
+		this.canvasHeight = window.innerHeight - 180;
 		this.init();
 	}
 
@@ -61,5 +67,35 @@ function Board(){
 			s.pause();
 		}
 	}//end pause
+
+	/*
+		Snake related stuff
+	*/
+	this.addSnake = function(upButton,downButton,leftButton,rightButton){
+		var s = new Snake(upButton,downButton,leftButton,rightButton);
+		s.intializeTailColor();
+		this.snakes.push(s);
+	}
+
+	this.checkControls = function(){
+		this.snakes.forEach(function(s){
+			s.checkControls();
+		});
+	}
+
+	this.showSnakes = function(){
+		this.snakes.forEach(function(s){
+			s.show();
+		});
+	}
+
+	this.resetSnakes = function(){
+		this.snakes.forEach(function(s){
+			s.reset();
+		});
+	}
+
+
+
 
 }//end board

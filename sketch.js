@@ -5,12 +5,10 @@ var GUI;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
-//Snakes
-var s;
-
 function preload() {
   bgMusic = loadSound('assets/Derezzed.mp3');
 }
+
 //runs once at the beggining
 function setup(){
   bgMusic.setVolume(0.1);
@@ -19,18 +17,12 @@ function setup(){
   BOARD.init();
   BOARD.setCanvasToWindow();
   GUI = new Menu();
-  s = new Snake();
-  s.setControls(
-    UP_ARROW,
-    DOWN_ARROW,
-    LEFT_ARROW,
-    RIGHT_ARROW
-  );
-  s.intializeTailColor();
+  BOARD.addSnake(UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW);
+  BOARD.addSnake(87, 83, 65, 68);
   frameRate(60);
 
   GUI.startOfGame = true;
-  GUI.introSnake();
+  //GUI.introSnake();
 }
 
 function mousePressed() {
@@ -39,7 +31,7 @@ function mousePressed() {
 }
 
 function keyPressed(){
-  s.checkControls();
+  BOARD.checkControls();
 }
 
 //draw function runs constantly, repeating at frameRate per second
@@ -60,24 +52,23 @@ function draw(){
   }
   if (previousTick != currentTick){
     updateCount++;
-     s.update();
      BOARD.boardUpdate();
      GUI.drawGUI();
 
     previousTick = currentTick;
   }
-  s.show();
+  BOARD.showSnakes();
   displayText();
   updateHTML();
 } //draw
 
 function updateHTML(){
-  document.getElementById("xPos").innerHTML = s.x;
-  document.getElementById("yPos").innerHTML = s.y;
-  document.getElementById("xSpd").innerHTML = s.speedScale;
-  document.getElementById("snakeSize").innerHTML = s.size;
-  document.getElementById("mouseXPos").innerHTML = Math.round(mouseX);
-  document.getElementById("mouseYPos").innerHTML = Math.round(mouseY);
+  // document.getElementById("xPos").innerHTML = s.x;
+  // document.getElementById("yPos").innerHTML = s.y;
+  // document.getElementById("xSpd").innerHTML = s.speedScale;
+  // document.getElementById("snakeSize").innerHTML = s.size;
+  // document.getElementById("mouseXPos").innerHTML = Math.round(mouseX);
+  // document.getElementById("mouseYPos").innerHTML = Math.round(mouseY);
 }
 
 //displays text in the center of the screen
@@ -101,7 +92,7 @@ function displayText(){
 //reset canvas and snake properties
 function reset() {
   BOARD.resetBoard();
-  s.reset();
+  BOARD.resetSnakes();
 }
 
 function DEBUG(input){
