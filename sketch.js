@@ -6,7 +6,7 @@ var startTime = new Date().getTime();
 var currentTick = 0;
 
 //Snakes
-var s;
+var snakes = [];
 
 //runs once at the beggining
 function setup(){
@@ -67,12 +67,12 @@ function draw(){
 } //draw
 
 function updateHTML(){
-  document.getElementById("xPos").innerHTML = s.x;
-  document.getElementById("yPos").innerHTML = s.y;
-  document.getElementById("xSpd").innerHTML = s.speedScale;
-  document.getElementById("snakeSize").innerHTML = s.size;
-  document.getElementById("mouseXPos").innerHTML = Math.round(mouseX);
-  document.getElementById("mouseYPos").innerHTML = Math.round(mouseY);
+  // document.getElementById("xPos").innerHTML = s.x;
+  // document.getElementById("yPos").innerHTML = s.y;
+  // document.getElementById("xSpd").innerHTML = s.speedScale;
+  // document.getElementById("snakeSize").innerHTML = s.size;
+  // document.getElementById("mouseXPos").innerHTML = Math.round(mouseX);
+  // document.getElementById("mouseYPos").innerHTML = Math.round(mouseY);
 }
 
 //displays text in the center of the screen

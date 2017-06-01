@@ -9,6 +9,9 @@ function Board(){
 	this.matrix = [];
 	this.paused = false;
 
+	//snake stuff
+	this.snakes = [];
+
 
 	this.init = function() {
 		this.canvas = createCanvas(this.canvasWidth,this.canvasHeight);
@@ -43,7 +46,7 @@ function Board(){
 	//Makes the canvas as big at the current browser window can handle
 	this.setCanvasToWindow = function(){
 		this.canvasWidth = window.innerWidth - 35;
-		this.canvasHeight = window.innerHeight -230;
+		this.canvasHeight = window.innerHeight - 180;
 		this.init();
 	}
 
