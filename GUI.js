@@ -1,5 +1,6 @@
 function Menu(){
   this.startOfGame = false;
+  this.config = false;
   this.baseSize = 10;
   this.liveButtons = new Map();
 
@@ -23,6 +24,25 @@ function Menu(){
           s.reset();
         }.bind(this)
       );
+      //create config Button
+      var configButton = this.createTextButton("Settings", 0.1, 0.1, 3, function(){
+        this.startOfGame = false;
+        this.config = true;
+      }.bind(this)
+      );
+
+      if(this.config){
+        /*Config GUI Canvas*/
+        fill(5,13,16);
+        rect(0,0,width,height); //Start Menu Background
+        textSize(50);
+        fill(24,202,230);
+        stroke (52,96,141);
+        var textString = "Settings";
+        var stringWidth = textWidth(textString);
+        text(textString, ((width/2)-(stringWidth/2)), (100));
+        // console.log(stringWidth);
+      }
 
     }//end this.startOfGame
 }//end drawGUI
