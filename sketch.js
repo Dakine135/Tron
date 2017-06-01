@@ -5,27 +5,18 @@ var GUI;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
-//Snakes
-var snakes = [];
-
 //runs once at the beggining
 function setup(){
   BOARD = new Board();
   BOARD.init();
   BOARD.setCanvasToWindow();
   GUI = new Menu();
-  s = new Snake();
-  s.setControls(
-    UP_ARROW,
-    DOWN_ARROW,
-    LEFT_ARROW,
-    RIGHT_ARROW
-  );
-  s.intializeTailColor();
+  BOARD.addSnake(UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW);
+  BOARD.addSnake(87, 83, 65, 68);
   frameRate(60);
 
   GUI.startOfGame = true;
-  GUI.introSnake();
+  //GUI.introSnake();
 }
 
 function mousePressed() {
@@ -34,7 +25,7 @@ function mousePressed() {
 }
 
 function keyPressed(){
-  s.checkControls();
+  BOARD.checkControls();
 }
 
 //draw function runs constantly, repeating at frameRate per second
@@ -55,13 +46,12 @@ function draw(){
   }
   if (previousTick != currentTick){
     updateCount++;
-     s.update();
      BOARD.boardUpdate();
      GUI.drawGUI();
 
     previousTick = currentTick;
   }
-  s.show();
+  BOARD.showSnakes();
   displayText();
   updateHTML();
 } //draw
@@ -96,7 +86,7 @@ function displayText(){
 //reset canvas and snake properties
 function reset() {
   BOARD.resetBoard();
-  s.reset();
+  BOARD.resetSnakes();
 }
 
 function DEBUG(input){

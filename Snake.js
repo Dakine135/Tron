@@ -1,4 +1,4 @@
-function Snake(){
+function Snake(upButton,downButton,leftButton,rightButton){
   //starting position
   this.size = 10;
   this.x = width/2 - (this.size/2);
@@ -6,10 +6,14 @@ function Snake(){
   this.direction = "Stopped";
 
   //controls
-  this.upButton;
-  this.downButton;
-  this.leftButton;
-  this.rightButton;
+  // this.upButton;
+  // this.downButton;
+  // this.leftButton;
+  // this.rightButton;
+  this.upButton = upButton;
+  this.downButton = downButton;
+  this.leftButton = leftButton;
+  this.rightButton = rightButton;
 
   //starting direction and speed
   this.xdir = 0;
@@ -35,27 +39,25 @@ function Snake(){
   this.lastY = this.ydir;
   this.lastSpeedScale = this.speedScale;
 
-  this.setControls = function(upButton,downButton,leftButton,rightButton){
-    this.upButton = upButton;
-    this.downButton = downButton;
-    this.leftButton = leftButton;
-    this.rightButton = rightButton;
-  }
-
   //detects when keys are pressed and changes snakes direction
   this.checkControls = function(){
     var xdir = 0;
     var ydir = 0;
+    var pressed = false;
     if (keyIsDown(this.upButton)){
       ydir--;
+      pressed = true;
     }if (keyIsDown(this.downButton)) {
       ydir++;
+      pressed = true;
     }if (keyIsDown(this.leftButton)) {
       xdir--;
+      pressed = true;
     }if (keyIsDown(this.rightButton)) {
       xdir++;
+      pressed = true;
     }
-    this.dir(xdir,ydir);
+    if(pressed) this.dir(xdir,ydir);
   }//END OF keyP FUNCTION
 
   this.intializeTailColor = function(){

@@ -23,6 +23,9 @@ function Board(){
 
 	this.boardUpdate = function() {
 		background(50);
+		this.snakes.forEach(function(s){
+			s.update();
+		});
 	}//end boardUpdate
 
 	this.resetBoard = function() {
@@ -64,5 +67,35 @@ function Board(){
 			s.pause();
 		}
 	}//end pause
+
+	/*
+		Snake related stuff
+	*/
+	this.addSnake = function(upButton,downButton,leftButton,rightButton){
+		var s = new Snake(upButton,downButton,leftButton,rightButton);
+		s.intializeTailColor();
+		this.snakes.push(s);
+	}
+
+	this.checkControls = function(){
+		this.snakes.forEach(function(s){
+			s.checkControls();
+		});
+	}
+
+	this.showSnakes = function(){
+		this.snakes.forEach(function(s){
+			s.show();
+		});
+	}
+
+	this.resetSnakes = function(){
+		this.snakes.forEach(function(s){
+			s.reset();
+		});
+	}
+
+
+
 
 }//end board

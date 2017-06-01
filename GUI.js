@@ -20,7 +20,7 @@ function Menu(){
       //create start Button
       var startButtonKey = this.createTextButton("Start", 0.5, 0.55, 3, function(){
           this.startOfGame = false;
-          s.reset();
+          BOARD.resetSnakes();
         }.bind(this)
       );
 
@@ -73,13 +73,13 @@ this.checkClicks = function(){
 }//end check Clicks
 
   //Start Menu Snake Movement
-  this.introSnake = function() {
-    s.x = width * 0.7;
-	  s.y = 20;
-	  s.maxTailLength = 500;
-    s.size = 10;
-    s.speedScale = 3;
-    s.dir(1,1);
-  }//end snake intro
+  // this.introSnake = function() {
+  //   s.x = width * 0.7;
+	//   s.y = 20;
+	//   s.maxTailLength = 500;
+  //   s.size = 10;
+  //   s.speedScale = 3;
+  //   s.dir(1,1);
+  // }//end snake intro
 
 } // end class Menu
