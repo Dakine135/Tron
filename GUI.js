@@ -73,12 +73,8 @@ function Menu(){
       }.bind(this)
       );
 
-      textSize(30);
-      fill(24,202,230);
-      stroke (52,96,141);
-      var textString = "P"+ (this.player + 1) +" selected";
-      var stringWidth = textWidth(textString);
-      text(textString, ((width/2)-(stringWidth/2)), (height*.3));
+    this.createText("P"+ (this.player + 1) +" selected", .5, .25, 2);
+
       //create color Button
       var colorButton = this.createTextButton("Change Color", 0.5, 0.5, 3, function(){
         // this.startOfGame = true;
@@ -124,9 +120,15 @@ this.createTextButton = function(string, relX, relY, scale, callBack){
   return buttonKey;
 } //end createTextButton
 
-this.createText = function(string, relX, relY, scale){
-
-
+this.createText = function(textString, relX, relY, scale){
+  textSize(this.baseSize*scale);
+  var stringWidth = textWidth(textString);
+  var textX = (width*relX)-(stringWidth/2);
+  var textY = (height*relY)+(textSize()/2);
+  fill(24,202,230);
+  stroke (52,96,141);
+  console.log(textX,textY);
+  text(textString, textX, textY);
 }
 
 this.checkClicks = function(){
