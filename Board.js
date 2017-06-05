@@ -72,8 +72,8 @@ function Board(){
 	/*
 		Snake related stuff
 	*/
-	this.addSnake = function(upButton,downButton,leftButton,rightButton){
-		var s = new Snake(upButton,downButton,leftButton,rightButton);
+	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor){
+		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor);
 		s.intializeTailColor();
 		this.snakes.push(s);
 	}
@@ -101,10 +101,9 @@ function Board(){
     var partitions = BOARD.snakes.length;
     var lengthOfEachpartition = width/partitions;
 		for(var i=0; i<this.snakes.length; i++){
-			var x =
+			var x = 0; //todo
 		}
-
-  }
+  }//end setStartingPositions
 
 	this.checkForCollisions = function(){
 		//console.log("dist / currTailLength: ", this.snakes[0].currTailLength, " / ", this.snakes[0].tail.length);

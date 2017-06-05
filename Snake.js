@@ -1,4 +1,6 @@
-function Snake(upButton,downButton,leftButton,rightButton){
+function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor, endColor){
+  this.name = snakeName;
+
   //starting position
   this.size = 10;
   this.x = width/2 - (this.size/2);
@@ -6,10 +8,6 @@ function Snake(upButton,downButton,leftButton,rightButton){
   this.direction = "Stopped";
 
   //controls
-  // this.upButton;
-  // this.downButton;
-  // this.leftButton;
-  // this.rightButton;
   this.upButton = upButton;
   this.downButton = downButton;
   this.leftButton = leftButton;
@@ -26,8 +24,8 @@ function Snake(upButton,downButton,leftButton,rightButton){
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
-  this.startColor = color(194, 254, 34);
-  this.endColor = color(235, 29, 99);
+  this.startColor = startColor;
+  this.endColor = endColor;
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = 1000;
@@ -255,9 +253,9 @@ function Snake(upButton,downButton,leftButton,rightButton){
 	  this.yspeed = 0;
 	  this.tail = [];
 	  this.currentColor = 0;
-	  this.startColor = color(194, 254, 34);
-	  this.endColor = color(235, 29, 99);
-	  this.intializeTailColor();
+	  //this.startColor = color(194, 254, 34);
+	  //this.endColor = color(235, 29, 99);
+	  //this.intializeTailColor();
 	  this.colorDirection = true;
 	  this.currTailLength = 0; //length in pixels
 	  this.maxTailLength = 1000;
