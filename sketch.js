@@ -13,6 +13,7 @@ function preload() {
 function setup(){
   bgMusic.setVolume(0.1);
   bgMusic.play();
+  bgMusic.jump(30)
   BOARD = new Board();
   BOARD.init();
   BOARD.setCanvasToWindow();
@@ -22,7 +23,12 @@ function setup(){
   frameRate(60);
 
   GUI.startOfGame = true;
-  //GUI.introSnake();
+  //start menu snakes
+  BOARD.snakes[0].dir(1,1);
+  BOARD.snakes[0].chngColor();
+  BOARD.snakes[1].chngColor();
+  BOARD.snakes[1].dir(-1,1);
+
 }
 
 function mousePressed() {

@@ -4,6 +4,10 @@ function Menu(){
   this.baseSize = 10;
   this.liveButtons = new Map();
 
+  this.guiState = function(state){
+    //set called gui to true
+    //set all other guis to false
+  }
   this.drawGUI = function(){
     this.liveButtons.clear();
     if(this.startOfGame){
@@ -24,6 +28,7 @@ function Menu(){
           BOARD.resetSnakes();
         }.bind(this)
       );
+
       //create config Button
       var configButton = this.createTextButton("Settings", 0.1, 0.1, 3, function(){
         this.startOfGame = false;
@@ -36,6 +41,7 @@ function Menu(){
 
     if(this.config){
       /*Config GUI Canvas*/
+      var player = 0;
       fill(5,13,16);
       rect(0,0,width,height); //Start Menu Background
       textSize(50);
@@ -47,22 +53,35 @@ function Menu(){
       // console.log(stringWidth);
 
       //create back Button
-      var configButton = this.createTextButton("Back", 0.1, 0.1, 3, function(){
+      var backButton = this.createTextButton("Back", 0.1, 0.1, 3, function(){
         this.startOfGame = true;
         this.config = false;
       }.bind(this)
       );
       //create P1 Button
-      var playersButton = this.createTextButton("Player Number", 0.1, 0.3, 3, function(){
-        this.startOfGame = false;
-        this.config = false;
+      var player1Button = this.createTextButton("P 1", 0.35, 0.3, 1, function(){
+        this.player = 0;
+        console.log(this.player);
       }.bind(this)
       );
       //create P2 Button
-      var boardButton = this.createTextButton("Player Color", 0.2, 0.5, 3, function(){
+      var player2Button = this.createTextButton("P 2", 0.65, 0.3, 1, function(){
+        this.player = 1;
+        console.log(this.player);
+        createTextButton.fill(255,255,255);
+      }.bind(this)
+      );
+      textSize(30);
+      fill(24,202,230);
+      stroke (52,96,141);
+      var textString = "P"+(player+1)+" selected";
+      var stringWidth = textWidth(textString);
+      text(textString, ((width/2)-(stringWidth/2)), (height*.3));
+      //create color Button
+      var colorButton = this.createTextButton("Change Color", 0.5, 0.5, 3, function(){
         // this.startOfGame = true;
-        // this.config = false;
-        snake.color(255,255,255)
+        this.config = true;
+        BOARD.snakes[this.player].chngColor();
       }.bind(this)
       );
     }
