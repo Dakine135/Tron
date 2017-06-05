@@ -11,7 +11,7 @@ function preload() {
 
 //runs once at the beggining
 function setup(){
-  bgMusic.setVolume(0.1);
+  bgMusic.setVolume(0.05);
   bgMusic.play();
   bgMusic.jump(30)
   BOARD = new Board();
