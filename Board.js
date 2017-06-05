@@ -95,6 +95,16 @@ function Board(){
 		});
 	}
 
+	//random starting position based on secions partitioned by number of snakes total
+  this.setStartingPositions = function(){
+    var partitions = BOARD.snakes.length;
+    var lengthOfEachpartition = width/partitions;
+		for(var i=0; i<this.snakes.length; i++){
+			var x =
+		}
+
+  }
+
 
 
 
