@@ -26,6 +26,7 @@ function Board(){
 		this.snakes.forEach(function(s){
 			s.update();
 		});
+		this.checkForCollisions();
 	}//end boardUpdate
 
 	this.resetBoard = function() {
@@ -94,6 +95,24 @@ function Board(){
 			s.reset();
 		});
 	}
+
+	this.checkForCollisions = function(){
+		//console.log("dist / currTailLength: ", this.snakes[0].currTailLength, " / ", this.snakes[0].tail.length);
+		//check if snakes run into tails (self and others)
+		for(var snakeHeadIndex = 0; snakeHeadIndex<this.snakes.length; snakeHeadIndex++){
+			//collision with self
+			var snakeHead = this.snakes[snakeHeadIndex];
+			for(var snakeTailIndex = 0; snakeTailIndex<this.snakes.length; snakeTailIndex++){
+				var snakeTail = this.snakes[snakeTailIndex];
+				var collisionAt = snakeHead.checkCollisionWithTail(snakeTail.tail);
+		    if(collisionAt > 0){
+					//console.log(collisionAt);
+		      // this.snakes[otherSnake].tail[collisionAt].color = color(255,255,255);
+					this.snakes[snakeTailIndex].cutTail(collisionAt);
+		    }
+		  }//othersnake loop
+		}//selfsnake loop
+	}// checkForCollisions
 
 
 
