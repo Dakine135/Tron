@@ -73,8 +73,8 @@ function Board(){
 	/*
 		Snake related stuff
 	*/
-	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor){
-		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor);
+	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength){
+		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength);
 		s.intializeTailColor();
 		this.snakes.set(snakeName,s);
 	}
@@ -111,12 +111,18 @@ function Board(){
 		for(var snakeHeadKey of this.snakes.keys()){
 			var snakeHead = this.snakes.get(snakeHeadKey);
 			for(var snakeTailKey of this.snakes.keys()){
-				var snakeTail = this.snakes.get(snakeTailKey);
-				var collisionAt = snakeHead.checkCollisionWithTail(snakeTail.tail);
-		    if(collisionAt > 0){
-					// console.log(collisionAt);
-					snakeTail.cutTail(collisionAt);
-		    }
+				if(snakeHeadKey != snakeTailKey){ //dont check collision with self
+					var snakeTail = this.snakes.get(snakeTailKey);
+					var collision = snakeHead.checkCollisionWithTail(snakeTail.tail);
+			    if(collision != null){
+						// console.log(collision);
+						var amountCut = snakeTail.cutTail(collision);
+						snakeTail.chngTail(-1*amountCut);
+						snakeHead.chngTail(amountCut);
+						console.log(amountCut);
+			    }
+				}//check if itself
+
 		  }//othersnake loop
 		}//selfsnake loop
 	}// checkForCollisions

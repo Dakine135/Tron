@@ -11,8 +11,10 @@ function setup(){
   BOARD.init();
   BOARD.setCanvasToWindow();
   GUI = new Menu();
-  BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW, color(194, 254, 34), color(235, 29, 99));
-  BOARD.addSnake("Player2",87, 83, 65, 68, color(28, 20, 242), color(252, 14, 30));
+  BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+    color(194, 254, 34), color(235, 29, 99), 400);
+  BOARD.addSnake("Player2",87, 83, 65, 68,
+    color(28, 20, 242), color(252, 14, 30), 400);
   frameRate(60);
 
   GUI.startOfGame = true;
