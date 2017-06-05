@@ -45,7 +45,28 @@ function Menu(){
       var stringWidth = textWidth(textString);
       text(textString, ((width/2)-(stringWidth/2)), (100));
       // console.log(stringWidth);
+
+      //create back Button
+      var configButton = this.createTextButton("Back", 0.1, 0.1, 3, function(){
+        this.startOfGame = true;
+        this.config = false;
+      }.bind(this)
+      );
+      //create P1 Button
+      var playersButton = this.createTextButton("Player Number", 0.1, 0.3, 3, function(){
+        this.startOfGame = false;
+        this.config = false;
+      }.bind(this)
+      );
+      //create P2 Button
+      var boardButton = this.createTextButton("Player Color", 0.2, 0.5, 3, function(){
+        // this.startOfGame = true;
+        // this.config = false;
+        snake.color(255,255,255)
+      }.bind(this)
+      );
     }
+
 }//end drawGUI
 
 //createTextButton(String, relativeWidth, relativeHeight, size)
