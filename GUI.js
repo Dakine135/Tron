@@ -3,6 +3,7 @@ function Menu(){
   this.config = false;
   this.baseSize = 10;
   this.liveButtons = new Map();
+  this.player = 0;
 
   this.guiState = function(state){
     //set called gui to true
@@ -41,7 +42,6 @@ function Menu(){
 
     if(this.config){
       /*Config GUI Canvas*/
-      var player = 0;
       fill(5,13,16);
       rect(0,0,width,height); //Start Menu Background
       textSize(50);
@@ -58,23 +58,25 @@ function Menu(){
         this.config = false;
       }.bind(this)
       );
+
       //create P1 Button
       var player1Button = this.createTextButton("P 1", 0.35, 0.3, 1, function(){
         this.player = 0;
         console.log(this.player);
       }.bind(this)
       );
+
       //create P2 Button
       var player2Button = this.createTextButton("P 2", 0.65, 0.3, 1, function(){
         this.player = 1;
         console.log(this.player);
-        createTextButton.fill(255,255,255);
       }.bind(this)
       );
+
       textSize(30);
       fill(24,202,230);
       stroke (52,96,141);
-      var textString = "P"+(player+1)+" selected";
+      var textString = "P"+ (this.player + 1) +" selected";
       var stringWidth = textWidth(textString);
       text(textString, ((width/2)-(stringWidth/2)), (height*.3));
       //create color Button
@@ -122,7 +124,8 @@ this.createTextButton = function(string, relX, relY, scale, callBack){
   return buttonKey;
 } //end createTextButton
 
-this.createText = function(){
+this.createText = function(string, relX, relY, scale){
+
 
 }
 
