@@ -95,104 +95,6 @@ function Snake(upButton,downButton,leftButton,rightButton){
     //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);
   }
 
-  //currently just for turning and jumping
-  this.createPreviousPosition = function(x,y,jump){
-    var previousPosition = {
-      x: x,
-      y: y,
-      jump: jump,
-      dist: 0,
-      color: this.tailColors[this.currentColor],
-      dir: this.direction
-    };
-
-    if(this.currentColor == 0) this.colorDirection = true;
-    else if(this.currentColor == (this.tailColors.length - 1)) this.colorDirection = false;
-    if(this.colorDirection) this.currentColor++;
-    else this.currentColor--;
-
-    return previousPosition;
-  }
-
-  this.update = function() {
-    var currX = Math.floor(this.x + this.xspeed);
-    var currY = Math.floor(this.y + this.yspeed);
-
-    if(currX != this.x || currY != this.y){ // dont change tail if you havent moved
-      var dist = Math.round(Math.sqrt(Math.pow((currX-this.x), 2)+Math.pow((currY-this.y), 2)));
-      var previousPosition = {
-        x: this.x,
-        y: this.y,
-        jump: false,
-        dist: dist,
-        color: this.tailColors[this.currentColor],
-        dir: this.direction
-      };
-      this.currTailLength = this.currTailLength + dist;
-
-      //changeing color
-      if(this.currentColor == 0) this.colorDirection = true;
-      else if(this.currentColor == (this.tailColors.length - 1)) this.colorDirection = false;
-      if(this.colorDirection) this.currentColor++;
-      else this.currentColor--;
-
-      this.x = currX;
-      this.y = currY;
-
-      //Wall wrapping code
-      var leftWall = -1;
-      var rightWall = width + 1;
-      var topWall = -1;
-      var bottomWall = height + 1;
-      if (this.x >= rightWall){ //right wall
-        this.x = 0;
-        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
-        //previousPosition.jump = true;
-      }else if (this.x <= leftWall){ //left wall
-        this.x = width;
-        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
-        //previousPosition.jump = true;
-      }else if (this.y >= bottomWall){ //bottom wall
-        this.y = 0;
-        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
-      //  previousPosition.jump = true;
-      }else if (this.y <= topWall){ //top wall
-        this.y = height;
-        this.tail.unshift(this.createPreviousPosition(this.x,this.y,true));
-        //previousPosition.jump = true;
-      }
-
-      //updateTail with new previousPosition
-      var newSegment = this.newSegment(previousPosition);
-      if(this.currTailLength < this.maxTailLength){
-        if(newSegment){
-          this.tail.unshift(previousPosition);
-        }
-        else{
-          this.tail[0].x = previousPosition.x;
-          this.tail[0].y = previousPosition.y;
-          this.tail[0].dist = this.tail[0].dist + previousPosition.dist;
-        }
-      } else{
-        while(this.currTailLength > this.maxTailLength){
-          var removedPoint = this.tail.pop();
-          this.currTailLength = this.currTailLength - removedPoint.dist;
-        }
-        if(newSegment){
-          this.tail.unshift(previousPosition);
-        }
-        else{
-          this.tail[0].x = previousPosition.x;
-          this.tail[0].y = previousPosition.y;
-          this.tail[0].dist = this.tail[0].dist + previousPosition.dist;
-        }
-      }
-    }
-
-    // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
-
-  }//end update
-
   this.newSegment = function(prevPos){
     if(this.tail.length <= 1) return true;
     if(this.tail.length > 0){
@@ -202,6 +104,90 @@ function Snake(upButton,downButton,leftButton,rightButton){
      }
     return false;
   }
+
+  //currently just for turning and jumping
+  this.createPreviousPosition = function(x,y,jump){
+    //console.log("---------calling function createPreviousPosition(",x,",",y,",",jump,")");
+    var distance = 0;
+    if(this.tail.length>0 && !this.tail[0].jump){
+      var prevX = this.tail[0].x;
+      var prevY = this.tail[0].y;
+      distance = int(dist(x,y,prevX,prevY));
+    }
+    var previousPosition = {
+      x: x,
+      y: y,
+      jump: jump,
+      dist: distance,
+      color: this.tailColors[this.currentColor],
+      dir: this.direction
+    };
+
+    this.currTailLength = this.currTailLength + distance;
+    while(this.currTailLength > this.maxTailLength){ //remove to meet length restriction
+      var removedPoint = this.tail.pop();
+      this.currTailLength = this.currTailLength - removedPoint.dist;
+    }
+
+    //updateTail with new previousPosition
+    var newSegment = this.newSegment(previousPosition);
+    if(newSegment){
+      this.tail.unshift(previousPosition);
+      if(this.currentColor == 0) this.colorDirection = true;
+      else if(this.currentColor == (this.tailColors.length - 1)) this.colorDirection = false;
+      if(this.colorDirection) this.currentColor++;
+      else this.currentColor--;
+    }
+    else{
+      this.tail[0].x = previousPosition.x;
+      this.tail[0].y = previousPosition.y;
+      this.tail[0].dist = this.tail[0].dist + previousPosition.dist;
+      this.tail[0].jump = previousPosition.jump;
+    }
+
+  }//end createPreviousPosition
+
+  this.update = function() {
+    var nextX = Math.floor(this.x + this.xspeed);
+    var nextY = Math.floor(this.y + this.yspeed);
+
+    if(nextX == this.x && nextY == this.y){
+      // dont change tail if you havent moved
+      return;
+    }
+    //var dist = Math.round(Math.sqrt(Math.pow((nextX-this.x), 2)+Math.pow((nextY-this.y), 2)));
+
+    //Wall wrapping code
+    var leftWall = -1;
+    var rightWall = width + 1;
+    var topWall = -1;
+    var bottomWall = height + 1;
+    if (this.x >= rightWall){ //right wall
+      this.createPreviousPosition(this.x,this.y,true);
+      this.x = 0;
+      return;
+    }else if (this.x <= leftWall){ //left wall
+      this.createPreviousPosition(this.x,this.y,true);
+      this.x = width;
+      return;
+    }else if (this.y >= bottomWall){ //bottom wall
+      this.createPreviousPosition(this.x,this.y,true);
+      this.y = 0;
+      return;
+    }else if (this.y <= topWall){ //top wall
+      this.createPreviousPosition(this.x,this.y,true);
+      this.y = height;
+      return;
+    }
+
+    this.createPreviousPosition(this.x,this.y,false);
+
+    this.x = nextX;
+    this.y = nextY;
+
+    // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
+
+  }//end update
 
   //increase or decrease tail length
   this.chngTail = function(input){
@@ -223,6 +209,15 @@ function Snake(upButton,downButton,leftButton,rightButton){
       console.log("cannot reduce speed");
     }
   }//END OF chngSpeed FUNCTION
+
+  //takes a index to cut at
+  this.cutTail = function(index){
+    this.tail = this.tail.slice(0,index);
+    this.currTailLength = 0;
+    for(var i=0; i<this.tail.length; i++){
+      this.currTailLength = this.currTailLength + this.tail[i].dist;
+    }
+  }
 
   //change snake's color to random colors
   this.chngColor = function(){
@@ -309,11 +304,6 @@ function Snake(upButton,downButton,leftButton,rightButton){
     stroke(this.endColor);
     ellipse(this.x, this.y, this.size, this.size);
 
-    var collisionAt = this.checkCollisionWithTail(this.tail);
-    if(collisionAt > 0){
-      this.tail[collisionAt].color = color(255,255,255);
-      // console.log("collisionAt: ", collisionAt);
-    }
     var prevPt;
     var strokeStartWeight = this.size/3;
     for(var i=0; i < (this.tail.length-1); i++){
