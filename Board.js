@@ -10,7 +10,7 @@ function Board(){
 	this.paused = false;
 
 	//snake stuff
-	this.snakes = [];
+	this.snakes = new Map();
 
 
 	this.init = function() {
@@ -60,13 +60,14 @@ function Board(){
 			console.log("Game Resumed");
 			document.getElementById("pauseButton").innerHTML = "Pause";
 			this.paused = false;
-			s.pause();
 		}else{
 			console.log("Game Paused");
 			document.getElementById("pauseButton").innerHTML = "Resume";
 			this.paused = true;
-			s.pause();
 		}
+		this.snakes.forEach(function(snake,snakeName){
+			snake.pause();
+		});
 	}//end pause
 
 	/*
@@ -75,49 +76,46 @@ function Board(){
 	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor){
 		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor);
 		s.intializeTailColor();
-		this.snakes.push(s);
+		this.snakes.set(snakeName,s);
 	}
 
 	this.checkControls = function(){
-		this.snakes.forEach(function(s){
-			s.checkControls();
+		this.snakes.forEach(function(snake,snakeName){
+			snake.checkControls();
 		});
 	}
 
 	this.showSnakes = function(){
-		this.snakes.forEach(function(s){
-			s.show();
+		this.snakes.forEach(function(snake,snakeName){
+			snake.show();
 		});
 	}
 
 	this.resetSnakes = function(){
-		this.snakes.forEach(function(s){
-			s.reset();
+		this.snakes.forEach(function(snake,snakeName){
+			snake.reset();
 		});
 	}
 
 	//random starting position based on secions partitioned by number of snakes total
-  this.setStartingPositions = function(){
-    var partitions = BOARD.snakes.length;
-    var lengthOfEachpartition = width/partitions;
-		for(var i=0; i<this.snakes.length; i++){
-			var x = 0; //todo
-		}
-  }//end setStartingPositions
+  // this.setStartingPositions = function(){
+  //   var partitions = BOARD.snakes.length;
+  //   var lengthOfEachpartition = width/partitions;
+	// 	for(var i=0; i<this.snakes.length; i++){
+	// 		var x = 0; //todo
+	// 	}
+  // }//end setStartingPositions
 
 	this.checkForCollisions = function(){
-		//console.log("dist / currTailLength: ", this.snakes[0].currTailLength, " / ", this.snakes[0].tail.length);
 		//check if snakes run into tails (self and others)
-		for(var snakeHeadIndex = 0; snakeHeadIndex<this.snakes.length; snakeHeadIndex++){
-			//collision with self
-			var snakeHead = this.snakes[snakeHeadIndex];
-			for(var snakeTailIndex = 0; snakeTailIndex<this.snakes.length; snakeTailIndex++){
-				var snakeTail = this.snakes[snakeTailIndex];
+		for(var snakeHeadKey of this.snakes.keys()){
+			var snakeHead = this.snakes.get(snakeHeadKey);
+			for(var snakeTailKey of this.snakes.keys()){
+				var snakeTail = this.snakes.get(snakeTailKey);
 				var collisionAt = snakeHead.checkCollisionWithTail(snakeTail.tail);
 		    if(collisionAt > 0){
-					//console.log(collisionAt);
-		      // this.snakes[otherSnake].tail[collisionAt].color = color(255,255,255);
-					this.snakes[snakeTailIndex].cutTail(collisionAt);
+					// console.log(collisionAt);
+					snakeTail.cutTail(collisionAt);
 		    }
 		  }//othersnake loop
 		}//selfsnake loop
