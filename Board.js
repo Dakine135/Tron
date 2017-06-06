@@ -10,7 +10,7 @@ function Board(){
 	this.paused = false;
 
 	//snake stuff
-	this.snakes = [];
+	this.snakes = new Map();
 
 
 	this.init = function() {
@@ -21,11 +21,23 @@ function Board(){
 	  document.getElementById("canvasHeightBox").value = height;
 	}
 
+	this.startMenuSnakes = function(){
+		var snake1Name = BOARD.addSnake("gui1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+				color(194, 254, 34), color(235, 29, 99), 400, 10);
+		var snake2Name = BOARD.addSnake("gui2",87, 83, 65, 68,
+				color(28, 20, 242), color(252, 14, 30), 400, 10);
+		BOARD.snakes.get(snake1Name).dir(1,1);
+		BOARD.snakes.get(snake1Name).chngColor();
+		BOARD.snakes.get(snake2Name).chngColor();
+		BOARD.snakes.get(snake2Name).dir(-1,1);
+	}
+
 	this.boardUpdate = function() {
 		background(50);
 		this.snakes.forEach(function(s){
 			s.update();
 		});
+		this.checkForCollisions();
 	}//end boardUpdate
 
 	this.resetBoard = function() {
@@ -59,43 +71,77 @@ function Board(){
 			console.log("Game Resumed");
 			document.getElementById("pauseButton").innerHTML = "Pause";
 			this.paused = false;
-			s.pause();
 		}else{
 			console.log("Game Paused");
 			document.getElementById("pauseButton").innerHTML = "Resume";
 			this.paused = true;
-			s.pause();
 		}
+		this.snakes.forEach(function(snake,snakeName){
+			snake.pause();
+		});
 	}//end pause
 
 	/*
 		Snake related stuff
 	*/
-	this.addSnake = function(upButton,downButton,leftButton,rightButton){
-		var s = new Snake(upButton,downButton,leftButton,rightButton);
+	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength, size){
+		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength, size);
 		s.intializeTailColor();
-		this.snakes.push(s);
+		this.snakes.set(snakeName,s);
+		return snakeName;
 	}
 
 	this.checkControls = function(){
-		this.snakes.forEach(function(s){
-			s.checkControls();
+		this.snakes.forEach(function(snake,snakeName){
+			snake.checkControls();
 		});
 	}
 
 	this.showSnakes = function(){
-		this.snakes.forEach(function(s){
-			s.show();
+		this.snakes.forEach(function(snake,snakeName){
+			snake.show();
 		});
 	}
 
 	this.resetSnakes = function(){
-		this.snakes.forEach(function(s){
-			s.reset();
+		this.snakes.forEach(function(snake,snakeName){
+			snake.reset();
 		});
 	}
 
+	this.deleteSnakes = function(){
+		this.snakes.clear();
+	}
 
+	//random starting position based on secions partitioned by number of snakes total
+  // this.setStartingPositions = function(){
+  //   var partitions = BOARD.snakes.length;
+  //   var lengthOfEachpartition = width/partitions;
+	// 	for(var i=0; i<this.snakes.length; i++){
+	// 		var x = 0; //todo
+	// 	}
+  // }//end setStartingPositions
+
+	this.checkForCollisions = function(){
+		//check if snakes run into tails (self and others)
+		for(var snakeHeadKey of this.snakes.keys()){
+			var snakeHead = this.snakes.get(snakeHeadKey);
+			for(var snakeTailKey of this.snakes.keys()){
+				if(snakeHeadKey != snakeTailKey){ //dont check collision with self
+					var snakeTail = this.snakes.get(snakeTailKey);
+					var collision = snakeHead.checkCollisionWithTail(snakeTail.tail);
+			    if(collision != null){
+						// console.log(collision);
+						var amountCut = snakeTail.cutTail(collision);
+						snakeTail.chngTail(-1*amountCut);
+						snakeHead.chngTail(amountCut);
+						console.log(amountCut);
+			    }
+				}//check if itself
+
+		  }//othersnake loop
+		}//selfsnake loop
+	}// checkForCollisions
 
 
 }//end board
