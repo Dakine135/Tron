@@ -73,10 +73,11 @@ function Board(){
 	/*
 		Snake related stuff
 	*/
-	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength){
-		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength);
+	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength, size){
+		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength, size);
 		s.intializeTailColor();
 		this.snakes.set(snakeName,s);
+		return snakeName;
 	}
 
 	this.checkControls = function(){

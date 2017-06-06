@@ -7,17 +7,21 @@ var currentTick = 0;
 
 //runs once at the beggining
 function setup(){
+  frameRate(60);
   BOARD = new Board();
   BOARD.init();
   BOARD.setCanvasToWindow();
   GUI = new Menu();
-  BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
-    color(194, 254, 34), color(235, 29, 99), 400);
-  BOARD.addSnake("Player2",87, 83, 65, 68,
-    color(28, 20, 242), color(252, 14, 30), 400);
-  frameRate(60);
+  //Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor, endColor, tailLength, size)
+  var snake1Name = BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+      color(194, 254, 34), color(235, 29, 99), 400, 10);
+  var snake2Name = BOARD.addSnake("Player2",87, 83, 65, 68,
+      color(28, 20, 242), color(252, 14, 30), 400, 10);
 
   GUI.startOfGame = true;
+
+  console.log("Snake ",snake1Name, " created");
+  console.log("Snake ",snake2Name, " created");
   //GUI.introSnake();
 }
 

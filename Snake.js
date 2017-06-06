@@ -1,8 +1,8 @@
-function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor, endColor, tailLength){
+function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor, endColor, tailLength, size){
   this.name = snakeName;
 
   //starting position
-  this.size = 10;
+  this.size = size;
   this.x = width/2 - (this.size/2);
   this.y = height/2 - (this.size/2);
   this.direction = "Stopped";
