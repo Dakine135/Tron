@@ -6,7 +6,6 @@ function Board(){
 	this.canvas;
 
 	//board stuff
-	this.matrix = [];
 	this.paused = false;
 
 	//snake stuff
@@ -41,13 +40,11 @@ function Board(){
 	}//end boardUpdate
 
 	this.resetBoard = function() {
-	  scl = 10;
-	  speed = 0.4;
-	  lastX = 0;
-	  lastY = 0;
-	  lastSpeed = speed;
-	  startTime = new Date().getTime();
-	  currentTick = 0;
+		this.deleteSnakes();
+		var snake1Name = BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+				color(194, 254, 34), color(235, 29, 99), 400, 10);
+		var snake2Name = BOARD.addSnake("Player2",87, 83, 65, 68,
+				color(28, 20, 242), color(252, 14, 30), 400, 10);
 	}//end RestBoard
 
 	//function to apply canvas size from input boxes
@@ -135,7 +132,7 @@ function Board(){
 						var amountCut = snakeTail.cutTail(collision);
 						snakeTail.chngTail(-1*amountCut);
 						snakeHead.chngTail(amountCut);
-						console.log(amountCut);
+						//console.log(amountCut);
 			    }
 				}//check if itself
 

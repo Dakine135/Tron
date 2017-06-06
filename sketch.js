@@ -19,7 +19,7 @@ function setup(){
   BOARD.init();
   BOARD.setCanvasToWindow();
   GUI = new Menu();
-  GUI.startOfGame = true;
+  GUI.guiState("startOfGame");
   BOARD.startMenuSnakes();
 }
 
