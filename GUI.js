@@ -9,7 +9,8 @@ function Menu(){
   this.liveText = new Map();
 
   //internal
-  this.player = 0;
+  this.selectedSnake = null;
+  this.snakeEditor = new editSnake();
   this.strokeColor = color(0,0,0);
   this.buttonColor = color(24,202,230);
   this.textColor = color(255, 255, 255);
@@ -26,14 +27,14 @@ function Menu(){
     switch(state){
       case "startOfGame":
         this.startOfGame = true;
-        var welcomeText = new createText("Welcome To TRON!", 0.5, 0.45, 5, this.buttonColor, this.strokeColor);
+        var welcomeText = new createText("Welcome To TRON!", 0.5, 0.45, 5,
+            this.buttonColor, this.strokeColor);
         var startButton = new TextButton("Start", 0.5, 0.55, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
               this.guiState("gameRunning");
               BOARD.resetBoard();
           }.bind(this));
-
-        var configButton = new TextButton("Settings", 0.1, 0.1, 3,
+        var configButton = new TextButton("Settings", 0.9, 0.1, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
               this.guiState("config");
           }.bind(this));
@@ -41,26 +42,40 @@ function Menu(){
 
       case "config":
         this.config = true;
-        var settingsText = new createText("Settings", 0.5, 0.45, 5, this.buttonColor, this.strokeColor);
+        var settingsText = new createText("Settings", 0.5, 0.2, 5,
+          this.buttonColor, this.strokeColor);
 
-        var backButton = new TextButton("Back", 0.1, 0.1, 3, this.textColor, this.buttonColor, this.strokeColor, function(){
-
-          //this.guiState("startOfGame");
+        var backButton = new TextButton("Back", 0.1, 0.1, 3,
+          this.textColor, this.buttonColor, this.strokeColor, function(){
+            this.guiState("startOfGame");
         }.bind(this));
 
-        var player1Button = new TextButton("P 1", 0.35, 0.3, 1, this.textColor, this.buttonColor, this.strokeColor, function(){
+        var playerSelectedText = new createText("No Player selected", 0.5, 0.3, 2,
+          this.buttonColor, this.strokeColor);
 
-        }.bind(this));
+        var startXLocation = 0.4;
+        var snakeButtons = [];
+        var startScale = 2;
+        BOARD.snakes.forEach(function(snake){
+            var snakeButton = new TextButton(snake.name, startXLocation, 0.4, 2,
+              snake.startColor, snake.endColor, snake.startColor, function(){
 
-        var player2Button = new TextButton("P 2", 0.65, 0.3, 1, this.textColor, this.buttonColor, this.strokeColor, function(){
+                for(var i=0;i<snakeButtons.length;i++) snakeButtons[i].changeScale(startScale);
+                this.selectedSnake = snake.name;
+                playerSelectedText.string = "Player "+this.selectedSnake+" Selected";
+                snakeButton.changeScale(startScale*2);
 
-        }.bind(this));
+                this.snakeEditor.setSnake(snake, snakeButton);
 
-        var playerSelectedText = new createText("P"+ (this.player + 1) +" selected", .5, .25, 2, this.buttonColor, this.strokeColor);
+            }.bind(this));
+            snakeButtons.push(snakeButton);
+            startXLocation = startXLocation + 0.2;
+        }.bind(this));//for each snake
 
-        var colorButton = new TextButton("Change Color", 0.5, 0.5, 3, this.textColor, this.buttonColor, this.strokeColor, function(){
-
-        }.bind(this));
+        // var colorButton = new TextButton("Change Color", 0.5, 0.5, 3,
+        //   this.textColor, this.buttonColor, this.strokeColor, function(){
+        //
+        // }.bind(this));
         break;
 
       case "gameRunning":
@@ -78,31 +93,28 @@ function Menu(){
       rect(0,0,width,height); //Start Menu Background
     }
 
+    if(this.config && this.selectedSnake){
+      this.snakeEditor.show();
+    }
+
     this.liveButtons.forEach(function(button){
       button.show();
-    })
+    });
 
     this.liveText.forEach(function(text){
       text.show();
-    })
+    });
 
-}//end drawGUI
+  }//end drawGUI
 
-this.checkClicks = function(){
-  //console.log(this.liveButtons);
-  this.liveButtons.forEach(function(button){
-    button.clicked();
-  });
-}//end check Clicks
 
-  //Start Menu Snake Movement
-  // this.introSnake = function() {
-  //   s.x = width * 0.7;
-	//   s.y = 20;
-	//   s.maxTailLength = 500;
-  //   s.size = 10;
-  //   s.speedScale = 3;
-  //   s.dir(1,1);
-  // }//end snake intro
+
+
+  this.checkClicks = function(){
+    //console.log(this.liveButtons);
+    this.liveButtons.forEach(function(button){
+      button.clicked();
+    });
+  }//end check Clicks
 
 } // end class Menu

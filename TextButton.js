@@ -1,12 +1,19 @@
 function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeColor, callBack){
+  // console.log("create TextButton: ",string, relX, relY, scale, textColor, buttonColor, strokeColor, callBack);
     //constants
     this.baseSize = 10;
     this.roundness = 5;
     this.marginWidth = 20;
     this.marginHeight = 20;
 
+    //colors
+    this.textColor = textColor;
+    this.buttonColor = buttonColor;
+    this.strokeColor = strokeColor;
+
     this.string = string;
-    textSize(this.baseSize*scale);
+    this.scale = scale;
+    textSize(this.baseSize*this.scale);
     this.stringHeight = textSize();
     this.stringWidth = textWidth(this.string);
     this.recWidth = this.stringWidth + this.marginWidth;
@@ -28,13 +35,23 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
       }
     }
 
+    this.changeScale = function(scale){
+      this.scale = scale;
+      textSize(this.baseSize*this.scale);
+      this.stringHeight = textSize();
+      this.stringWidth = textWidth(this.string);
+      this.recHeight = this.stringHeight + this.marginHeight;
+      this.recWidth = this.stringWidth + this.marginWidth;
+      this.textY = this.recY + this.stringHeight + (this.marginHeight/4);
+    }
+
     GUI.liveButtons.set(this.key, this);
 
     this.show = function(){
-      stroke(strokeColor);
-      fill(buttonColor);
+      stroke(this.strokeColor);
+      fill(this.buttonColor);
       rect(this.recX, this.recY, this.recWidth, this.recHeight, this.roundness);
-      fill(textColor);
+      fill(this.textColor);
       textSize(this.stringHeight);
       text(this.string, this.textX, this.textY);
     }
