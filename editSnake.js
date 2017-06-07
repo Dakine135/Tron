@@ -2,13 +2,13 @@ function editSnake(){
   this.snake;
 
   //colorChanger
-  this.startColorR = createSlider(0, 255, 0, 1);
-  this.startColorG = createSlider(0, 255, 0, 1);
-  this.startColorB = createSlider(0, 255, 0, 1);
+  this.startColorR;
+  this.startColorG;
+  this.startColorB;
 
-  this.endColorR = createSlider(0, 255, 0, 1);
-  this.endColorG = createSlider(0, 255, 0, 1);
-  this.endColorB = createSlider(0, 255, 0, 1);
+  this.endColorR;
+  this.endColorG;
+  this.endColorB;
 
   this.buttonCalledFrom;
 
@@ -21,14 +21,35 @@ function editSnake(){
     this.snake = snake;
     this.buttonCalledFrom = snakeButton;
 
-    this.startColorR.value(snake.startColor.levels[0]);
-    this.startColorG.value(snake.startColor.levels[1]);
-    this.startColorB.value(snake.startColor.levels[2]);
+    if(this.startColorR == null){
+      this.startColorR = createSlider(0, 255, snake.startColor.levels[0], 1);
+      this.startColorG = createSlider(0, 255, snake.startColor.levels[1], 1);
+      this.startColorB = createSlider(0, 255, snake.startColor.levels[2], 1);
 
-    this.endColorR.value(snake.endColor.levels[0]);
-    this.endColorG.value(snake.endColor.levels[1]);
-    this.endColorB.value(snake.endColor.levels[2]);
+      this.endColorR = createSlider(0, 255, snake.endColor.levels[0], 1);
+      this.endColorG = createSlider(0, 255, snake.endColor.levels[1], 1);
+      this.endColorB = createSlider(0, 255, snake.endColor.levels[2], 1);
+    } else {
+      this.startColorR.value(snake.startColor.levels[0]);
+      this.startColorG.value(snake.startColor.levels[1]);
+      this.startColorB.value(snake.startColor.levels[2]);
+
+      this.endColorR.value(snake.endColor.levels[0]);
+      this.endColorG.value(snake.endColor.levels[1]);
+      this.endColorB.value(snake.endColor.levels[2]);
+    }
+  }//end setSnake
+
+  this.reset = function(){
+    this.startColorR = null;
+    this.startColorG = null;
+    this.startColorB = null;
+
+    this.endColorR = null;
+    this.endColorG = null;
+    this.endColorB = null;
   }
+
 
   this.show = function(){
     //slider.style('width', '80px');

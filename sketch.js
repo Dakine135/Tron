@@ -2,6 +2,7 @@
 var DEBUGBOOL = false;
 var BOARD;
 var GUI;
+var myMaze;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
@@ -12,12 +13,14 @@ function preload() {
 //runs once at the beggining
 function setup(){
   frameRate(60);
-  bgMusic.setVolume(0.05);
-  bgMusic.play();
-  bgMusic.jump(30);
+  // bgMusic.setVolume(0.05);
+  // bgMusic.play();
+  // bgMusic.jump(30);
   BOARD = new Board();
   BOARD.init();
   BOARD.setCanvasToWindow();
+
+  myMaze = new Maze(60);
   GUI = new Menu();
   GUI.guiState("startOfGame");
   BOARD.startMenuSnakes();
@@ -37,6 +40,8 @@ var previousTick = 0;
 var drawCount = 0;
 var updateCount = 0;
 function draw(){
+  // background(50);
+
   drawCount++;
   var currentTime = new Date().getTime();
   var timeDiff = currentTime - startTime;
@@ -49,7 +54,9 @@ function draw(){
     updateCount = 0;
   }
   if (previousTick != currentTick){
-    updateCount++;
+    background(50);
+      updateCount++;
+      myMaze.show();
      BOARD.boardUpdate();
      GUI.drawGUI();
 
@@ -57,17 +64,7 @@ function draw(){
   }
   BOARD.showSnakes();
   displayText();
-  updateHTML();
 } //draw
-
-function updateHTML(){
-  // document.getElementById("xPos").innerHTML = s.x;
-  // document.getElementById("yPos").innerHTML = s.y;
-  // document.getElementById("xSpd").innerHTML = s.speedScale;
-  // document.getElementById("snakeSize").innerHTML = s.size;
-  // document.getElementById("mouseXPos").innerHTML = Math.round(mouseX);
-  // document.getElementById("mouseYPos").innerHTML = Math.round(mouseY);
-}
 
 //displays text in the center of the screen
 //currently only used for pause

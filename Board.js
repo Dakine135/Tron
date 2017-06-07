@@ -32,7 +32,7 @@ function Board(){
 	}
 
 	this.boardUpdate = function() {
-		background(50);
+		// background(50);
 		this.snakes.forEach(function(s){
 			s.update();
 		});
@@ -57,8 +57,8 @@ function Board(){
 
 	//Makes the canvas as big at the current browser window can handle
 	this.setCanvasToWindow = function(){
-		this.canvasWidth = window.innerWidth - 35;
-		this.canvasHeight = window.innerHeight - 180;
+		this.canvasWidth = Math.round((window.innerWidth - 35)/60)*60;
+		this.canvasHeight = Math.round((window.innerHeight - 180)/60)*60;
 		this.init();
 	}
 

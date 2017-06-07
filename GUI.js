@@ -19,6 +19,7 @@ function Menu(){
     console.log("GameState: ", state);
     this.liveButtons.clear();
     this.liveText.clear();
+    this.snakeEditor.reset();
     this.startOfGame = false;
     this.config = false;
     this.gameRunning = false;
