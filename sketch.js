@@ -3,7 +3,7 @@ var DEBUGBOOL = false;
 var BOARD;
 var GUI;
 var MAZE;
-var GAMEGRIDSCALE = 40;
+var GAMEGRIDSCALE = 60;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
