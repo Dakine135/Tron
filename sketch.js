@@ -2,7 +2,7 @@
 var DEBUGBOOL = false;
 var BOARD;
 var GUI;
-var myMaze;
+var MAZE;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
@@ -20,7 +20,7 @@ function setup(){
   BOARD.init();
   BOARD.setCanvasToWindow();
 
-  myMaze = new Maze(60);
+  MAZE = new Maze(60);
   GUI = new Menu();
   GUI.guiState("startOfGame");
   BOARD.startMenuSnakes();
@@ -56,9 +56,9 @@ function draw(){
   if (previousTick != currentTick){
     background(50);
       updateCount++;
-      myMaze.show();
-     BOARD.boardUpdate();
-     GUI.drawGUI();
+      MAZE.show();
+      BOARD.boardUpdate();
+      GUI.drawGUI();
 
     previousTick = currentTick;
   }

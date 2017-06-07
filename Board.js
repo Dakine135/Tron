@@ -138,6 +138,9 @@ function Board(){
 
 		  }//othersnake loop
 		}//selfsnake loop
+
+		//TODO check collision on walls of maze
+
 	}// checkForCollisions
 
 

@@ -7,10 +7,12 @@ this.w = cellWidth;
 this.cols = floor(width/this.w);
 this.rows = floor(height/this.w);
 this.grid = [];
+this.lines = new Map();
 this.current;
 // this.stack = new Map();
 this.stack = [];
 this.finished = false;
+this.debugging = false;
 
 for (var   j = 0; j < this.rows; j++) {
   for (var i = 0; i < this.cols; i++) {
@@ -23,29 +25,43 @@ this.current = this.grid[0];
 
 this.show = function() {
   // background(51);
-  // if(this.finished){
+  if(this.debugging){
     for (var i = 0; i < this.grid.length; i++) {
       this.grid[i].show();
     }
-  // }
-
-  this.current.visited = true;
-  if(!this.finished) this.current.highlight();
-  var next = this.current.checkNeighbors();
-  //console.log(next);
-  if (next) {
-    next.visited = true;
-    this.stack.push(this.current);
-    this.removeWalls(this.current, next);
-    this.current = next;
-  } else if (this.stack.length > 0) {
-    // var popStackKey = this.stack.keys().next().value;
-    // this.current = this.stack.get(popStackKey);
-    // this.stack.delete(popStackKey);
-    this.current = this.stack.pop();
-  } else {
-    this.finished = true;
   }
+
+  if(this.finished){
+    this.lines.forEach(function(l){
+        stroke(l.color);
+        line(l.x1, l.y1, l.x2, l.y2);
+    });
+  } else {
+    this.current.visited = true;
+    if(this.debugging) this.current.highlight();
+    var next = this.current.checkNeighbors();
+    //console.log(next);
+    if (next) {
+      next.visited = true;
+      this.stack.push(this.current);
+      this.removeWalls(this.current, next);
+      this.current = next;
+    } else if (this.stack.length > 0) {
+      // var popStackKey = this.stack.keys().next().value;
+      // this.current = this.stack.get(popStackKey);
+      // this.stack.delete(popStackKey);
+      this.current = this.stack.pop();
+    } else {
+      this.finished = true;
+      for (var i = 0; i < this.grid.length; i++) {
+        this.grid[i].getLines().forEach(function(line){
+          var key = line.x1.toString() + line.y1.toString() + line.x2.toString() + line.y2.toString();
+          this.lines.set(key, line);
+        }.bind(this));
+      }
+      //console.log("finished: ", this.lines.size);
+    }//game finished
+  } //until finished
 
   // console.log(this.stack.size);
   // console.log(this.stack.length);
@@ -133,6 +149,26 @@ this.removeWalls = function(a, b) {
       rect(x, y, maze.w, maze.w);
     }
 
+    this.getLines = function(){
+      var x = this.i*maze.w;
+      var y = this.j*maze.w;
+      var w = maze.w;
+      var lines = [];
+      if (this.walls[0]) {
+        lines.push({x1:x, y1:y, x2:x+w, y2:y, color:color(4,255,239)});
+      }
+      if (this.walls[1]) {
+        lines.push({x1:x+w, y1:y, x2:x+w, y2:y+w, color:color(4,255,239)});
+      }
+      if (this.walls[2]) {
+        lines.push({x1:x, y1:y+w, x2:x+w, y2:y+w, color:color(4,255,239)});
+      }
+      if (this.walls[3]) {
+        lines.push({x1:x, y1:y, x2:x, y2:y+w, color:color(4,255,239)});
+      }
+      return lines;
+    }//end getLines
+
     this.show = function() {
       if(true){ //this.visited
         var x = this.i*maze.w;
@@ -152,7 +188,7 @@ this.removeWalls = function(a, b) {
         }
       }
 
-      if (this.visited && !maze.finished) {
+      if (this.visited && this.debugging) {
         noStroke();
         fill(255, 0, 255, 100);
         rect(x, y, maze.w, maze.w);
