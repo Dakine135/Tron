@@ -25,7 +25,7 @@ this.current = this.grid[0];
 
 this.show = function() {
   // background(51);
-  if(this.debugging){
+  if(this.debugging && !this.finished){
     for (var i = 0; i < this.grid.length; i++) {
       this.grid[i].show();
     }
@@ -188,7 +188,7 @@ this.removeWalls = function(a, b) {
         }
       }
 
-      if (this.visited && this.debugging) {
+      if (this.visited && maze.debugging) {
         noStroke();
         fill(255, 0, 255, 100);
         rect(x, y, maze.w, maze.w);

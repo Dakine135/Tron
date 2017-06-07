@@ -3,12 +3,13 @@ var DEBUGBOOL = false;
 var BOARD;
 var GUI;
 var MAZE;
+var GAMEGRIDSCALE = 40;
 var startTime = new Date().getTime();
 var currentTick = 0;
 
-function preload() {
-  bgMusic = loadSound('assets/Derezzed.mp3');
-}
+// function preload() {
+//   bgMusic = loadSound('assets/Derezzed.mp3');
+// }
 
 //runs once at the beggining
 function setup(){
@@ -20,7 +21,8 @@ function setup(){
   BOARD.init();
   BOARD.setCanvasToWindow();
 
-  MAZE = new Maze(60);
+  MAZE = new Maze(GAMEGRIDSCALE);
+  MAZE.debugging = true;
   GUI = new Menu();
   GUI.guiState("startOfGame");
   BOARD.startMenuSnakes();

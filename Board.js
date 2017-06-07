@@ -57,8 +57,8 @@ function Board(){
 
 	//Makes the canvas as big at the current browser window can handle
 	this.setCanvasToWindow = function(){
-		this.canvasWidth = Math.round((window.innerWidth - 35)/60)*60;
-		this.canvasHeight = Math.round((window.innerHeight - 180)/60)*60;
+		this.canvasWidth = Math.round((window.innerWidth - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+		this.canvasHeight = Math.round((window.innerHeight - 180)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
 		this.init();
 	}
 
