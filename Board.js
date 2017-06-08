@@ -139,6 +139,7 @@ function Board(){
 
 			var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
 			if(wallHit != null){
+				snakeHead.dir(0,0);
 				 wallHit.color = color(255,255,255);
 				 console.log("wall Hit");
 			 }

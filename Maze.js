@@ -13,6 +13,7 @@ this.current;
 this.stack = [];
 this.finished = false;
 this.debugging = false;
+this.knockOutWalls = false;
 
 for (var   j = 0; j < this.rows; j++) {
   for (var i = 0; i < this.cols; i++) {
@@ -54,13 +55,17 @@ this.show = function() {
     } else {
       this.finished = true;
       for (var i = 0; i < this.grid.length; i++) {
+        if(this.knockOutWalls){
+          this.grid[i].knockoutRandomWall();
+          this.grid[i].removeOuterWalls();
+        }
         this.grid[i].getLines().forEach(function(line){
           var key = line.x1.toString() + line.y1.toString() + line.x2.toString() + line.y2.toString();
           line['key'] = key;
           this.lines.set(line.key, line);
         }.bind(this));
       }
-      //console.log("finished: ", this.lines.size);
+      console.log("finished: ", this.lines.size);
     }//game finished
   } //until finished
 
@@ -155,6 +160,36 @@ this.removeWalls = function(a, b) {
         return undefined;
       }
     } //end checkNeighbors
+
+    this.knockoutRandomWall = function(){
+      var r = floor(random(0, 4));
+      var attempts = 10;
+      while(!this.walls[r] && attempts>0){
+        r = floor(random(0, 4));
+        attempts--;
+      }
+      this.walls[r] = false;
+    }
+
+    this.removeOuterWalls = function(){
+      var top    = maze.grid[maze.index(this.i, this.j -1)];
+      var right  = maze.grid[maze.index(this.i+1, this.j)];
+      var bottom = maze.grid[maze.index(this.i, this.j+1)];
+      var left   = maze.grid[maze.index(this.i-1, this.j)];
+
+      if(top == null){
+        this.walls[0] = false;
+      }
+      if(right == null){
+        this.walls[1] = false;
+      }
+      if(bottom == null){
+        this.walls[2] = false;
+      }
+      if(left == null){
+        this.walls[3] = false;
+      }
+    }
 
     this.highlight = function() {
       var x = this.i*maze.w;

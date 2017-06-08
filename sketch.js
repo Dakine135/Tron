@@ -23,6 +23,7 @@ function setup(){
 
   MAZE = new Maze(GAMEGRIDSCALE);
   MAZE.debugging = true;
+  MAZE.knockOutWalls = true;
   GUI = new Menu();
   GUI.guiState("startOfGame");
   BOARD.startMenuSnakes();
