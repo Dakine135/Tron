@@ -135,11 +135,17 @@ function Board(){
 						//console.log(amountCut);
 			    }
 				}//check if itself
-
 		  }//othersnake loop
+
+			var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
+			if(wallHit != null){
+				 wallHit.color = color(255,255,255);
+				 console.log("wall Hit");
+			 }
 		}//selfsnake loop
 
 		//TODO check collision on walls of maze
+
 
 	}// checkForCollisions
 

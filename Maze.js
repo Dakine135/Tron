@@ -56,7 +56,8 @@ this.show = function() {
       for (var i = 0; i < this.grid.length; i++) {
         this.grid[i].getLines().forEach(function(line){
           var key = line.x1.toString() + line.y1.toString() + line.x2.toString() + line.y2.toString();
-          this.lines.set(key, line);
+          line['key'] = key;
+          this.lines.set(line.key, line);
         }.bind(this));
       }
       //console.log("finished: ", this.lines.size);
@@ -93,6 +94,20 @@ this.removeWalls = function(a, b) {
       a.walls[2] = false;
       b.walls[0] = false;
     }
+  }
+
+  this.checkCollisionWithWalls = function(snake){
+    var output = null;
+    var lines = this.lines.value
+    this.lines.forEach(function(l){
+        hit = collidePointLine(snake.x, snake.y, l.x1, l.y1, l.x2, l.y2, snake.size/4);
+        if(hit){
+          // console.log(l.key);
+           output = l;
+           return;
+         }
+    });
+    return output;
   }
 
 
