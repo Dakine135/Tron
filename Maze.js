@@ -1,9 +1,10 @@
 // Depth-first search
 // Recursive backtracker
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
-function Maze(cellWidth){
+function Maze(cellWidth, wallColor){
 
 this.w = cellWidth;
+this.wallColor = wallColor;
 this.cols = floor(width/this.w);
 this.rows = floor(height/this.w);
 this.grid = [];
@@ -33,8 +34,10 @@ this.show = function() {
   }
 
   if(this.finished){
+    var wallWidth = this.w / 10;
     this.lines.forEach(function(l){
         stroke(l.color);
+        strokeWeight(wallWidth);
         line(l.x1, l.y1, l.x2, l.y2);
     });
   } else {
@@ -65,7 +68,7 @@ this.show = function() {
           this.lines.set(line.key, line);
         }.bind(this));
       }
-      console.log("finished: ", this.lines.size);
+      console.log("Finished making maze: ", this.lines.size, " Lines");
     }//game finished
   } //until finished
 
@@ -240,7 +243,7 @@ this.removeWalls = function(a, b) {
 
       if (this.visited && maze.debugging) {
         noStroke();
-        fill(255, 0, 255, 100);
+        fill(maze.wallColor);
         rect(x, y, maze.w, maze.w);
       }
     }//end show function

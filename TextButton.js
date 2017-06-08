@@ -49,6 +49,7 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
 
     this.show = function(){
       stroke(this.strokeColor);
+      strokeWeight(1);
       fill(this.buttonColor);
       rect(this.recX, this.recY, this.recWidth, this.recHeight, this.roundness);
       fill(this.textColor);

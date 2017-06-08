@@ -1,5 +1,6 @@
 //Global Variables
 var DEBUGBOOL = false;
+var BACKGROUNDIMAGE;
 var BOARD;
 var GUI;
 var MAZE;
@@ -14,6 +15,7 @@ var currentTick = 0;
 //runs once at the beggining
 function setup(){
   frameRate(60);
+  createBackground();
   // bgMusic.setVolume(0.05);
   // bgMusic.play();
   // bgMusic.jump(30);
@@ -21,8 +23,8 @@ function setup(){
   BOARD.init();
   BOARD.setCanvasToWindow();
 
-  MAZE = new Maze(GAMEGRIDSCALE);
-  MAZE.debugging = true;
+  MAZE = new Maze(GAMEGRIDSCALE, color(44, 53, 241, 100));
+  // MAZE.debugging = true;
   MAZE.knockOutWalls = true;
   GUI = new Menu();
   GUI.guiState("startOfGame");
@@ -57,7 +59,8 @@ function draw(){
     updateCount = 0;
   }
   if (previousTick != currentTick){
-    background(50);
+    // background(50);
+    displayBackground();
       updateCount++;
       MAZE.show();
       BOARD.boardUpdate();
@@ -86,6 +89,107 @@ function displayText(){
 
   }
 }
+
+function createBackground(){
+  console.log("createBackground");
+  loadImage('assets/backgroundToRepeat.jpg',function(img){
+
+    var newImage = new p5.Image(width,height);
+    //newImage.copy(img,0,0,img.width,img.height,0,0,img.width,img.height);
+
+    var widthRatio = Math.floor(width / img.width);
+    var remainingWidth = (width / img.width) - widthRatio;
+    var heightRatio = Math.floor(height /img.height);
+    var remainingHeight = (height /img.height) - heightRatio;
+    // console.log(widthRatio, heightRatio);
+
+    //copy(srcImage,sx,sy,sw,sh,
+    //dx,dy,dw,dh)
+    for(var h=0; h<heightRatio; h++){
+      //draw full row
+      for(var w=0; w<widthRatio; w++){
+        //full image
+        newImage.copy(img,0,0,img.width,img.height,
+          img.width*w,img.height*h,img.width,img.height);
+      }
+      //remaing of row
+      if(remainingWidth > 0){
+        newImage.copy(img,0,0,img.width*remainingWidth,img.height,
+          img.width*widthRatio,img.height*h,img.width*remainingWidth,img.height);
+      }
+      //end draw full row
+    }
+    //draw last partial row
+    if(remainingHeight > 0){
+      for(var w=0; w<widthRatio; w++){
+        //full image
+        newImage.copy(img,0,0,img.width,img.height*remainingHeight,
+          img.width*w,img.height*h,img.width,img.height*remainingHeight);
+      }
+      //remaing of row
+      if(remainingWidth > 0){
+        newImage.copy(img,0,0,img.width*remainingWidth,img.height*remainingHeight,
+          img.width*widthRatio,img.height*heightRatio,img.width*remainingWidth,img.height*remainingHeight);
+      }
+    }
+
+    // stroke(255);
+    // strokeWeight(10);
+    // newImage.line(0,0,500,500);
+
+    //idea to draw walls onto a canvas and flatten to image.
+    //will be more effecient and allow walls to be a texture
+    // var sketch = function(p){
+    //   p.x = 100;
+    //   p.y = 100;
+    //   p.setup = function(){
+    //     p.createCanvas(100,100);
+    //   }
+    //   p.draw = function(){
+    //     p.line(0,0,100,100);
+    //   }
+    //
+    // }
+    // var testP5 = new p5(sketch);
+
+
+
+
+    BACKGROUNDIMAGE = newImage;
+  }, function(error){
+    console.log("error: ",error);
+  });
+
+}
+
+function displayBackground(){
+
+  //rect(x,y,w,h,[tl],[tr],[br],[bl])
+  // rect(x,y,w,h,[detailX],[detailY])
+  // background(0);
+  // var size = 20;
+  // var margin = 5;
+  // var roundness = 5;
+  // for(var curX=0; curX<width; curX+=(size+margin)){
+  //   for(var curY=0; curY<height; curY+=(size+margin)){
+  //     var rColor = floor(random(2,150));
+  //     fill(color(rColor));
+  //     noStroke();
+  //     rect(curX, curY, size, size, roundness);
+  //   }
+  // }
+
+  if(BACKGROUNDIMAGE){
+    // background(50);
+
+    // copy(BACKGROUNDIMAGE,0,0,BACKGROUNDIMAGE.width,BACKGROUNDIMAGE.height,
+    // 0,0,width,height);
+    //image(img,x,y,width,height)
+    // image(BACKGROUNDIMAGE, 0, 0);
+    background(BACKGROUNDIMAGE);
+
+  }//if image is loaded
+}//end displayBackground
 
 //reset canvas and snake properties
 function reset() {

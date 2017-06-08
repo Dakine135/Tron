@@ -329,6 +329,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
   this.show = function(){
     fill(this.startColor);
     stroke(this.endColor);
+    strokeWeight(Math.ceil(this.size / 10));
     ellipse(this.x, this.y, this.size, this.size);
 
     var prevPt;
