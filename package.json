@@ -1,0 +1,24 @@
+{
+  "name": "tron",
+  "version": "1.0.0",
+  "description": "snake testing game",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tweasy65/Tron.git"
+  },
+  "author": "Dustin Welborn and Tyler Barton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tweasy65/Tron/issues"
+  },
+  "homepage": "https://github.com/Tweasy65/Tron#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "socket.io": "^2.0.2"
+  }
+}
