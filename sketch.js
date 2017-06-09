@@ -24,7 +24,7 @@ function setup(){
   BOARD.setCanvasToWindow();
 
   MAZE = new Maze(GAMEGRIDSCALE, color(44, 53, 241, 100));
-  // MAZE.debugging = true;
+  MAZE.debugging = true;
   MAZE.knockOutWalls = true;
   GUI = new Menu();
   GUI.guiState("startOfGame");
@@ -45,8 +45,6 @@ var previousTick = 0;
 var drawCount = 0;
 var updateCount = 0;
 function draw(){
-  // background(50);
-
   drawCount++;
   var currentTime = new Date().getTime();
   var timeDiff = currentTime - startTime;
@@ -59,17 +57,16 @@ function draw(){
     updateCount = 0;
   }
   if (previousTick != currentTick){
-    // background(50);
     displayBackground();
-      updateCount++;
-      MAZE.show();
-      BOARD.boardUpdate();
-      GUI.drawGUI();
+    updateCount++;
+    MAZE.show();
+    BOARD.boardUpdate();
+    GUI.drawGUI();
+    BOARD.showSnakes();
+    displayText();
 
     previousTick = currentTick;
   }
-  BOARD.showSnakes();
-  displayText();
 } //draw
 
 //displays text in the center of the screen
@@ -139,23 +136,39 @@ function createBackground(){
 
     //idea to draw walls onto a canvas and flatten to image.
     //will be more effecient and allow walls to be a texture
-    // var sketch = function(p){
-    //   p.x = 100;
-    //   p.y = 100;
-    //   p.setup = function(){
-    //     p.createCanvas(100,100);
-    //   }
-    //   p.draw = function(){
-    //     p.line(0,0,100,100);
-    //   }
-    //
-    // }
-    // var testP5 = new p5(sketch);
+    var pPixels;
+    var sketch = function(p){
+      p.x = 100;
+      p.y = 100;
+      p.setup = function(){
+        p.createCanvas(100,100);
+        p.noLoop();
+      }
+      p.draw = function(){
+        p.background(p.color(200,30,100));
+        p.fill(p.color(30,100,200));
+        p.rect(20,20,p.width,p.height);
+        p.loadPixels();
+        pPixels = p.pixels;
+      }
+
+    }
+    var testP5 = new p5(sketch);
+    console.log(pPixels);
+    var testImg = new p5.Image(100,100);
+    testImg.loadPixels();
+    testImg.pixels = pPixels;
+    testImg.updatePixels();
+    console.log(testImg);
+    console.log(newImage);
+
+    // newImage.mask(testImg);
 
 
 
 
     BACKGROUNDIMAGE = newImage;
+    // BACKGROUNDIMAGE = testImg;
   }, function(error){
     console.log("error: ",error);
   });
@@ -163,31 +176,8 @@ function createBackground(){
 }
 
 function displayBackground(){
-
-  //rect(x,y,w,h,[tl],[tr],[br],[bl])
-  // rect(x,y,w,h,[detailX],[detailY])
-  // background(0);
-  // var size = 20;
-  // var margin = 5;
-  // var roundness = 5;
-  // for(var curX=0; curX<width; curX+=(size+margin)){
-  //   for(var curY=0; curY<height; curY+=(size+margin)){
-  //     var rColor = floor(random(2,150));
-  //     fill(color(rColor));
-  //     noStroke();
-  //     rect(curX, curY, size, size, roundness);
-  //   }
-  // }
-
   if(BACKGROUNDIMAGE){
-    // background(50);
-
-    // copy(BACKGROUNDIMAGE,0,0,BACKGROUNDIMAGE.width,BACKGROUNDIMAGE.height,
-    // 0,0,width,height);
-    //image(img,x,y,width,height)
-    // image(BACKGROUNDIMAGE, 0, 0);
     background(BACKGROUNDIMAGE);
-
   }//if image is loaded
 }//end displayBackground
 
