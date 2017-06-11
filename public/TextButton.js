@@ -26,6 +26,14 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
 
     this.key = this.string + this.recX.toString() + this.recY.toString();
 
+    this.recalculatePosition = function(){
+      this.recX = Math.round((width * relX) - (this.recWidth/2));
+      this.recY = Math.round((height * relY) - (this.recHeight/2));
+      this.textX = this.recX + (this.marginWidth/2);
+      this.textY = this.recY + this.stringHeight + (this.marginHeight/4);
+      this.key = this.string + this.recX.toString() + this.recY.toString();
+    }
+
     this.clicked = function(){
       //see if the mouse is in the rect
       var hit = collidePointRect(mouseX, mouseY, this.recX, this.recY, this.recWidth, this.recHeight);

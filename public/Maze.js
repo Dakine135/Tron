@@ -1,7 +1,9 @@
 // Depth-first search
 // Recursive backtracker
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
-function Maze(cellWidth, wallColor){
+function Maze(cellWidth, wallColor, debug, walls){
+  console.log("CreateMaze: cellWidth, wallColor, debug, walls: ",
+    cellWidth,wallColor,debug,walls);
 
 this.w = cellWidth;
 this.wallColor = wallColor;
@@ -13,8 +15,8 @@ this.current;
 // this.stack = new Map();
 this.stack = [];
 this.finished = false;
-this.debugging = false;
-this.knockOutWalls = false;
+this.debugging = debug;
+this.knockOutWalls = walls;
 
 for (var   j = 0; j < this.rows; j++) {
   for (var i = 0; i < this.cols; i++) {
@@ -22,7 +24,6 @@ for (var   j = 0; j < this.rows; j++) {
     this.grid.push(cell);
   }
 }
-
 this.current = this.grid[0];
 
 this.show = function() {

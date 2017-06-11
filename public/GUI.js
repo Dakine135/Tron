@@ -1,5 +1,6 @@
 function Menu(){
   //states
+  this.currentState = "startOfGame";
   this.startOfGame = false;
   this.config = false;
   this.gameRunning = false;
@@ -28,9 +29,10 @@ function Menu(){
     switch(state){
       case "startOfGame":
         this.startOfGame = true;
-        var welcomeText = new createText("Welcome To TRON!", 0.5, 0.45, 5,
+        this.currentState = "startOfGame";
+        var welcomeText = new createText("Welcome To TRON!", 0.5, 0.4, 5,
             this.buttonColor, this.strokeColor);
-        var startButton = new TextButton("Start", 0.5, 0.55, 3,
+        var startButton = new TextButton("Start", 0.5, 0.6, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
               this.guiState("gameRunning");
               BOARD.resetBoard();
@@ -43,6 +45,7 @@ function Menu(){
 
       case "config":
         this.config = true;
+        this.currentState = "config";
         var settingsText = new createText("Settings", 0.5, 0.2, 5,
           this.buttonColor, this.strokeColor);
 
@@ -81,6 +84,7 @@ function Menu(){
 
       case "gameRunning":
         this.gameRunning = true;
+        this.currentState = "gameRunning";
         break;
     }
 
@@ -107,6 +111,16 @@ function Menu(){
     });
 
   }//end drawGUI
+
+  this.recalculateGui = function(){
+    this.liveButtons.forEach(function(button){
+      button.recalculatePosition();
+    });
+    this.liveText.forEach(function(text){
+      text.recalculatePosition();
+    });
+    this.guiState(this.currentState);
+  }
 
 
 

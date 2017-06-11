@@ -1,23 +1,22 @@
 function Board(){
 	//canvas stuff
-	this.canvasWidth = 600;
-	this.canvasHeight = 600;
-	this.background = 50;
+	this.canvasWidth = window.innerWidth;
+	this.canvasHeight = window.innerHeight;
 	this.canvas;
 
 	//board stuff
 	this.paused = false;
+	this.background == null;
 
 	//snake stuff
 	this.snakes = new Map();
 
 
 	this.init = function() {
-		this.canvas = createCanvas(this.canvasWidth,this.canvasHeight);
-		createCanvas(this.canvasWidth,this.canvasHeight);
+		var setWidth = Math.round((this.canvasWidth - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+		var setHeight = Math.round((this.canvasHeight - 60)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+		this.canvas = createCanvas(setWidth,setHeight);
 		this.canvas.parent('CanvasContainer');
-		document.getElementById("canvasWidthBox").value = width;
-	  document.getElementById("canvasHeightBox").value = height;
 	}
 
 	this.startMenuSnakes = function(){
@@ -48,18 +47,12 @@ function Board(){
 	}//end RestBoard
 
 	//function to apply canvas size from input boxes
-	this.canvasSize = function() {
-	    var x = document.getElementById("canvasSizeform");
-	    this.canvasWidth = x.elements[0].value;
-	    this.canvasHeight = x.elements[1].value;
+	this.setCanvasSize = function(inputWidth,inputHeight) {
+		console.log("BOARD.setCanvasSize called: ", inputWidth, inputHeight);
+			this.canvasWidth = inputWidth;
+			this.canvasHeight = inputHeight;
 	    this.init();
-	}
-
-	//Makes the canvas as big at the current browser window can handle
-	this.setCanvasToWindow = function(){
-		this.canvasWidth = Math.round((window.innerWidth - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-		this.canvasHeight = Math.round((window.innerHeight - 180)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-		this.init();
+			BOARD.createBackground();
 	}
 
 //pause and un-pause the game
@@ -137,18 +130,109 @@ function Board(){
 				}//check if itself
 		  }//othersnake loop
 
-			var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
-			if(wallHit != null){
-				snakeHead.dir(0,0);
-				 wallHit.color = color(255,255,255);
-				//  console.log("wall Hit");
-			 }
+			if(MAZE){
+				var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
+				if(wallHit != null){
+					snakeHead.dir(0,0);
+					 wallHit.color = color(255,255,255);
+					//  console.log("wall Hit");
+				 }
+		 }//if a maze has beed generated
 		}//selfsnake loop
-
-		//TODO check collision on walls of maze
-
-
 	}// checkForCollisions
+
+	this.createBackground = function(){
+	  console.log("createBackground");
+	  loadImage('assets/backgroundToRepeat.jpg',function(img){
+			console.log("loaded image: ", img);
+	    var newImage = new p5.Image(width,height);
+	    //newImage.copy(img,0,0,img.width,img.height,0,0,img.width,img.height);
+
+	    var widthRatio = Math.floor(width / img.width);
+	    var remainingWidth = (width / img.width) - widthRatio;
+	    var heightRatio = Math.floor(height /img.height);
+	    var remainingHeight = (height /img.height) - heightRatio;
+	    // console.log(widthRatio, heightRatio);
+
+	    //copy(srcImage,sx,sy,sw,sh,
+	    //dx,dy,dw,dh)
+	    for(var h=0; h<heightRatio; h++){
+	      //draw full row
+	      for(var w=0; w<widthRatio; w++){
+	        //full image
+	        newImage.copy(img,0,0,img.width,img.height,
+	          img.width*w,img.height*h,img.width,img.height);
+	      }
+	      //remaing of row
+	      if(remainingWidth > 0){
+	        newImage.copy(img,0,0,img.width*remainingWidth,img.height,
+	          img.width*widthRatio,img.height*h,img.width*remainingWidth,img.height);
+	      }
+	      //end draw full row
+	    }
+	    //draw last partial row
+	    if(remainingHeight > 0){
+	      for(var w=0; w<widthRatio; w++){
+	        //full image
+	        newImage.copy(img,0,0,img.width,img.height*remainingHeight,
+	          img.width*w,img.height*h,img.width,img.height*remainingHeight);
+	      }
+	      //remaing of row
+	      if(remainingWidth > 0){
+	        newImage.copy(img,0,0,img.width*remainingWidth,img.height*remainingHeight,
+	          img.width*widthRatio,img.height*heightRatio,img.width*remainingWidth,img.height*remainingHeight);
+	      }
+	    }
+
+	    // stroke(255);
+	    // strokeWeight(10);
+	    // newImage.line(0,0,500,500);
+
+	    //idea to draw walls onto a canvas and flatten to image.
+	    //will be more effecient and allow walls to be a texture
+	    // var pPixels;
+	    // var sketch = function(p){
+	    //   p.x = 100;
+	    //   p.y = 100;
+	    //   p.setup = function(){
+	    //     p.createCanvas(100,100);
+	    //     p.noLoop();
+	    //   }
+	    //   p.draw = function(){
+	    //     p.background(p.color(200,30,100));
+	    //     p.fill(p.color(30,100,200));
+	    //     p.rect(20,20,p.width,p.height);
+	    //     p.loadPixels();
+	    //     pPixels = p.pixels;
+	    //   }
+	    //
+	    // }
+	    // var testP5 = new p5(sketch);
+	    // console.log(pPixels);
+	    // var testImg = new p5.Image(100,100);
+	    // testImg.loadPixels();
+	    // testImg.pixels = pPixels;
+	    // testImg.updatePixels();
+	    // console.log(testImg);
+	    // console.log(newImage);
+
+	    // newImage.mask(testImg);
+
+	    this.background = newImage;
+	    // BACKGROUNDIMAGE = testImg;
+			console.log("Finished createing background: ", this.background);
+	  }.bind(this), function(error){
+	    console.log("error createing back: ",error);
+	  });
+
+	}//end create background
+
+	this.show = function(){
+		console.log("trying to draw background: ", this.background);
+		if(this.background != null){
+	    background(this.background);
+	  }//if image is loaded
+	}
 
 
 }//end board
