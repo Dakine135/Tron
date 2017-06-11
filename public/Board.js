@@ -59,10 +59,12 @@ function Board(){
 	this.pause = function(){
 		if(this.paused){
 			console.log("Game Resumed");
+			GUI.guiState("gameRunning", false);
 			document.getElementById("pauseButton").innerHTML = "Pause";
 			this.paused = false;
 		}else{
 			console.log("Game Paused");
+			GUI.guiState("paused", false);
 			document.getElementById("pauseButton").innerHTML = "Resume";
 			this.paused = true;
 		}
@@ -228,7 +230,6 @@ function Board(){
 	}//end create background
 
 	this.show = function(){
-		console.log("trying to draw background: ", this.background);
 		if(this.background != null){
 	    background(this.background);
 	  }//if image is loaded

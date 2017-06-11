@@ -4,6 +4,7 @@ function Menu(){
   this.startOfGame = false;
   this.config = false;
   this.gameRunning = false;
+  this.gamePaused = false;
 
   //buttons and text
   this.liveButtons = new Map();
@@ -16,8 +17,9 @@ function Menu(){
   this.buttonColor = color(24,202,230);
   this.textColor = color(255, 255, 255);
 
-  this.guiState = function(state){
+  this.guiState = function(state, setBySocket){
     console.log("GameState: ", state);
+    if(SOCKET && !setBySocket) SOCKET.sendGameState(state);
     this.liveButtons.clear();
     this.liveText.clear();
     this.snakeEditor.reset();
@@ -34,12 +36,12 @@ function Menu(){
             this.buttonColor, this.strokeColor);
         var startButton = new TextButton("Start", 0.5, 0.6, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
-              this.guiState("gameRunning");
+              this.guiState("gameRunning", false);
               BOARD.resetBoard();
           }.bind(this));
         var configButton = new TextButton("Settings", 0.9, 0.1, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
-              this.guiState("config");
+              this.guiState("config", false);
           }.bind(this));
         break;
 
@@ -51,7 +53,7 @@ function Menu(){
 
         var backButton = new TextButton("Back", 0.1, 0.1, 3,
           this.textColor, this.buttonColor, this.strokeColor, function(){
-            this.guiState("startOfGame");
+            this.guiState("startOfGame", false);
         }.bind(this));
 
         var playerSelectedText = new createText("No Player selected", 0.5, 0.3, 2,
@@ -86,6 +88,13 @@ function Menu(){
         this.gameRunning = true;
         this.currentState = "gameRunning";
         break;
+
+      case "paused":
+      this.gamePaused = true;
+      this.currentState = "paused";
+        var playerSelectedText = new createText("Game Paused", 0.5, 0.5, 5,
+          this.buttonColor, this.strokeColor);
+        break;
     }
 
 
@@ -119,7 +128,7 @@ function Menu(){
     this.liveText.forEach(function(text){
       text.recalculatePosition();
     });
-    this.guiState(this.currentState);
+    this.guiState(this.currentState, false);
   }
 
 

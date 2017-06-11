@@ -26,17 +26,19 @@ function setup(){
 
   // MAZE = new Maze(GAMEGRIDSCALE, color(44, 53, 241, 100), true, true);
   GUI = new Menu();
-  GUI.guiState("startOfGame");
+  GUI.guiState("startOfGame", false);
   BOARD.startMenuSnakes();
   SOCKET = new Socket();
 }
 
 function mousePressed() {
   console.log("clicked", mouseX," , ", mouseY);
+  // SOCKET.sendClicks();
   GUI.checkClicks();
 }
 
 function keyPressed(){
+  SOCKET.sendKeyboard();
   BOARD.checkControls();
 }
 
@@ -63,29 +65,10 @@ function draw(){
     BOARD.showSnakes();
     if(MAZE) MAZE.show();
     GUI.drawGUI();
-    displayText();
 
     previousTick = currentTick;
   }
 } //draw
-
-//displays text in the center of the screen
-//currently only used for pause
-function displayText(){
-  if(BOARD.paused){
-    fill(255, 204, 0);
-    stroke (255,255,255);
-    var textString = "Game Paused";
-    var textHeight = height *.10;
-    var textWidth = textHeight * (textString.length * 0.5);
-    //console.log("textHeight, textWidth: ", textHeight, " , ", textWidth);
-    textSize(textHeight);
-    var cntrX = (width * 0.5) - (textWidth * 0.5);
-    var cntrY = (height * 0.5); // + (textHeight * 0.5)
-    text(textString, cntrX, cntrY);
-
-  }
-}
 
 //reset canvas and snake properties
 function reset() {

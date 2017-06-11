@@ -5,9 +5,29 @@ function Socket(){
     width: window.innerWidth,
     height: window.innerHeight
   }
+
+
+  //outgoing
   this.socket.emit('getCanvasSize', currentWindow);
+  this.sendClicks = function(){
+    var data = {
+      x: mouseX,
+      y: mouseY
+    }
+    this.socket.emit('mouse', data);
+  }.bind(this);
+  this.sendGameState = function(newState){
+      this.socket.emit('gameState', newState);
+  }
+  this.sendKeyboard = function(keys){
+    this.socket.emit('keyboard', keys);
+  }
+
+  //incomming
   this.socket.on('mouse', socketMouseClick);
   this.socket.on('getCanvasSize', socketCanvasSize);
+  this.socket.on('gameState', changeGameState);
+  this.socket.on('keyboard', socketKeyPressed);
 
 
   function socketCanvasSize(serverWindow){
@@ -17,16 +37,18 @@ function Socket(){
     GUI.recalculateGui();
   }
 
-  function socketMouseClick(mouseClick){
-    console.log("socket mouseClick: ", mouseClick);
+  function changeGameState(gameState){
+    console.log("socket set gameState: ",gameState);
+    GUI.guiState(gameState, true);
   }
 
-  this.checkClicks = function(){
-    var data = {
-      x: mouseX,
-      y: mouseY
-    }
-    this.socket.emit('mouse', data);
+  function socketKeyPressed(key){
+    console.log("socket key pressed: ", key);
+  }
+
+  function socketMouseClick(mouseClick){
+    console.log("socket mouseClick: ", mouseClick);
+    // GUI.checkClicks();
   }
 
 }//end Sockets class function

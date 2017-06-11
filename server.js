@@ -43,6 +43,11 @@ function newConnection(socket){
     io.sockets.emit('getCanvasSize', setWindow);
   }//end setCanvasSizeOfClients
 
+  socket.on('gameState', sendNewGameState);
+  function sendNewGameState(gameState){
+    socket.broadcast.emit('gameState', gameState);
+  }
+
   socket.on('disconnecting', clientDisconnected);
   function clientDisconnected(){
     console.log("client disconnected: ", socket.id);
