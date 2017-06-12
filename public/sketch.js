@@ -27,7 +27,7 @@ function setup(){
   // MAZE = new Maze(GAMEGRIDSCALE, color(44, 53, 241, 100), true, true);
   GUI = new Menu();
   GUI.guiState("startOfGame", false);
-  BOARD.startMenuSnakes();
+  //BOARD.startMenuSnakes();
   SOCKET = new Socket();
 }
 
@@ -53,7 +53,7 @@ function draw(){
   currentTick = Math.floor((timeDiff % 1000) / 25);
   //console.log("currentTick: ", currentTick);
   if(currentTick == 0 && previousTick != currentTick) {
-    document.getElementById("drawCount").innerHTML = drawCount + " / " + updateCount;
+    document.getElementById("drawCount").innerHTML = "FrameRate: " + drawCount + " / " + updateCount;
     drawCount = 0;
     //console.log("updateCount: ", updateCount);
     updateCount = 0;

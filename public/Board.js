@@ -44,10 +44,10 @@ function Board(){
 
 	this.resetBoard = function() {
 		this.deleteSnakes();
-		var snake1Name = BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
-				color(194, 254, 34), color(235, 29, 99), 400, 15);
-		var snake2Name = BOARD.addSnake("Player2",87, 83, 65, 68,
-				color(28, 20, 242), color(252, 14, 30), 400, 15);
+		// var snake1Name = BOARD.addSnake("Player1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+		// 		color(194, 254, 34), color(235, 29, 99), 400, 15);
+		// var snake2Name = BOARD.addSnake("Player2",87, 83, 65, 68,
+		// 		color(28, 20, 242), color(252, 14, 30), 400, 15);
 	};//end RestBoard
 
 	//function to apply canvas size from input boxes
@@ -86,6 +86,15 @@ function Board(){
 		s.spawn();
 		this.snakes.set(snakeName,s);
 		return snakeName;
+	};
+
+    this.addSnakeByForm = function(){
+        var snakeName = document.getElementById("snakeName").value;
+        var s = new Snake(snakeName, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+            color(194, 254, 34), color(235, 29, 99), 400, 15);
+        s.intializeTailColor();
+        s.spawn();
+        this.snakes.set(snakeName,s);
 	};
 
 	this.checkControls = function(){

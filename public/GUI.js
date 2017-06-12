@@ -98,7 +98,7 @@ function Menu(){
     }
 
 
-  }//end guiState
+  };//end guiState
 
   this.drawGUI = function(){
 
@@ -119,7 +119,7 @@ function Menu(){
       text.show();
     });
 
-  }//end drawGUI
+  };//end drawGUI
 
   this.recalculateGui = function(){
     this.liveButtons.forEach(function(button){
@@ -129,7 +129,7 @@ function Menu(){
       text.recalculatePosition();
     });
     this.guiState(this.currentState, false);
-  }
+  };
 
 
 
@@ -139,6 +139,6 @@ function Menu(){
     this.liveButtons.forEach(function(button){
       button.clicked();
     });
-  }//end check Clicks
+  };//end check Clicks
 
 } // end class Menu
