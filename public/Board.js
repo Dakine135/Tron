@@ -2,11 +2,11 @@ function Board(){
 	//canvas stuff
 	this.canvasWidth = window.innerWidth;
 	this.canvasHeight = window.innerHeight;
-	this.canvas;
+	this.canvas = null;
 
 	//board stuff
 	this.paused = false;
-	this.background == null;
+	this.background = null;
 
 	//snake stuff
 	this.snakes = new Map();
@@ -17,7 +17,7 @@ function Board(){
 		var setHeight = Math.round((this.canvasHeight - 60)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
 		this.canvas = createCanvas(setWidth,setHeight);
 		this.canvas.parent('CanvasContainer');
-	}
+	};
 
 	this.startMenuSnakes = function(){
 		var snake1Name = BOARD.addSnake("gui1", UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
@@ -28,15 +28,19 @@ function Board(){
 		BOARD.snakes.get(snake1Name).chngColor();
 		BOARD.snakes.get(snake2Name).chngColor();
 		BOARD.snakes.get(snake2Name).dir(-1,1);
-	}
+	};
 
 	this.boardUpdate = function() {
-		// background(50);
 		this.snakes.forEach(function(s){
 			s.update();
+            // var snakeUpdate = {
+				// x: s.x,
+				// y: s.y
+            // };
+            // SOCKET.sendSnake(snakeUpdate);
 		});
 		this.checkForCollisions();
-	}//end boardUpdate
+	};//end boardUpdate
 
 	this.resetBoard = function() {
 		this.deleteSnakes();
@@ -44,7 +48,7 @@ function Board(){
 				color(194, 254, 34), color(235, 29, 99), 400, 15);
 		var snake2Name = BOARD.addSnake("Player2",87, 83, 65, 68,
 				color(28, 20, 242), color(252, 14, 30), 400, 15);
-	}//end RestBoard
+	};//end RestBoard
 
 	//function to apply canvas size from input boxes
 	this.setCanvasSize = function(inputWidth,inputHeight) {
@@ -53,7 +57,7 @@ function Board(){
 			this.canvasHeight = inputHeight;
 	    this.init();
 			BOARD.createBackground();
-	}
+	};
 
 //pause and un-pause the game
 	this.pause = function(){
@@ -71,7 +75,7 @@ function Board(){
 		this.snakes.forEach(function(snake,snakeName){
 			snake.pause();
 		});
-	}//end pause
+	};//end pause
 
 	/*
 		Snake related stuff
@@ -79,40 +83,33 @@ function Board(){
 	this.addSnake = function(snakeName,upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength, size){
 		var s = new Snake(snakeName, upButton, downButton, leftButton, rightButton, startColor, endColor, tailLength, size);
 		s.intializeTailColor();
+		s.spawn();
 		this.snakes.set(snakeName,s);
 		return snakeName;
-	}
+	};
 
 	this.checkControls = function(){
 		this.snakes.forEach(function(snake,snakeName){
 			snake.checkControls();
 		});
-	}
+	};
 
 	this.showSnakes = function(){
 		this.snakes.forEach(function(snake,snakeName){
 			snake.show();
 		});
-	}
+	};
 
 	this.resetSnakes = function(){
 		this.snakes.forEach(function(snake,snakeName){
 			snake.reset();
 		});
-	}
+	};
 
 	this.deleteSnakes = function(){
 		this.snakes.clear();
-	}
+	};
 
-	//random starting position based on secions partitioned by number of snakes total
-  // this.setStartingPositions = function(){
-  //   var partitions = BOARD.snakes.length;
-  //   var lengthOfEachpartition = width/partitions;
-	// 	for(var i=0; i<this.snakes.length; i++){
-	// 		var x = 0; //todo
-	// 	}
-  // }//end setStartingPositions
 
 	this.checkForCollisions = function(){
 		//check if snakes run into tails (self and others)
@@ -124,10 +121,11 @@ function Board(){
 					var collision = snakeHead.checkCollisionWithTail(snakeTail.tail);
 			    if(collision != null){
 						// console.log(collision);
-						var amountCut = snakeTail.cutTail(collision);
-						snakeTail.chngTail(-1*amountCut);
-						snakeHead.chngTail(amountCut);
-						//console.log(amountCut);
+						// var amountCut = snakeTail.cutTail(collision);
+						// snakeTail.chngTail(-1*amountCut);
+						// snakeHead.chngTail(amountCut);
+						snakeTail.tail[collision.tail].color = color(255,255,255);
+                    	snakeHead.spawn();
 			    }
 				}//check if itself
 		  }//othersnake loop
@@ -135,13 +133,13 @@ function Board(){
 			if(MAZE){
 				var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
 				if(wallHit != null){
-					snakeHead.dir(0,0);
 					 wallHit.color = color(255,255,255);
+                    snakeHead.spawn();
 					//  console.log("wall Hit");
 				 }
 		 }//if a maze has beed generated
 		}//selfsnake loop
-	}// checkForCollisions
+	};// checkForCollisions
 
 	this.createBackground = function(){
 	  console.log("createBackground");
@@ -227,7 +225,7 @@ function Board(){
 	    console.log("error createing back: ",error);
 	  });
 
-	}//end create background
+	};//end create background
 
 	this.show = function(){
 		if(this.background != null){

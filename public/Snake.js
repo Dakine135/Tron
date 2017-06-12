@@ -6,6 +6,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
   this.x = width/2 - (this.size/2);
   this.y = height/2 - (this.size/2);
   this.direction = "Stopped";
+  this.colliding = "None";
 
   //controls
   this.upButton = upButton;
@@ -56,7 +57,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
       pressed = true;
     }
     if(pressed) this.dir(xdir,ydir);
-  }//END OF keyP FUNCTION
+  };//END OF keyP FUNCTION
 
   this.intializeTailColor = function(){
     var steps = 100;
@@ -70,7 +71,32 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
       var currBlue = this.startColor.levels[2] + (BlueDiff * (i/steps));
       this.tailColors[i] = color(currRed, currGreen, currBlue);
     }
-  }
+  };
+
+  // var minCellRow = 9999;
+  // var maxCellRow = 0;
+  // var minCellCol = 9999;
+  // var maxCellCol = 0;
+  this.spawn = function(){
+      var widthCells = width / GAMEGRIDSCALE;
+      var heightCells = height / GAMEGRIDSCALE;
+      var randomRow = floor(random(0, heightCells));
+      var randomCol = floor(random(0, widthCells));
+      // if(randomRow > maxCellRow) maxCellRow = randomRow;
+      // if(randomRow < minCellRow) minCellRow = randomRow;
+      // if(randomCol > maxCellCol) maxCellCol = randomCol;
+      // if(randomCol < minCellCol) minCellCol = randomCol;
+      // console.log("Scale: ",GAMEGRIDSCALE, " Row: ", minCellRow, " - ", maxCellRow,
+      //     " Col: ", minCellCol, " - ", maxCellCol);
+      var newXPos = (GAMEGRIDSCALE * randomCol) + (GAMEGRIDSCALE/2);
+      var newYPos = (GAMEGRIDSCALE * randomRow) + (GAMEGRIDSCALE/2);
+      console.log("spawn: ", newXPos, newYPos);
+      this.createPreviousPosition(this.x,this.y,true,false);
+      this.x = newXPos;
+      this.y = newYPos;
+      this.createPreviousPosition(this.x,this.y,false,true);
+      this.dir(0,0);
+  };//end spawn
 
   this.dir = function(x, y) {
     this.xdir = x;
@@ -89,9 +115,9 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
     else console.log("ERROR in DIRECTION");
 
-    this.createPreviousPosition(this.x,this.y,false,true);
+    if(this.direction != "Stopped") this.createPreviousPosition(this.x,this.y,false,true);
     //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);
-  }
+  };
 
   //currently just for turning and jumping
   this.createPreviousPosition = function(x,y,jump,newSegment){
@@ -144,7 +170,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
       else this.currentColor--;
     }
 
-  }//end createPreviousPosition
+  };//end createPreviousPosition
 
   this.update = function() {
     var nextX = Math.floor(this.x + this.xspeed);
@@ -189,18 +215,18 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
 
     // console.log("dist / currTailLength: ", this.currTailLength, " / ", this.tail.length);
 
-  }//end update
+  };//end update
 
   //increase or decrease tail length
   this.chngTail = function(input){
     this.maxTailLength = this.maxTailLength + input;
     this.maxSegmentDist = this.maxTailLength / 40;
-  }
+  };
 
   //increase or decrease size of snake
   this.chngSize = function(input){
     this.size = this.size + input;
-  }
+  };
 
   //change increment multiplier for snakes speed up or down
   this.chngSpeed = function(input) {
@@ -210,7 +236,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     } else {
       console.log("cannot reduce speed");
     }
-  }//END OF chngSpeed FUNCTION
+  };//END OF chngSpeed FUNCTION
 
   //change snake's color to random colors
   this.chngColor = function(){
@@ -238,7 +264,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     this.startColor = color(startRed,startGreen,startBlue);
     this.endColor = color(r,g,b);
     this.intializeTailColor();
-  }
+  };
 
   //reset to defualt (refresh)
   this.reset = function() {
@@ -256,7 +282,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
 	  // this.maxTailLength = 1000;
     this.size = 10;
     this.speedScale = 3;
-  }//end reset
+  };//end reset
 
   this.pause = function(){
     if(this.paused){
@@ -270,7 +296,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
       this.lastY= this.ydir;
       this.dir(0, 0);
     }
-  }
+  };
 
   //takes a collision object (returned from tail collision)
   this.cutTail = function(collision){
@@ -292,7 +318,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
       this.currTailLength = this.currTailLength + this.tail[i].dist;
     }
     return abs(this.currTailLength - oldTailLength);
-  }//end cutTail
+  };//end cutTail
 
   //returns the index of the tail that you collided width
   //returns -1 if did not collide
@@ -323,9 +349,8 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
       tailIndex++;
     }
     return null;
-  }
+  };
 
-  //TODO fix tail draw, then fix check collisian on tail to ignor jump also
   this.show = function(){
     fill(this.startColor);
     stroke(this.endColor);
@@ -349,5 +374,5 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
         prevPt = curPt;
       }
     }// end for loop that draws tail
-  }//end show func
+  };//end show func
 }//end snake class

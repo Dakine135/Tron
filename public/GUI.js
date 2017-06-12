@@ -37,7 +37,6 @@ function Menu(){
         var startButton = new TextButton("Start", 0.5, 0.6, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
               this.guiState("gameRunning", false);
-              BOARD.resetBoard();
           }.bind(this));
         var configButton = new TextButton("Settings", 0.9, 0.1, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
@@ -87,12 +86,13 @@ function Menu(){
       case "gameRunning":
         this.gameRunning = true;
         this.currentState = "gameRunning";
+        BOARD.resetBoard();
         break;
 
       case "paused":
       this.gamePaused = true;
       this.currentState = "paused";
-        var playerSelectedText = new createText("Game Paused", 0.5, 0.5, 5,
+        var gamePausedText = new createText("Game Paused", 0.5, 0.5, 5,
           this.buttonColor, this.strokeColor);
         break;
     }

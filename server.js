@@ -31,7 +31,7 @@ function newConnection(socket){
     setWindow = {
       width: null,
       height: null
-    }
+    };
     sessionWindowSizes.forEach(function(currentWindow){
       console.log("currentWindow in loop: ", currentWindow);
       if(setWindow.width == null ||
@@ -46,6 +46,12 @@ function newConnection(socket){
   socket.on('gameState', sendNewGameState);
   function sendNewGameState(gameState){
     socket.broadcast.emit('gameState', gameState);
+  }
+
+  socket.on('snake', sendUpdateSnake);
+  function sendUpdateSnake(snake){
+    // console.log("recived snake: ", snake);
+    socket.broadcast.emit('snake', snake);
   }
 
   socket.on('disconnecting', clientDisconnected);
