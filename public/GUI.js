@@ -18,7 +18,7 @@ function Menu(){
   this.textColor = color(255, 255, 255);
 
   this.guiState = function(state, setBySocket){
-    console.log("GameState: ", state);
+    console.log("GuiState: ", state);
     if(SOCKET && !setBySocket) SOCKET.sendGameState(state);
     this.liveButtons.clear();
     this.liveText.clear();

@@ -1,5 +1,4 @@
 //Global Variables
-var DEBUGBOOL = false;
 var BACKGROUNDIMAGE;
 var BOARD;
 var GUI;
@@ -8,6 +7,7 @@ var SOCKET;
 var GAMEGRIDSCALE = 60;
 var startTime = new Date().getTime();
 var currentTick = 0;
+var totalGameTick = 0;
 
 // function preload() {
 //   bgMusic = loadSound('assets/Derezzed.mp3');
@@ -22,23 +22,21 @@ function setup(){
   BOARD = new Board();
   BOARD.init();
   BOARD.createBackground();
-  // BOARD.setCanvasToWindow();
-
-  // MAZE = new Maze(GAMEGRIDSCALE, color(44, 53, 241, 100), true, true);
   GUI = new Menu();
   GUI.guiState("startOfGame", false);
   //BOARD.startMenuSnakes();
   SOCKET = new Socket();
+  //SOCKET.startGame();
 }
 
 function mousePressed() {
-  console.log("clicked", mouseX," , ", mouseY);
+  // console.log("clicked", mouseX," , ", mouseY);
   // SOCKET.sendClicks();
   GUI.checkClicks();
 }
 
 function keyPressed(){
-  SOCKET.sendKeyboard();
+  //SOCKET.sendKeyboard(totalGameTick);
   BOARD.checkControls();
 }
 
@@ -58,31 +56,33 @@ function draw(){
     //console.log("updateCount: ", updateCount);
     updateCount = 0;
   }
+
+
+
+
+
+
+
+  //game ticks
   if (previousTick != currentTick){
     updateCount++;
     BOARD.boardUpdate();
     BOARD.show();
     BOARD.showSnakes();
-    if(MAZE) MAZE.show();
     GUI.drawGUI();
 
+    totalGameTick++;
     previousTick = currentTick;
   }
 } //draw
+
+
+
+
+
 
 //reset canvas and snake properties
 function reset() {
   BOARD.resetBoard();
   BOARD.resetSnakes();
-}
-
-function DEBUG(input){
-  if(DEBUGBOOL){
-    if(input == null) input = "No Input"
-    console.log("Debug");
-    console.log("Speed: ",s.speedScale);
-    console.log("input: ",input);
-    console.log("currentTick: ", currentTick);
-    console.log("END OF DEBUG");
-  }
 }

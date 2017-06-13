@@ -1,4 +1,6 @@
 function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor, endColor, tailLength, size){
+  console.log("create Snake: ",snakeName, upButton,downButton,leftButton,rightButton,
+      startColor, endColor, tailLength, size);
   this.name = snakeName;
 
   //starting position
@@ -6,7 +8,6 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
   this.x = width/2 - (this.size/2);
   this.y = height/2 - (this.size/2);
   this.direction = "Stopped";
-  this.colliding = "None";
 
   //controls
   this.upButton = upButton;
@@ -19,14 +20,16 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
   this.ydir = 0;
   this.xspeed = 0;
   this.yspeed = 0;
+  this.lastXSpeed = this.xspeed;
+  this.lastYSpeed = this.yspeed;
   this.speedScale = 3;
 
   //tail and color stuff
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
-  this.startColor = startColor;
-  this.endColor = endColor;
+  this.startColor = color(startColor.levels[0],startColor.levels[1],startColor.levels[2]);
+  this.endColor = color(endColor.levels[0],endColor.levels[1],endColor.levels[2]);
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = tailLength;
@@ -73,24 +76,15 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     }
   };
 
-  // var minCellRow = 9999;
-  // var maxCellRow = 0;
-  // var minCellCol = 9999;
-  // var maxCellCol = 0;
+
   this.spawn = function(){
       var widthCells = width / GAMEGRIDSCALE;
       var heightCells = height / GAMEGRIDSCALE;
       var randomRow = floor(random(0, heightCells));
       var randomCol = floor(random(0, widthCells));
-      // if(randomRow > maxCellRow) maxCellRow = randomRow;
-      // if(randomRow < minCellRow) minCellRow = randomRow;
-      // if(randomCol > maxCellCol) maxCellCol = randomCol;
-      // if(randomCol < minCellCol) minCellCol = randomCol;
-      // console.log("Scale: ",GAMEGRIDSCALE, " Row: ", minCellRow, " - ", maxCellRow,
-      //     " Col: ", minCellCol, " - ", maxCellCol);
       var newXPos = (GAMEGRIDSCALE * randomCol) + (GAMEGRIDSCALE/2);
       var newYPos = (GAMEGRIDSCALE * randomRow) + (GAMEGRIDSCALE/2);
-      console.log("spawn: ", newXPos, newYPos);
+      //console.log("spawn: ", newXPos, newYPos);
       this.createPreviousPosition(this.x,this.y,true,false);
       this.x = newXPos;
       this.y = newYPos;
@@ -114,6 +108,12 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     else if(this.xspeed < 0 && this.yspeed == 0) this.direction = "W";
     else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
     else console.log("ERROR in DIRECTION");
+
+    if(this.lastXSpeed != this.xspeed || this.lastYSpeed != this.yspeed){
+        this.lastXSpeed = this.xspeed;
+        this.lastYSpeed = this.yspeed;
+        SOCKET.changeSnakeDir(this.name, this.xspeed, this.yspeed);
+    }
 
     if(this.direction != "Stopped") this.createPreviousPosition(this.x,this.y,false,true);
     //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);

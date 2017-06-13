@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Tweasy65/Tron#readme",
   "dependencies": {
     "express": "^4.15.3",
+    "p5": "^0.5.11",
     "socket.io": "^2.0.2"
   }
 }

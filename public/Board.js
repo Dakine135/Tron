@@ -53,10 +53,14 @@ function Board(){
 	//function to apply canvas size from input boxes
 	this.setCanvasSize = function(inputWidth,inputHeight) {
 		console.log("BOARD.setCanvasSize called: ", inputWidth, inputHeight);
-			this.canvasWidth = inputWidth;
-			this.canvasHeight = inputHeight;
-	    this.init();
-			BOARD.createBackground();
+		if(width == inputWidth && height == inputHeight){
+			console.log("no change in canvas size");
+		} else {
+            this.canvasWidth = inputWidth;
+            this.canvasHeight = inputHeight;
+            this.init();
+            BOARD.createBackground();
+        }
 	};
 
 //pause and un-pause the game
@@ -90,12 +94,32 @@ function Board(){
 
     this.addSnakeByForm = function(){
         var snakeName = document.getElementById("snakeName").value;
-        var s = new Snake(snakeName, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
-            color(194, 254, 34), color(235, 29, 99), 400, 15);
-        s.intializeTailColor();
-        s.spawn();
-        this.snakes.set(snakeName,s);
+        var startColor = color(floor(random(0,256)),floor(random(0,256)),floor(random(0,256)));
+        var endColor = color(floor(random(0,256)),floor(random(0,256)),floor(random(0,256)));
+        this.addSnake(snakeName, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW,
+            startColor, endColor, 400, 15);
+
+		var s = this.snakes.get(snakeName);
+        var remoteSnake = {
+            x:s.x,
+            y:s.y,
+            name:snakeName,
+            startColor: s.startColor,
+            endColor: s.endColor,
+            tail: s.maxTailLength,
+            size: s.size
+        };
+        SOCKET.addSnake(remoteSnake);
 	};
+
+    this.addRemoteSnake = function(snakeName, x, y, startColor, endColor, tail, size){
+        var s = new Snake(snakeName, null, null, null, null, startColor, endColor, tail, size);
+        console.log("add snake Remote: ", s);
+        s.intializeTailColor();
+        s.x = x;
+        s.y = y;
+        this.snakes.set(snakeName,s);
+    };
 
 	this.checkControls = function(){
 		this.snakes.forEach(function(snake,snakeName){
@@ -139,21 +163,23 @@ function Board(){
 				}//check if itself
 		  }//othersnake loop
 
-			if(MAZE){
-				var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
-				if(wallHit != null){
-					 wallHit.color = color(255,255,255);
-                    snakeHead.spawn();
-					//  console.log("wall Hit");
-				 }
-		 }//if a maze has beed generated
+			// if(MAZE){
+			// 	var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
+			// 	if(wallHit != null){
+			// 		 wallHit.color = color(255,255,255);
+          //           snakeHead.spawn();
+			// 		//  console.log("wall Hit");
+			// 	 }
+		 // }//if a maze has been generated
+
+
 		}//selfsnake loop
 	};// checkForCollisions
 
 	this.createBackground = function(){
 	  console.log("createBackground");
 	  loadImage('assets/backgroundToRepeat.jpg',function(img){
-			console.log("loaded image: ", img);
+			//console.log("loaded image: ", img);
 	    var newImage = new p5.Image(width,height);
 	    //newImage.copy(img,0,0,img.width,img.height,0,0,img.width,img.height);
 
@@ -229,7 +255,7 @@ function Board(){
 
 	    this.background = newImage;
 	    // BACKGROUNDIMAGE = testImg;
-			console.log("Finished createing background: ", this.background);
+			//console.log("Finished createing background: ", this.background);
 	  }.bind(this), function(error){
 	    console.log("error createing back: ",error);
 	  });
@@ -238,8 +264,15 @@ function Board(){
 
 	this.show = function(){
 		if(this.background != null){
-	    background(this.background);
-	  }//if image is loaded
+	    	background(this.background);
+	  	}//if image is loaded
+        if(MAZE) {
+            MAZE.forEach(function (l) {
+                stroke(l.color);
+                strokeWeight(GAMEGRIDSCALE / 10);
+                line(l.x1, l.y1, l.x2, l.y2);
+            });
+        }//if MAZE is generated
 	}
 
 
