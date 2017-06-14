@@ -20,13 +20,13 @@ function createText(textString, relX, relY, scale, textColor, strokeColor){
     this.textX = (width*relX) - (this.stringWidth/2);
     this.textY = (height*relY)+(this.stringHeight/2);
     this.key = this.string + this.textX.toString() + this.textY.toString();
-  }
+  };
 
   this.show = function(){
     fill(this.textColor);
     stroke(this.strokeColor);
     textSize(this.stringHeight);
     text(this.string, this.textX, this.textY);
-  }
+  };
 
 }

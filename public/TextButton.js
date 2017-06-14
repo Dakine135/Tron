@@ -32,7 +32,7 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
       this.textX = this.recX + (this.marginWidth/2);
       this.textY = this.recY + this.stringHeight + (this.marginHeight/4);
       this.key = this.string + this.recX.toString() + this.recY.toString();
-    }
+    };
 
     this.clicked = function(){
       //see if the mouse is in the rect
@@ -41,7 +41,7 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
         console.log(this.key, ' button clicked');
         callBack();
       }
-    }
+    };
 
     this.changeScale = function(scale){
       this.scale = scale;
@@ -51,7 +51,7 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
       this.recHeight = this.stringHeight + this.marginHeight;
       this.recWidth = this.stringWidth + this.marginWidth;
       this.textY = this.recY + this.stringHeight + (this.marginHeight/4);
-    }
+    };
 
     GUI.liveButtons.set(this.key, this);
 
@@ -63,6 +63,6 @@ function TextButton(string, relX, relY, scale, textColor, buttonColor, strokeCol
       fill(this.textColor);
       textSize(this.stringHeight);
       text(this.string, this.textX, this.textY);
-    }
+    };
 
 }//end TextButton
