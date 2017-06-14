@@ -14,11 +14,12 @@ io.sockets.on('connection', newConnection);
 
 var sessionWindowSizes = new Map();
 var setWindow;
+var setWindowOLD;
 
 function newConnection(socket){
   // console.log("socket: ",socket);
   console.log("a user connected: ", socket.id);
-
+  sendNewGuiState("startOfGame");
 
 
 
@@ -27,8 +28,8 @@ function newConnection(socket){
   socket.on('snakeDir', sendSnakeDir);
   socket.on('guiState', sendNewGuiState);
   socket.on('disconnecting', clientDisconnected);
-  //
-  //
+
+
   function setCanvasSizeOfClients(currentWindow){
     console.log("window size of ", socket.id, " is ",currentWindow);
     sessionWindowSizes.set(socket.id, currentWindow);
@@ -38,16 +39,19 @@ function newConnection(socket){
     };
     sessionWindowSizes.forEach(function(currentWindow){
       console.log("currentWindow in loop: ", currentWindow);
+      var setWidth = Math.round((currentWindow.width - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+      var setHeight = Math.round((currentWindow.height - 60)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
       if(setWindow.width == null ||
-         setWindow.width > currentWindow.width) setWindow.width = currentWindow.width;
+         setWindow.width > setWidth) setWindow.width = setWidth;
       if(setWindow.height == null ||
-         setWindow.height > currentWindow.height) setWindow.height = currentWindow.height;
+         setWindow.height > setHeight) setWindow.height = setHeight;
     });
 
-    var mazeLines = MAZE(GAMEGRIDSCALE, setWindow.width, setWindow.height, true);
-    setWindow.mazeLines = mazeLines;
-    //console.log(mazeLines);
-    console.log("result: ", setWindow);
+    if(setWindowOLD == null || setWindow.mazeLines == null || setWindow.width != setWindowOLD.width || setWindow.height != setWindowOLD.height) {
+        setWindow.mazeLines = MAZE(GAMEGRIDSCALE, setWindow.width, setWindow.height, true);
+    }
+
+    setWindowOLD = setWindow;
     io.sockets.emit('getCanvasSize', setWindow);
   }//end setCanvasSizeOfClients
 

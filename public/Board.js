@@ -13,9 +13,10 @@ function Board(){
 
 
 	this.init = function() {
-		var setWidth = Math.round((this.canvasWidth - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-		var setHeight = Math.round((this.canvasHeight - 60)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-		this.canvas = createCanvas(setWidth,setHeight);
+		// var setWidth = Math.round((this.canvasWidth - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+		// var setHeight = Math.round((this.canvasHeight - 60)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+		//this.canvas = createCanvas(setWidth,setHeight);
+		this.canvas = createCanvas(this.canvasWidth, this.canvasHeight);
 		this.canvas.parent('CanvasContainer');
 	};
 
@@ -268,6 +269,7 @@ function Board(){
 	  	}//if image is loaded
         if(MAZE) {
             MAZE.forEach(function (l) {
+            	//console.log(l);
                 stroke(l.color);
                 strokeWeight(GAMEGRIDSCALE / 10);
                 line(l.x1, l.y1, l.x2, l.y2);

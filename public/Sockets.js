@@ -34,14 +34,15 @@ function Socket(){
 
   function socketCanvasSize(serverWindow){
     console.log("socketSetCanvasSize: ", serverWindow);
-    BOARD.setCanvasSize(serverWindow.width, serverWindow.height);
-    //MAZE = new Maze(GAMEGRIDSCALE, color(44, 53, 241, 100), true, true);
+    if(serverWindow.width != width || serverWindow.height != height) {
+        BOARD.setCanvasSize(serverWindow.width, serverWindow.height);
+        GUI.recalculateGui();
+    }
     MAZE = serverWindow.mazeLines;
     MAZE.forEach(function(line){
       line['color'] = color(4,255,239);
     });
-    console.log("mazelines: ", serverWindow.mazeLines);
-    GUI.recalculateGui();
+    //console.log("mazelines: ", serverWindow.mazeLines);
   }
 
   function changeGuiState(guiState){

@@ -50,15 +50,18 @@ this.generateMaze = function() {
             }
             var output = [];
             this.lines.forEach(function(line){
+              //console.log("line: ", line);
               var newLine = {
                 x1: line.x1,
                   y1: line.y1,
                   x2: line.x2,
                   y2: line.y2
               };
+              //console.log("newline: ", newLine);
               output.push(newLine);
             });
             console.log("Finished making maze: ", this.lines.size, " Lines");
+            console.log("num of cells: ", this.grid.length);
             return output;
         }//game finished
     } //until finished
@@ -67,7 +70,7 @@ this.generateMaze = function() {
 
 this.index = function(i, j) {
   if (i < 0 || j < 0 || i > this.cols-1 || j > this.rows-1) {
-    return -1;
+    return null;
   }
   return i + j * this.cols;
 };
@@ -139,13 +142,7 @@ this.removeWalls = function(a, b) {
       // console.log(neighbors);
 
       if (neighbors.length > 0) {
-        var r = Math.floor(Math.random(0, neighbors.length));
-        // for(var i=0; i<neighbors.length; i++){
-        //   if(i != r){
-        //     var cellKey = neighbors[r].i.toString() + neighbors[r].j.toString();
-        //      maze.stack.set(cellKey,neighbors[r]);
-        //    }
-        // }
+        var r = Math.floor(Math.random() * neighbors.length);
         return neighbors[r];
       } else {
         return undefined;
@@ -153,10 +150,10 @@ this.removeWalls = function(a, b) {
     }; //end checkNeighbors
 
     this.knockoutRandomWall = function(){
-      var r = Math.floor(Math.random(0, 4));
+      var r = Math.floor(Math.random() * 4);
       var attempts = 10;
       while(!this.walls[r] && attempts>0){
-        r = Math.floor(Math.random(0, 4));
+        r = Math.floor(Math.random() * 4);
         attempts--;
       }
       this.walls[r] = false;
