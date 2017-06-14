@@ -78,18 +78,21 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
 
 
   this.spawn = function(){
-      var widthCells = width / GAMEGRIDSCALE;
-      var heightCells = height / GAMEGRIDSCALE;
-      var randomRow = floor(random(0, heightCells));
-      var randomCol = floor(random(0, widthCells));
-      var newXPos = (GAMEGRIDSCALE * randomCol) + (GAMEGRIDSCALE/2);
-      var newYPos = (GAMEGRIDSCALE * randomRow) + (GAMEGRIDSCALE/2);
-      //console.log("spawn: ", newXPos, newYPos);
-      this.createPreviousPosition(this.x,this.y,true,false);
-      this.x = newXPos;
-      this.y = newYPos;
-      this.createPreviousPosition(this.x,this.y,false,true);
-      this.dir(0,0);
+    if(this.upButton != null) {
+        var widthCells = width / GAMEGRIDSCALE;
+        var heightCells = height / GAMEGRIDSCALE;
+        var randomRow = floor(random(0, heightCells));
+        var randomCol = floor(random(0, widthCells));
+        var newXPos = (GAMEGRIDSCALE * randomCol) + (GAMEGRIDSCALE / 2);
+        var newYPos = (GAMEGRIDSCALE * randomRow) + (GAMEGRIDSCALE / 2);
+        //console.log("spawn: ", newXPos, newYPos);
+        this.createPreviousPosition(this.x, this.y, true, false);
+        this.x = newXPos;
+        this.y = newYPos;
+        this.createPreviousPosition(this.x, this.y, false, true);
+        SOCKET.snakeRespawn(this.name, this.x, this.y);
+        this.dir(0, 0);
+    }
   };//end spawn
 
   this.dir = function(x, y) {
@@ -112,7 +115,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     if(this.lastXSpeed != this.xspeed || this.lastYSpeed != this.yspeed){
         this.lastXSpeed = this.xspeed;
         this.lastYSpeed = this.yspeed;
-        SOCKET.changeSnakeDir(this.name, this.xspeed, this.yspeed);
+        SOCKET.changeSnakeDir(this.name, this.x, this.y, this.xspeed, this.yspeed);
     }
 
     if(this.direction != "Stopped") this.createPreviousPosition(this.x,this.y,false,true);
@@ -141,7 +144,7 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
 
 
     this.currTailLength = this.currTailLength + distance;
-    while(this.currTailLength > this.maxTailLength){ //remove to meet length restriction
+    while(this.currTailLength > this.maxTailLength && this.tail.length > 0){ //remove to meet length restriction
       var removedPoint = this.tail.pop();
       this.currTailLength = this.currTailLength - removedPoint.dist;
     }

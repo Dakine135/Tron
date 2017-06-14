@@ -26,6 +26,7 @@ function newConnection(socket){
   socket.on('getCanvasSize', setCanvasSizeOfClients);
   socket.on('addSnake', sendNewSnake);
   socket.on('snakeDir', sendSnakeDir);
+  socket.on('snakeRespawn', sendSnakeRespawn);
   socket.on('guiState', sendNewGuiState);
   socket.on('disconnecting', clientDisconnected);
 
@@ -62,6 +63,10 @@ function newConnection(socket){
 
     function sendSnakeDir(snakeDir){
       socket.broadcast.emit('snakeDir', snakeDir);
+    }
+
+    function sendSnakeRespawn(snakeRespawn){
+      socket.broadcast.emit('snakeRespawn', snakeRespawn);
     }
 
 

@@ -144,6 +144,19 @@ function Board(){
 		this.snakes.clear();
 	};
 
+    this.checkCollisionWithWalls = function(snake){
+        var output = null;
+        MAZE.forEach(function(l){
+            var hit = collidePointLine(snake.x, snake.y, l.x1, l.y1, l.x2, l.y2, snake.size/4);
+            if(hit){
+                // console.log(l.key);
+                output = l;
+                return output;
+            }
+        });
+        return output;
+    };//end checkCollisionWithWalls
+
 
 	this.checkForCollisions = function(){
 		//check if snakes run into tails (self and others)
@@ -164,14 +177,14 @@ function Board(){
 				}//check if itself
 		  }//othersnake loop
 
-			// if(MAZE){
-			// 	var wallHit = MAZE.checkCollisionWithWalls(snakeHead);
-			// 	if(wallHit != null){
-			// 		 wallHit.color = color(255,255,255);
-          //           snakeHead.spawn();
-			// 		//  console.log("wall Hit");
-			// 	 }
-		 // }//if a maze has been generated
+			if(MAZE){
+				var wallHit = this.checkCollisionWithWalls(snakeHead);
+				if(wallHit != null){
+					wallHit.color = color(255,255,255);
+                    snakeHead.spawn();
+					//  console.log("wall Hit");
+				 }
+		 }//if a maze has been generated
 
 
 		}//selfsnake loop
@@ -199,7 +212,7 @@ function Board(){
 	        newImage.copy(img,0,0,img.width,img.height,
 	          img.width*w,img.height*h,img.width,img.height);
 	      }
-	      //remaing of row
+	      //remaining of row
 	      if(remainingWidth > 0){
 	        newImage.copy(img,0,0,img.width*remainingWidth,img.height,
 	          img.width*widthRatio,img.height*h,img.width*remainingWidth,img.height);

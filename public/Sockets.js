@@ -15,13 +15,23 @@ function Socket(){
   this.addSnake = function(snake){
     this.socket.emit('addSnake', snake);
   };
-  this.changeSnakeDir = function(name, xspeed, yspeed){
+  this.changeSnakeDir = function(name, x, y, xspeed, yspeed){
     var snakeDir = {
         name: name,
+        x: x,
+        y: y,
         xspeed: xspeed,
         yspeed: yspeed
     };
     this.socket.emit('snakeDir', snakeDir);
+  };
+  this.snakeRespawn = function(name, x, y){
+    var snakeSpawn = {
+      name: name,
+        x: x,
+        y: y
+    };
+    this.socket.emit('snakeRespawn', snakeSpawn);
   };
 
   //incomming
@@ -30,6 +40,7 @@ function Socket(){
   // this.socket.on('keyboard', socketKeyPressed);
   this.socket.on('addSnake', socketAddSnake);
   this.socket.on('snakeDir', applySnakeDir);
+  this.socket.on('snakeRespawn', applySnakeRespawn);
 
 
   function socketCanvasSize(serverWindow){
@@ -62,8 +73,20 @@ function Socket(){
   function applySnakeDir(snakeDir){
     //console.log("socket snake dir: ", snakeDir);
     var snake = BOARD.snakes.get(snakeDir.name);
+    snake.x = snakeDir.x;
+    snake.y = snakeDir.y;
     snake.xspeed = snakeDir.xspeed;
     snake.yspeed = snakeDir.yspeed;
+    BOARD.snakes.set(snakeDir.name, snake);
+  }
+
+  function applySnakeRespawn(snakeSpawn){
+    //console.log("snakeRespawn: ", snakeSpawn);
+    var snake = BOARD.snakes.get(snakeSpawn.name);
+    snake.createPreviousPosition(this.x, this.y, true, false);
+    snake.x = snakeSpawn.x;
+    snake.y = snakeSpawn.y;
+    snake.createPreviousPosition(this.x, this.y, false, true);
     BOARD.snakes.set(snakeDir.name, snake);
   }
 
