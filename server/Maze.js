@@ -2,9 +2,9 @@
 // Recursive backtracker
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
 module.exports = Maze;
-function Maze(cellWidth, width, height, walls){
-  console.log("CreateMaze: cellWidth, width, height, walls: ",
-    cellWidth,width, height, walls);
+function Maze(cellWidth, width, height, RemoveWallsChance, removeLoneWalls){
+  console.log("CreateMaze: cellWidth, width, height, RemoveWallsChance, removeLoneWalls: ",
+    cellWidth,width, height, RemoveWallsChance, removeLoneWalls);
 
 this.w = cellWidth;
 this.cols = Math.floor(width/this.w);
@@ -14,7 +14,8 @@ this.lines = new Map();
 this.current = null;
 this.stack = [];
 this.finished = false;
-this.knockOutWalls = walls;
+this.knockOutWalls = RemoveWallsChance;
+this.removeLoneWalls = removeLoneWalls;
 
 this.generateMaze = function() {
     for (var j = 0; j < this.rows; j++) {
@@ -38,8 +39,8 @@ this.generateMaze = function() {
         } else {
             this.finished = true;
             for (var i = 0; i < this.grid.length; i++) {
-                if (this.knockOutWalls) {
-                    this.grid[i].knockoutRandomWall();
+                if (this.knockOutWalls > 0) {
+                    this.grid[i].knockoutRandomWall(this.knockOutWalls);
                     this.grid[i].removeOuterWalls();
                 }
                 this.grid[i].getLines().forEach(function (line) {
@@ -48,6 +49,7 @@ this.generateMaze = function() {
                     this.lines.set(line.key, line);
                 }.bind(this));
             }
+            if(this.removeLoneWalls) this.removeSingleWalls();
             var output = [];
             this.lines.forEach(function(line){
               //console.log("line: ", line);
@@ -66,6 +68,35 @@ this.generateMaze = function() {
         }//game finished
     } //until finished
 };
+
+this.removeSingleWalls = function(){
+    var lines = Array.from(this.lines.values());
+    //console.log(lines);
+    var index = 0;
+    while(index < lines.length){
+        //check if connected line, aka, another line with same xy (start or end)
+        var currLine = lines[index];
+        var subIndex = 0;
+        var foundLink = false;
+        while(subIndex < lines.length && !foundLink){
+            var checkLine = lines[subIndex];
+            if(index == subIndex){
+                //dont check
+            } else if((currLine.x1 == checkLine.x1 && currLine.y1 == checkLine.y1) ||
+                      (currLine.x1 == checkLine.x2 && currLine.y1 == checkLine.y2) ||
+                      (currLine.x2 == checkLine.x1 && currLine.y2 == checkLine.y1) ||
+                      (currLine.x2 == checkLine.x2 && currLine.y2 == checkLine.y2) ){
+                //then the lines meet
+                foundLink = true;
+            }
+            subIndex++;
+        }//sub index loop
+        if(!foundLink){
+            this.lines.delete(currLine.key);
+            lines = Array.from(this.lines.values());
+        }else index++;
+    }//main loop
+}; // end removeSingleWalls
 
 
 this.index = function(i, j) {
@@ -149,14 +180,14 @@ this.removeWalls = function(a, b) {
       }
     }; //end checkNeighbors
 
-    this.knockoutRandomWall = function(){
+    this.knockoutRandomWall = function(number){
       var r = Math.floor(Math.random() * 4);
-      var attempts = 10;
-      while(!this.walls[r] && attempts>0){
+      var attempts = number;
+      while(attempts>0){
+        this.walls[r] = false;
         r = Math.floor(Math.random() * 4);
         attempts--;
       }
-      this.walls[r] = false;
     };
 
     this.removeOuterWalls = function(){

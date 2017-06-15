@@ -1,13 +1,17 @@
 var express = require('express');
 var socket = require('socket.io');
-var GameState = require('./public/GameState');
+var GAMESTATE = require('./../public/GameState');
 var MAZE = require('./Maze');
+var BOARD = require('./Board');
+var SNAKE = require('./Snake');
 
 var app = express();
 var server = app.listen(3033);
 var io = socket(server);
 var GAMEGRIDSCALE = 60;
-app.use(express.static('public'));
+var WALLREMOVALFACTOR = 3;
+var CEARUPSINGLEWALLS = true;
+app.use(express.static('../public'));
 console.log("Tron node server running");
 
 io.sockets.on('connection', newConnection);
@@ -48,8 +52,10 @@ function newConnection(socket){
          setWindow.height > setHeight) setWindow.height = setHeight;
     });
 
-    if(setWindowOLD == null || setWindow.mazeLines == null || setWindow.width != setWindowOLD.width || setWindow.height != setWindowOLD.height) {
-        setWindow.mazeLines = MAZE(GAMEGRIDSCALE, setWindow.width, setWindow.height, true);
+    if(setWindowOLD == null || setWindow.mazeLines == null ||
+       setWindow.width != setWindowOLD.width || setWindow.height != setWindowOLD.height) {
+          setWindow.mazeLines = new MAZE(GAMEGRIDSCALE, setWindow.width, setWindow.height,
+                                         WALLREMOVALFACTOR, CEARUPSINGLEWALLS);
     }
 
     setWindowOLD = setWindow;
