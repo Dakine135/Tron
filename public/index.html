@@ -17,15 +17,17 @@
     <!--<script src="../Maze.js" type="text/javascript"></script>-->
     <script src="/socket.io/socket.io.js"></script>
     <script src="Sockets.js" type="text/javascript"></script>
-    <script src="GameState.js" type="text/javascript"></script>
+    <!--<script src="../server/GameState.js" type="text/javascript"></script>-->
   </head>
   <body>
-    <form id="addSnakeForm" >
-      Snake Name: <input id="snakeName" type="text" value="Dakine"><br>
-    </form>
-    <button onclick="BOARD.addSnakeByForm()">Add Snake</button>
+    <!--<form id="addSnakeForm" >-->
+      <!--Snake Name: <input id="snakeName" type="text" value="Dakine"><br>-->
+    <!--</form>-->
+    <!--<button onclick="BOARD.addSnakeByForm()">Add Snake</button>-->
+    <button id="startGame" type="button">Start Game</button>
     <button id="pauseButton" type="button" onclick="BOARD.pause()">Pause</button>
     <div id="drawCount">FrameRate: </div>
+    <div id="ping">Ping: </div>
     <div id='CanvasContainer'></div>
   </body>
 
