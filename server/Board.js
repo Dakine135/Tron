@@ -1,8 +1,8 @@
 module.exports = Board;
 function Board(){
 	//canvas stuff
-	this.canvasWidth = window.innerWidth;
-	this.canvasHeight = window.innerHeight;
+	this.canvasWidth = Math.round((window.innerWidth - 200)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
+	this.canvasHeight = Math.round((window.innerHeight - 300)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
 	this.canvas = null;
 
 	//board stuff
@@ -14,9 +14,6 @@ function Board(){
 
 
 	this.init = function() {
-		// var setWidth = Math.round((this.canvasWidth - 35)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-		// var setHeight = Math.round((this.canvasHeight - 60)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-		//this.canvas = createCanvas(setWidth,setHeight);
 		this.canvas = createCanvas(this.canvasWidth, this.canvasHeight);
 		this.canvas.parent('CanvasContainer');
 	};

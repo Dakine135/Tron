@@ -2,9 +2,9 @@
 // Recursive backtracker
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
 module.exports = Maze;
-function Maze(cellWidth, width, height, RemoveWallsChance, removeLoneWalls){
-  console.log("CreateMaze: cellWidth, width, height, RemoveWallsChance, removeLoneWalls: ",
-    cellWidth,width, height, RemoveWallsChance, removeLoneWalls);
+function Maze(cellWidth, width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge){
+  console.log("CreateMaze: cellWidth, width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge: ",
+    cellWidth,width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge);
 
 this.w = cellWidth;
 this.cols = Math.floor(width/this.w);
@@ -16,6 +16,7 @@ this.stack = [];
 this.finished = false;
 this.knockOutWalls = RemoveWallsChance;
 this.removeLoneWalls = removeLoneWalls;
+this.leaveWallEdge = leaveWallEdge;
 
 this.generateMaze = function() {
     for (var j = 0; j < this.rows; j++) {
@@ -41,7 +42,7 @@ this.generateMaze = function() {
             for (var i = 0; i < this.grid.length; i++) {
                 if (this.knockOutWalls > 0) {
                     this.grid[i].knockoutRandomWall(this.knockOutWalls);
-                    this.grid[i].removeOuterWalls();
+                    this.grid[i].removeOuterWalls(this.leaveWallEdge);
                 }
                 this.grid[i].getLines().forEach(function (line) {
                     var key = line.x1.toString() + line.y1.toString() + line.x2.toString() + line.y2.toString();
@@ -190,23 +191,23 @@ this.removeWalls = function(a, b) {
       }
     };
 
-    this.removeOuterWalls = function(){
+    this.removeOuterWalls = function(wallBool){
       var top    = maze.grid[maze.index(this.i, this.j -1)];
       var right  = maze.grid[maze.index(this.i+1, this.j)];
       var bottom = maze.grid[maze.index(this.i, this.j+1)];
       var left   = maze.grid[maze.index(this.i-1, this.j)];
 
       if(top == null){
-        this.walls[0] = false;
+        this.walls[0] = wallBool;
       }
       if(right == null){
-        this.walls[1] = false;
+        this.walls[1] = wallBool;
       }
       if(bottom == null){
-        this.walls[2] = false;
+        this.walls[2] = wallBool;
       }
       if(left == null){
-        this.walls[3] = false;
+        this.walls[3] = wallBool;
       }
     };
 

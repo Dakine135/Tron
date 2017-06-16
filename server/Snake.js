@@ -1,13 +1,18 @@
 module.exports = Snake;
-function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor, endColor, tailLength, size){
-  console.log("create Snake: ",snakeName, upButton,downButton,leftButton,rightButton,
-      startColor, endColor, tailLength, size);
+function Snake(snakeName, upButton, downButton, leftButton, rightButton,
+               startColor, endColor, tailLength, size, width, height, GAMEGRIDSCALE){
+  // console.log("create Snake: ",snakeName, upButton,downButton,leftButton,rightButton,
+  //     startColor, endColor, tailLength, size);
   this.name = snakeName;
+
+  this.WIDTH = width;
+  this.HEIGHT = height;
+  this.GAMEGRIDSCALE = GAMEGRIDSCALE;
 
   //starting position
   this.size = size;
-  this.x = width/2 - (this.size/2);
-  this.y = height/2 - (this.size/2);
+  this.x = this.WIDTH/2 - (this.size/2);
+  this.y = this.HEIGHT/2 - (this.size/2);
   this.direction = "Stopped";
 
   //controls
@@ -29,8 +34,8 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
-  this.startColor = color(startColor.levels[0],startColor.levels[1],startColor.levels[2]);
-  this.endColor = color(endColor.levels[0],endColor.levels[1],endColor.levels[2]);
+  this.startColor = startColor;
+  this.endColor = endColor;
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = tailLength;
@@ -43,55 +48,86 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
   this.lastSpeedScale = this.speedScale;
 
   //detects when keys are pressed and changes snakes direction
-  this.checkControls = function(){
-    var xdir = 0;
-    var ydir = 0;
-    var pressed = false;
-    if (keyIsDown(this.upButton)){
-      ydir--;
-      pressed = true;
-    }if (keyIsDown(this.downButton)) {
-      ydir++;
-      pressed = true;
-    }if (keyIsDown(this.leftButton)) {
-      xdir--;
-      pressed = true;
-    }if (keyIsDown(this.rightButton)) {
-      xdir++;
-      pressed = true;
-    }
-    if(pressed) this.dir(xdir,ydir);
-  };//END OF keyP FUNCTION
+  // this.checkControls = function(){
+  //   var xdir = 0;
+  //   var ydir = 0;
+  //   var pressed = false;
+  //   if (keyIsDown(this.upButton)){
+  //     ydir--;
+  //     pressed = true;
+  //   }if (keyIsDown(this.downButton)) {
+  //     ydir++;
+  //     pressed = true;
+  //   }if (keyIsDown(this.leftButton)) {
+  //     xdir--;
+  //     pressed = true;
+  //   }if (keyIsDown(this.rightButton)) {
+  //     xdir++;
+  //     pressed = true;
+  //   }
+  //   if(pressed) this.dir(xdir,ydir);
+  // };//END OF keyP FUNCTION
 
-  this.intializeTailColor = function(){
-    var steps = 100;
-    var redDiff = this.endColor.levels[0] - this.startColor.levels[0];
-    var greenDiff = this.endColor.levels[1] - this.startColor.levels[1];
-    var BlueDiff = this.endColor.levels[2] - this.startColor.levels[2];
+  // this.intializeTailColor = function(){
+  //   var steps = 100;
+  //   var redDiff = this.endColor.levels[0] - this.startColor.levels[0];
+  //   var greenDiff = this.endColor.levels[1] - this.startColor.levels[1];
+  //   var BlueDiff = this.endColor.levels[2] - this.startColor.levels[2];
+  //
+  //   for(var i=0; i<steps; i++){
+  //     var currRed = this.startColor.levels[0] + (redDiff * (i/steps));
+  //     var currGreen = this.startColor.levels[1] + (greenDiff * (i/steps));
+  //     var currBlue = this.startColor.levels[2] + (BlueDiff * (i/steps));
+  //     this.tailColors[i] = color(currRed, currGreen, currBlue);
+  //   }
+  // };
 
-    for(var i=0; i<steps; i++){
-      var currRed = this.startColor.levels[0] + (redDiff * (i/steps));
-      var currGreen = this.startColor.levels[1] + (greenDiff * (i/steps));
-      var currBlue = this.startColor.levels[2] + (BlueDiff * (i/steps));
-      this.tailColors[i] = color(currRed, currGreen, currBlue);
-    }
+  var randomInt = function(min, max){
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    };
+
+  var dist = function(x1, y1, x2, y2){
+    return Math.sqrt(Math.pow((x2-x1), 2)+Math.pow((y2-y1), 2));
   };
+
+  var collidePointLine = function(px,py,x1,y1,x2,y2, buffer){
+      // get distance from the point to the two ends of the line
+      //var d1 = Math.sqrt(Math.pow((px-x1), 2)+Math.pow((py-y1), 2));
+      //var d2 = Math.sqrt(Math.pow((px-x2), 2)+Math.pow((py-y2), 2));
+      var d1 = dist(px, py, x1, y1);
+      var d2 = dist(px, py, y1, y2);
+
+      // get the length of the line
+      var lineLen = Math.sqrt(Math.pow((x1-x2), 2)+Math.pow((y1-y2), 2));
+
+      // since floats are so minutely accurate, add a little buffer zone that will give collision
+      if (buffer === undefined){ buffer = 0.1; }   // higher # = less accurate
+
+      // if the two distances are equal to the line's length, the point is on the line!
+      // note we use the buffer here to give a range, rather than one #
+      if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
+          return true;
+      }
+      return false;
+  };//end collidePointLine
 
 
   this.spawn = function(){
     if(this.upButton != null) {
-        var widthCells = width / GAMEGRIDSCALE;
-        var heightCells = height / GAMEGRIDSCALE;
-        var randomRow = floor(random(0, heightCells));
-        var randomCol = floor(random(0, widthCells));
-        var newXPos = (GAMEGRIDSCALE * randomCol) + (GAMEGRIDSCALE / 2);
-        var newYPos = (GAMEGRIDSCALE * randomRow) + (GAMEGRIDSCALE / 2);
+        var widthCells = this.WIDTH / this.GAMEGRIDSCALE;
+        var heightCells = this.HEIGHT / this.GAMEGRIDSCALE;
+        var randomRow = randomInt(0, heightCells);
+        var randomCol = randomInt(0, widthCells);
+        var newXPos = (this.GAMEGRIDSCALE * randomCol) + (this.GAMEGRIDSCALE / 2);
+        var newYPos = (this.GAMEGRIDSCALE * randomRow) + (this.GAMEGRIDSCALE / 2);
         //console.log("spawn: ", newXPos, newYPos);
         this.createPreviousPosition(this.x, this.y, true, false);
         this.x = newXPos;
         this.y = newYPos;
         this.createPreviousPosition(this.x, this.y, false, true);
-        SOCKET.snakeRespawn(this.name, this.x, this.y);
+        //SOCKET.snakeRespawn(this.name, this.x, this.y);
         this.dir(0, 0);
     }
   };//end spawn
@@ -113,11 +149,11 @@ function Snake(snakeName, upButton,downButton,leftButton,rightButton, startColor
     else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
     else console.log("ERROR in DIRECTION");
 
-    if(this.lastXSpeed != this.xspeed || this.lastYSpeed != this.yspeed){
-        this.lastXSpeed = this.xspeed;
-        this.lastYSpeed = this.yspeed;
-        SOCKET.changeSnakeDir(this.name, this.x, this.y, this.xspeed, this.yspeed);
-    }
+    // if(this.lastXSpeed != this.xspeed || this.lastYSpeed != this.yspeed){
+    //     this.lastXSpeed = this.xspeed;
+    //     this.lastYSpeed = this.yspeed;
+    //     SOCKET.changeSnakeDir(this.name, this.x, this.y, this.xspeed, this.yspeed);
+    // }
 
     if(this.direction != "Stopped") this.createPreviousPosition(this.x,this.y,false,true);
     //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);
