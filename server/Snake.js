@@ -1,8 +1,5 @@
 module.exports = Snake;
-function Snake(snakeName, upButton, downButton, leftButton, rightButton,
-               startColor, endColor, tailLength, size, width, height, GAMEGRIDSCALE){
-  // console.log("create Snake: ",snakeName, upButton,downButton,leftButton,rightButton,
-  //     startColor, endColor, tailLength, size);
+function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
   this.name = snakeName;
 
   this.WIDTH = width;
@@ -15,12 +12,6 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
   this.y = this.HEIGHT/2 - (this.size/2);
   this.direction = "Stopped";
 
-  //controls
-  this.upButton = upButton;
-  this.downButton = downButton;
-  this.leftButton = leftButton;
-  this.rightButton = rightButton;
-
   //starting direction and speed
   this.xdir = 0;
   this.ydir = 0;
@@ -28,59 +19,32 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
   this.yspeed = 0;
   this.lastXSpeed = this.xspeed;
   this.lastYSpeed = this.yspeed;
-  this.speedScale = 3;
+  this.speedScale = 2;
 
   //tail and color stuff
   this.tail = [];
   this.tailColors = [];
   this.currentColor = 0;
-  this.startColor = startColor;
-  this.endColor = endColor;
+  this.startColor = [0,0,0];
+  this.endColor = [255,255,255];
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
   this.maxTailLength = tailLength;
   this.maxSegmentDist = this.maxTailLength / 40;
 
-  //stuff for pausing
-  this.paused = false;
-  this.lastX = this.xdir;
-  this.lastY = this.ydir;
-  this.lastSpeedScale = this.speedScale;
+  this.intializeTailColor = function(){
+    var steps = 100;
+    var redDiff = this.endColor[0] - this.startColor[0];
+    var greenDiff = this.endColor[1] - this.startColor[1];
+    var BlueDiff = this.endColor[2] - this.startColor[2];
 
-  //detects when keys are pressed and changes snakes direction
-  // this.checkControls = function(){
-  //   var xdir = 0;
-  //   var ydir = 0;
-  //   var pressed = false;
-  //   if (keyIsDown(this.upButton)){
-  //     ydir--;
-  //     pressed = true;
-  //   }if (keyIsDown(this.downButton)) {
-  //     ydir++;
-  //     pressed = true;
-  //   }if (keyIsDown(this.leftButton)) {
-  //     xdir--;
-  //     pressed = true;
-  //   }if (keyIsDown(this.rightButton)) {
-  //     xdir++;
-  //     pressed = true;
-  //   }
-  //   if(pressed) this.dir(xdir,ydir);
-  // };//END OF keyP FUNCTION
-
-  // this.intializeTailColor = function(){
-  //   var steps = 100;
-  //   var redDiff = this.endColor.levels[0] - this.startColor.levels[0];
-  //   var greenDiff = this.endColor.levels[1] - this.startColor.levels[1];
-  //   var BlueDiff = this.endColor.levels[2] - this.startColor.levels[2];
-  //
-  //   for(var i=0; i<steps; i++){
-  //     var currRed = this.startColor.levels[0] + (redDiff * (i/steps));
-  //     var currGreen = this.startColor.levels[1] + (greenDiff * (i/steps));
-  //     var currBlue = this.startColor.levels[2] + (BlueDiff * (i/steps));
-  //     this.tailColors[i] = color(currRed, currGreen, currBlue);
-  //   }
-  // };
+    for(var i=0; i<steps; i++){
+      var currRed = this.startColor[0] + (redDiff * (i/steps));
+      var currGreen = this.startColor[1] + (greenDiff * (i/steps));
+      var currBlue = this.startColor[2] + (BlueDiff * (i/steps));
+      this.tailColors[i] = [currRed, currGreen, currBlue];
+    }
+  };
 
   var randomInt = function(min, max){
         min = Math.ceil(min);
@@ -115,7 +79,6 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
 
 
   this.spawn = function(){
-    if(this.upButton != null) {
         var widthCells = this.WIDTH / this.GAMEGRIDSCALE;
         var heightCells = this.HEIGHT / this.GAMEGRIDSCALE;
         var randomRow = randomInt(0, heightCells);
@@ -127,9 +90,7 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
         this.x = newXPos;
         this.y = newYPos;
         this.createPreviousPosition(this.x, this.y, false, true);
-        //SOCKET.snakeRespawn(this.name, this.x, this.y);
         this.dir(0, 0);
-    }
   };//end spawn
 
   this.dir = function(x, y) {
@@ -166,7 +127,7 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
     if(this.tail.length>0 && !this.tail[0].jump){
       var prevX = this.tail[0].x;
       var prevY = this.tail[0].y;
-      distance = int(dist(x,y,prevX,prevY));
+      distance = dist(x,y,prevX,prevY);
     }
 
     var previousPosition = {
@@ -279,7 +240,7 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
   };//END OF chngSpeed FUNCTION
 
   //change snake's color to random colors
-  this.chngColor = function(){
+  this.chngColorRandom = function(){
     var startRed = Math.floor(Math.random() * 255) + 1;
     var startGreen = Math.floor(Math.random() * 255) + 1;
     var startBlue = Math.floor(Math.random() * 255) + 1;
@@ -301,27 +262,17 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
       diffB = Math.abs(startBlue-b);
     }
 
-    this.startColor = color(startRed,startGreen,startBlue);
-    this.endColor = color(r,g,b);
+    this.startColor = [startRed,startGreen,startBlue];
+    this.endColor = [r,g,b];
     this.intializeTailColor();
   };
 
   //reset to defualt (refresh)
-  this.reset = function() {
-    this.x = width/2;
-	  this.y = height/2;
-	  this.xspeed = 0;
-	  this.yspeed = 0;
-	  this.tail = [];
-	  this.currentColor = 0;
-	  //this.startColor = color(194, 254, 34);
-	  //this.endColor = color(235, 29, 99);
-	  //this.intializeTailColor();
-	  this.colorDirection = true;
-	  this.currTailLength = 0; //length in pixels
-	  // this.maxTailLength = 1000;
-    this.size = 10;
-    this.speedScale = 3;
+  this.reset = function(tail, size) {
+    this.maxTailLength = tail;
+    this.size = size;
+    this.intializeTailColor();
+    this.spawn();
   };//end reset
 
   this.pause = function(){
@@ -390,29 +341,4 @@ function Snake(snakeName, upButton, downButton, leftButton, rightButton,
     }
     return null;
   };
-
-  this.show = function(){
-    fill(this.startColor);
-    stroke(this.endColor);
-    strokeWeight(Math.ceil(this.size / 10));
-    ellipse(this.x, this.y, this.size, this.size);
-
-    var prevPt;
-    var strokeStartWeight = this.size/3;
-    for(var i=0; i<this.tail.length; i++){
-      var curPt = this.tail[i];
-      if(prevPt == null){
-        prevPt = curPt;
-      }else{
-        if(!curPt.jump){
-          stroke(curPt.color);
-          var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
-          strokeWeight(strokeVar);
-          // strokeWeight(strokeStartWeight);
-          line(prevPt.x, prevPt.y, curPt.x, curPt.y);
-        }
-        prevPt = curPt;
-      }
-    }// end for loop that draws tail
-  };//end show func
 }//end snake class

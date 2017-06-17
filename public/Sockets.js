@@ -1,52 +1,26 @@
 function Socket(){
 
   this.socket = io();
+  this.id = this.socket.id;
   this.pings = [];
-  this.avgPing = 999;
+  this.avgPing = 10;
+
+  this.guiState = "startOfGame";
 
   var that = this;
 
-
-  var currentWindow = {
-    width: window.innerWidth,
-    height: window.innerHeight
-  };
   //outgoing
-  //this.socket.emit('getCanvasSize', currentWindow);
-  this.sendGameState = function(newState){
-      //this.socket.emit('guiState', newState);
-  };
-  this.addSnake = function(snake){
-    //this.socket.emit('addSnake', snake);
-  };
-  this.changeSnakeDir = function(name, x, y, xspeed, yspeed){
-    // var snakeDir = {
-    //     name: name,
-    //     x: x,
-    //     y: y,
-    //     xspeed: xspeed,
-    //     yspeed: yspeed
-    // };
-    // this.socket.emit('snakeDir', snakeDir);
-  };
-  this.snakeRespawn = function(name, x, y){
-    // var snakeSpawn = {
-    //   name: name,
-    //     x: x,
-    //     y: y
-    // };
-    // this.socket.emit('snakeRespawn', snakeSpawn);
-  };
 
   //incomming
   this.socket.on('updateClients', updateGameState);
 
   var once = true;
   function updateGameState(gameState){
+      if(that.id == null) that.id = that.socket.id;
 
     //CALCULATE PING
     var time = new Date().getTime();
-    var ping = time - gameState.time;
+    var ping = Math.abs(time - gameState.time);
     if(that.pings.length < 30) {
         that.pings.push(ping);
     } else {
@@ -58,6 +32,9 @@ function Socket(){
         document.getElementById("ping").innerHTML = "Ping: " + that.avgPing;
     }
 
+      document.getElementById("PlayersConnected").innerHTML =
+            "Number of Players Connected: " + gameState.playersConnected;
+
     if(!MAZE){
         MAZE = gameState.mazeLines;
         MAZE.forEach(function(line){
@@ -65,11 +42,50 @@ function Socket(){
         });
     }
 
+    if(!SETTINGS){
+      SETTINGS = gameState.settings;
+      BOARD.init();
+    }
+
+    if(gameState.guiState != this.guiState){
+        GUI.guiState(gameState.guiState);
+        this.guiState = gameState.guiState;
+    }
+
+    gameState.snakes.forEach(function(snake) {
+      if(BOARD.snakes.has(snake.name)){
+          var oldSnake = BOARD.snakes.get(snake.name);
+          oldSnake.update(snake);
+          BOARD.snakes.set(snake.name, oldSnake);
+      } else {
+          var newSnake = new Snake(snake.name);
+          newSnake.update(snake);
+          BOARD.snakes.set(snake.name, newSnake);
+      }
+    });
+
     if(once) console.log(gameState); once = false;
 
     // console.log("gameState = frame:%s time:%s ping:%s",
     //     gameState.frame, gameState.time, that.avgPing);
-  }
+
+  }//end updateGameState
+
+    this.changeSnakeDir = function(x, y){
+        var snakeDir = {
+            x: x,
+            y: y
+        };
+        this.socket.emit('snakeDir', snakeDir);
+    };
+
+    this.changeGuiState = function(guiState){
+      this.socket.emit('guiState', guiState);
+    };
+
+    this.startGame = function(){
+      this.socket.emit("startGame", null);
+    };
 
 
   // function socketCanvasSize(serverWindow){

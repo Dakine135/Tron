@@ -24,10 +24,11 @@
       <!--Snake Name: <input id="snakeName" type="text" value="Dakine"><br>-->
     <!--</form>-->
     <!--<button onclick="BOARD.addSnakeByForm()">Add Snake</button>-->
-    <button id="startGame" type="button">Start Game</button>
-    <button id="pauseButton" type="button" onclick="BOARD.pause()">Pause</button>
+    <button id="startGame" type="button" onClick="SOCKET.startGame()">Start/Restart Game</button>
+    <button id="pauseButton" type="button" onclick="GUI.pause()">Pause</button>
     <div id="drawCount">FrameRate: </div>
     <div id="ping">Ping: </div>
+    <div id="PlayersConnected">Number of Players Connected: </div>
     <div id='CanvasContainer'></div>
   </body>
 

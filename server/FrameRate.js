@@ -13,14 +13,21 @@ var app = express();
 var server = app.listen(3033);
 var io = socket(server);
 
-//config options
-var GAMEGRIDSCALE = 60;
+//CONFIG OPTIONS
 var WALLREMOVALFACTOR = 3;
 var CEARUPSINGLEWALLS = true;
 var LEAVEWALLEDGE = false;
+var GAMEGRIDSCALE = 60;
 var WIDTH = 1400;
 var HEIGHT = 740;
 var TICKSPERSECOND = 30;
+
+var CLIENTSETTINGS = {
+    GAMEGRIDSCALE: GAMEGRIDSCALE,
+    WIDTH: WIDTH,
+    HEIGHT: HEIGHT
+};
+var NUMPLAYERSCONNECTED = 0;
 
 //snake Defaults
 var SNAKETAIL = 400;
@@ -35,41 +42,39 @@ var CLIENTS = new Map();
 var MAZELINES = new MAZE(GAMEGRIDSCALE, WIDTH, HEIGHT,
         WALLREMOVALFACTOR, CEARUPSINGLEWALLS, LEAVEWALLEDGE);
 
-//MAIN GAME COUNTER
-// start the loop at 30 fps (1000/30ms per frame) and grab its id
+var GAMELOOPID;
 var frameCount = 0;
-var CURRENTGAMESTATE = new GAMESTATE(frameCount, MAZELINES);
-const GAMELOOPID = gameloop.setGameLoop(function(delta) {
-    frameCount++;
-    //console.log('Frame=%s', frameCount);
+var CURRENTGAMESTATE = new GAMESTATE(frameCount, MAZELINES, CLIENTSETTINGS);
+function startGame(){
 
-    CURRENTGAMESTATE.update(frameCount);
+    //MAIN GAME COUNTER
+    //start the loop at 30 fps (1000/30ms per frame) and grab its id
+    frameCount = 0;
+    CURRENTGAMESTATE = new GAMESTATE(frameCount, MAZELINES, CLIENTSETTINGS);
+    //add snakes
+    CLIENTS.forEach(function (client) {
+        client.snake.reset(SNAKETAIL, SNAKESIZE);
+        CURRENTGAMESTATE.addSnake(client.snake);
+    });
 
-    var clientPackage = CURRENTGAMESTATE.package();
-    // console.log(clientPackage);
-    io.sockets.emit('updateClients', clientPackage);
+    GAMELOOPID = gameloop.setGameLoop(function(delta) {
+        frameCount++;
+        //console.log('Frame=%s', frameCount);
 
+        CURRENTGAMESTATE.update(frameCount);
 
-}, 1000 / TICKSPERSECOND); //end game loop 30 updates a second
+        var clientPackage = CURRENTGAMESTATE.package(NUMPLAYERSCONNECTED);
+        // console.log(clientPackage);
+        io.sockets.emit('updateClients', clientPackage);
+
+    }, 1000 / TICKSPERSECOND); //end game loop 30 updates a second
 
 //stop the loop 2 seconds later
 // setTimeout(function() {
 //     console.log('2000ms passed, stopping the game loop');
 //     gameloop.clearGameLoop(GAMELOOPID);
 // }, 2000);
-
-
-//
-// if (previousTick != currentTick){
-//     updateCount++;
-//     BOARD.boardUpdate();
-//     BOARD.show();
-//     BOARD.showSnakes();
-//     GUI.drawGUI();
-//
-//     totalGameTick++;
-//     previousTick = currentTick;
-// }
+}
 
 var randomInt = function(min, max){
     min = Math.ceil(min);
@@ -80,24 +85,38 @@ var randomInt = function(min, max){
 function newConnection(socket){
   //Client first connects, create Client object and snake
   console.log("a user connected: ", socket.id);
-    var startColor = [randomInt(0,256),randomInt(0,256),randomInt(0,256)];
-    var endColor = [randomInt(0,256),randomInt(0,256),randomInt(0,256)];
+    NUMPLAYERSCONNECTED++;
     var tempClient = {
         key: socket.id,
         connectedAt: new Date(),
-        snake: new SNAKE(socket.id, null, null, null, null, startColor, endColor,
-            SNAKETAIL, SNAKESIZE, WIDTH, HEIGHT, GAMEGRIDSCALE)
+        snake: new SNAKE(socket.id, SNAKETAIL, SNAKESIZE, WIDTH, HEIGHT, GAMEGRIDSCALE)
     };
 
     CLIENTS.set(socket.id, tempClient);
-    CURRENTGAMESTATE.addSnake(tempClient.snake);
+
+    socket.on('snakeDir', updateSnakeDir);
+    function updateSnakeDir(snakeDir){
+        //console.log("change snake direction: ", snakeDir);
+        CURRENTGAMESTATE.updateSnakeDir(socket.id, snakeDir.x, snakeDir.y);
+    }
+
+    socket.on('guiState', updateGuiState);
+    function updateGuiState(guiState){
+        CURRENTGAMESTATE.updateGuiState(guiState);
+    }
+
+    socket.on('startGame', startTheGame);
+    function startTheGame(){
+        startGame();
+    }
+
 
     socket.on('disconnecting', clientDisconnected);
-
     function clientDisconnected(){
         console.log("client disconnected: ", socket.id);
         CLIENTS.delete(socket.id);
         CURRENTGAMESTATE.removeSnake(socket.id);
+        NUMPLAYERSCONNECTED--;
     }
 
 

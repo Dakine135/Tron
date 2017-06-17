@@ -17,9 +17,8 @@ function Menu(){
   this.buttonColor = color(24,202,230);
   this.textColor = color(255, 255, 255);
 
-  this.guiState = function(state, setBySocket){
+  this.guiState = function(state){
     console.log("GuiState: ", state);
-    if(SOCKET && !setBySocket) SOCKET.sendGameState(state);
     this.liveButtons.clear();
     this.liveText.clear();
     this.snakeEditor.reset();
@@ -36,11 +35,11 @@ function Menu(){
             this.buttonColor, this.strokeColor);
         var startButton = new TextButton("Start", 0.5, 0.6, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
-              this.guiState("gameRunning", false);
+              SOCKET.changeGuiState("gameRunning");
           }.bind(this));
         var configButton = new TextButton("Settings", 0.9, 0.1, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){
-              this.guiState("config", false);
+                SOCKET.changeGuiState("config");
           }.bind(this));
         break;
 
@@ -52,7 +51,7 @@ function Menu(){
 
         var backButton = new TextButton("Back", 0.1, 0.1, 3,
           this.textColor, this.buttonColor, this.strokeColor, function(){
-            this.guiState("startOfGame", false);
+                SOCKET.changeGuiState("startOfGame");
         }.bind(this));
 
         var playerSelectedText = new createText("No Player selected", 0.5, 0.3, 2,
@@ -86,7 +85,7 @@ function Menu(){
       case "gameRunning":
         this.gameRunning = true;
         this.currentState = "gameRunning";
-        BOARD.resetBoard();
+        //BOARD.resetBoard();
         break;
 
       case "paused":
@@ -99,6 +98,16 @@ function Menu(){
 
 
   };//end guiState
+
+    this.pause = function () {
+      if(this.currentState != "paused") {
+          SOCKET.changeGuiState("paused");
+          document.getElementById("pauseButton").innerHTML = "Resume";
+      } else {
+          SOCKET.changeGuiState("resume");
+          document.getElementById("pauseButton").innerHTML = "Pause";
+      }
+    };
 
   this.drawGUI = function(){
 
@@ -128,7 +137,7 @@ function Menu(){
     this.liveText.forEach(function(text){
       text.recalculatePosition();
     });
-    this.guiState(this.currentState, false);
+    this.guiState(this.currentState);
   };
 
 
