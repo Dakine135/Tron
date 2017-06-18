@@ -1,4 +1,6 @@
 module.exports = GameState;
+var LIB = require('./Lib');
+var hash = require('object-hash');
 function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();
@@ -8,10 +10,16 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.previousState = this.guiState;
     this.snakes = new Map();
 
+    this.restart = function() {
+        console.log("RESTART");
+        this.updateGuiState("startOfGame");
+
+    };// end restart
+
     this.addSnake = function(snake){
         snake.chngColorRandom();
         snake.intializeTailColor();
-        //snake.spawn();
+        snake.spawn();
         this.snakes.set(snake.name, snake);
     };
 
@@ -28,26 +36,75 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     };
 
     this.updateGuiState = function(guiState){
-        if(guiState == "paused"){
+        console.log("updateGuiState: ", guiState);
+        if(guiState === "paused"){
             this.previousState = this.guiState;
             this.guiState = guiState;
-        } else if(guiState == "resume"){
+        } else if(guiState === "resume"){
             this.guiState = this.previousState;
-        } else{
+        } else if(guiState === "gameRunning" && this.guiState === "gameRunning"){
+            this.restart();
+        } else {
             this.guiState = guiState;
         }
 
     };
 
+    this.checkCollisionWithWalls = function(snake){
+        if (snake.tail.length < 1) return null;
+        var collision = null;
+        for (var i=0; i < this.mazeLines.lines.length; i++ ){
+            var l = this.mazeLines.lines[i];
+            collision = LIB.collideLineLine(snake.x, snake.y, snake.tail[0].x, snake.tail[0].y,
+                                        l.x1, l.y1, l.x2, l.y2);
+            if(collision && collision.hit){
+                collision["wall"] = l;
+                return collision;
+            }
+        }
+        return collision;
+    };
+
+    this.checkForCollisions = function(){
+        //check if snakes run into tails (self and others)
+        for(var snakeHeadKey of this.snakes.keys()){
+            var snakeHead = this.snakes.get(snakeHeadKey);
+            for(var snakeTailKey of this.snakes.keys()){
+                if(snakeHeadKey != snakeTailKey){ //dont check collision with self
+                    var snakeTail = this.snakes.get(snakeTailKey);
+                    var collisionSnake = snakeHead.checkCollisionWithTail(snakeTail.tail);
+                    if(collisionSnake != null){
+                        console.log("Snake Tail Collision: ", collisionSnake);
+                        snakeTail.tail[collisionSnake.tail].color = [255,255,255];
+                        snakeHead.spawn();
+                    }
+                }//check if itself
+            }//othersnake loop
+
+            if(this.mazeLines){
+                var collisionWall = this.checkCollisionWithWalls(snakeHead);
+                if(collisionWall && collisionWall.hit){
+                    console.log("Wall Collision: ",collisionWall);
+                    collisionWall.wall.color = [255,255,255];
+                    this.mazeLines.hash = hash(this.mazeLines);
+                    snakeHead.spawn();
+                    //  console.log("wall Hit");
+                }
+            }//if a maze has been generated
+
+        }//selfsnake loop
+    };// checkForCollisions
+
     this.update = function(frame) {
         this.frame = frame;
         //this.time = new Date().getTime();
 
-        if(this.guiState == "gameRunning"){
+        if(this.guiState === "gameRunning"){
             //updateSnakes
             this.snakes.forEach(function(snake){
                 snake.update();
             });
+            this.checkForCollisions();
         }//guiState is gameRunning
     };
 

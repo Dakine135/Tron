@@ -15,8 +15,15 @@ function Snake(snakeName){
   this.scaleH = 1;
 
   this.scaleSnake = function(){
-      this.scaleW = this.width / SETTINGS.WIDTH;
-      this.scaleH = this.height / SETTINGS.HEIGHT;
+      this.x = Math.round((this.x / SETTINGS.WIDTH)*width);
+      this.y = Math.round((this.y / SETTINGS.HEIGHT)*height);
+      //this.size = Math.round((this.size / SETTINGS.WIDTH)*width);
+      this.tail.map(function(prevPoint){
+        var scaled = prevPoint;
+        scaled.x = Math.round((scaled.x / SETTINGS.WIDTH)*width);
+        scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT)*height);
+        return scaled;
+      });
   };
 
   //detects when keys are pressed and changes snakes direction
@@ -57,6 +64,8 @@ function Snake(snakeName){
       this.startColor = color(snake.startColor[0],snake.startColor[1],snake.startColor[2]);
       this.endColor = color(snake.endColor[0],snake.endColor[1],snake.endColor[2]);
 
+      this.scaleSnake();
+
   };//end update
 
 
@@ -64,7 +73,7 @@ function Snake(snakeName){
     fill(this.startColor);
     stroke(this.endColor);
     strokeWeight(Math.ceil(this.size / 10));
-    ellipse(this.x*this.scaleW, this.y*this.scaleH, this.size*this.scaleW, this.size*this.scaleH);
+    ellipse(this.x, this.y, this.size, this.size);
 
     var prevPt;
     var strokeStartWeight = this.size/3;
@@ -79,7 +88,7 @@ function Snake(snakeName){
           var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
           strokeWeight(strokeVar);
           // strokeWeight(strokeStartWeight);
-          line(prevPt.x*this.scaleW, prevPt.y*this.scaleH, curPt.x*this.scaleW, curPt.y*this.scaleH);
+          line(prevPt.x, prevPt.y, curPt.x, curPt.y);
         }
         prevPt = curPt;
       }

@@ -1,5 +1,6 @@
 module.exports = Snake;
-function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
+var LIB = require('./Lib');
+function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDSCALE){
   this.name = snakeName;
 
   this.WIDTH = width;
@@ -19,7 +20,7 @@ function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
   this.yspeed = 0;
   this.lastXSpeed = this.xspeed;
   this.lastYSpeed = this.yspeed;
-  this.speedScale = 2;
+  this.speedScale = speedScale;
 
   //tail and color stuff
   this.tail = [];
@@ -46,46 +47,16 @@ function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
     }
   };
 
-  var randomInt = function(min, max){
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min)) + min;
-    };
-
-  var dist = function(x1, y1, x2, y2){
-    return Math.sqrt(Math.pow((x2-x1), 2)+Math.pow((y2-y1), 2));
-  };
-
-  var collidePointLine = function(px,py,x1,y1,x2,y2, buffer){
-      // get distance from the point to the two ends of the line
-      //var d1 = Math.sqrt(Math.pow((px-x1), 2)+Math.pow((py-y1), 2));
-      //var d2 = Math.sqrt(Math.pow((px-x2), 2)+Math.pow((py-y2), 2));
-      var d1 = dist(px, py, x1, y1);
-      var d2 = dist(px, py, y1, y2);
-
-      // get the length of the line
-      var lineLen = Math.sqrt(Math.pow((x1-x2), 2)+Math.pow((y1-y2), 2));
-
-      // since floats are so minutely accurate, add a little buffer zone that will give collision
-      if (buffer === undefined){ buffer = 0.1; }   // higher # = less accurate
-
-      // if the two distances are equal to the line's length, the point is on the line!
-      // note we use the buffer here to give a range, rather than one #
-      if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
-          return true;
-      }
-      return false;
-  };//end collidePointLine
-
 
   this.spawn = function(){
         var widthCells = this.WIDTH / this.GAMEGRIDSCALE;
         var heightCells = this.HEIGHT / this.GAMEGRIDSCALE;
-        var randomRow = randomInt(0, heightCells);
-        var randomCol = randomInt(0, widthCells);
+        var randomRow = LIB.randomInt(0, heightCells);
+        var randomCol = LIB.randomInt(0, widthCells);
         var newXPos = (this.GAMEGRIDSCALE * randomCol) + (this.GAMEGRIDSCALE / 2);
         var newYPos = (this.GAMEGRIDSCALE * randomRow) + (this.GAMEGRIDSCALE / 2);
         //console.log("spawn: ", newXPos, newYPos);
+        //this.tail = [];
         this.createPreviousPosition(this.x, this.y, true, false);
         this.x = newXPos;
         this.y = newYPos;
@@ -127,7 +98,7 @@ function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
     if(this.tail.length>0 && !this.tail[0].jump){
       var prevX = this.tail[0].x;
       var prevY = this.tail[0].y;
-      distance = dist(x,y,prevX,prevY);
+      distance = LIB.dist(x,y,prevX,prevY);
     }
 
     var previousPosition = {
@@ -275,20 +246,6 @@ function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
     this.spawn();
   };//end reset
 
-  this.pause = function(){
-    if(this.paused){
-      this.paused = false;
-      this.speedScale = this.lastSpeedScale;
-      this.dir(this.lastX,this.lastY);
-    }else{
-      this.paused = true;
-      this.speedScale = 0;
-      this.lastX= this.xdir;
-      this.lastY= this.ydir;
-      this.dir(0, 0);
-    }
-  };
-
   //takes a collision object (returned from tail collision)
   this.cutTail = function(collision){
     if(collision == null) return 0;
@@ -314,28 +271,29 @@ function Snake(snakeName, tailLength, size, width, height, GAMEGRIDSCALE){
   //returns the index of the tail that you collided width
   //returns -1 if did not collide
   this.checkCollisionWithTail = function(tailInput){
-    var tailIndex = 2;
+    var tailIndex = 0;
     var lineStartX;
     var lineStartY;
     var lineEndX;
     var lineEndY;
-    var hit;
+    var collision;
+    if(this.tail.length < 1) return null;
+    var snakeLineX = this.tail[0].x;
+    var snakeLineY = this.tail[0].y;
     while(tailIndex < (tailInput.length - 1)){
-
       if(!tailInput[tailIndex + 1].jump){
         lineStartX = tailInput[tailIndex].x;
         lineStartY = tailInput[tailIndex].y;
         lineEndX = tailInput[tailIndex + 1].x;
         lineEndY = tailInput[tailIndex + 1].y;
-        hit = collidePointLine(this.x, this.y, lineStartX, lineStartY, lineEndX, lineEndY, this.size/4)
+        //hit = collidePointLine(this.x, this.y, lineStartX, lineStartY, lineEndX, lineEndY, this.size)
+          collision = LIB.collideLineLine(this.x, this.y, snakeLineX, snakeLineY,
+                                lineStartX,lineStartY,lineEndX,lineEndY);
       }
       //console.log("hit: ", hit);
-      if(hit){
-        return {
-          tail: tailIndex + 1,
-          x: this.x,
-          y: this.y
-        };
+      if(collision && collision.hit){
+          collision["tail"] = tailIndex + 1;
+          return collision;
       }
       tailIndex++;
     }

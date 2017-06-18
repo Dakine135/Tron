@@ -2,6 +2,7 @@
 // Recursive backtracker
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
 module.exports = Maze;
+var hash = require('object-hash');
 function Maze(cellWidth, width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge){
   console.log("CreateMaze: cellWidth, width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge: ",
     cellWidth,width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge);
@@ -45,26 +46,31 @@ this.generateMaze = function() {
                     this.grid[i].removeOuterWalls(this.leaveWallEdge);
                 }
                 this.grid[i].getLines().forEach(function (line) {
-                    var key = line.x1.toString() + line.y1.toString() + line.x2.toString() + line.y2.toString();
-                    line['key'] = key;
+                    line['key'] = line.x1.toString() + line.y1.toString() + line.x2.toString() + line.y2.toString();
                     this.lines.set(line.key, line);
                 }.bind(this));
             }
             if(this.removeLoneWalls) this.removeSingleWalls();
-            var output = [];
+            var output = {
+                hash: "",
+                lines: []
+            };
             this.lines.forEach(function(line){
               //console.log("line: ", line);
               var newLine = {
                 x1: line.x1,
                   y1: line.y1,
                   x2: line.x2,
-                  y2: line.y2
+                  y2: line.y2,
+                  color: [4,255,239]
               };
               //console.log("newline: ", newLine);
-              output.push(newLine);
+              output.lines.push(newLine);
             });
             console.log("Finished making maze: ", this.lines.size, " Lines");
             console.log("num of cells: ", this.grid.length);
+            output.hash = hash(output.lines);
+            console.log("mazeHash: ", output.hash);
             return output;
         }//game finished
     } //until finished
@@ -81,12 +87,12 @@ this.removeSingleWalls = function(){
         var foundLink = false;
         while(subIndex < lines.length && !foundLink){
             var checkLine = lines[subIndex];
-            if(index == subIndex){
+            if(index === subIndex){
                 //dont check
-            } else if((currLine.x1 == checkLine.x1 && currLine.y1 == checkLine.y1) ||
-                      (currLine.x1 == checkLine.x2 && currLine.y1 == checkLine.y2) ||
-                      (currLine.x2 == checkLine.x1 && currLine.y2 == checkLine.y1) ||
-                      (currLine.x2 == checkLine.x2 && currLine.y2 == checkLine.y2) ){
+            } else if((currLine.x1 === checkLine.x1 && currLine.y1 === checkLine.y1) ||
+                      (currLine.x1 === checkLine.x2 && currLine.y1 === checkLine.y2) ||
+                      (currLine.x2 === checkLine.x1 && currLine.y2 === checkLine.y1) ||
+                      (currLine.x2 === checkLine.x2 && currLine.y2 === checkLine.y2) ){
                 //then the lines meet
                 foundLink = true;
             }

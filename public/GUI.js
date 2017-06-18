@@ -85,7 +85,8 @@ function Menu(){
       case "gameRunning":
         this.gameRunning = true;
         this.currentState = "gameRunning";
-        //BOARD.resetBoard();
+          var ScoreText = new createText("Settings", 0.5, 0.2, 5,
+              this.buttonColor, this.strokeColor);
         break;
 
       case "paused":

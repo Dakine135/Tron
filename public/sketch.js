@@ -6,6 +6,7 @@ var SOCKET;
 var SETTINGS;
 var startTime = new Date().getTime();
 var currentTick = 0;
+var CURRENTGAMESTATE;
 
 // function preload() {
 //   bgMusic = loadSound('assets/Derezzed.mp3');
@@ -59,14 +60,3 @@ function draw(){
     previousTick = currentTick;
 
 } //draw
-
-
-
-
-
-
-//reset canvas and snake properties
-function reset() {
-  BOARD.resetBoard();
-  BOARD.resetSnakes();
-}

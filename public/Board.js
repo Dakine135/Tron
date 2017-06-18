@@ -13,9 +13,24 @@ function Board(){
 
 
 	this.init = function() {
-        this.canvasWidth = Math.round((window.innerWidth - 50)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-        this.canvasHeight = Math.round((window.innerHeight - 100)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+        var totalHeight = Math.round((window.innerHeight - 150)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+        var totalWidth = Math.round((window.innerWidth)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+        var ratioW = totalWidth / 16;
+		var ratioH = totalHeight / 9;
+		var multiplier = Math.min(ratioW, ratioH);
+       this.canvasWidth = 16*multiplier;
+       this.canvasHeight = 9*multiplier;
+
+        // this.canvasHeight = Math.round((window.innerHeight - 150)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+        // this.canvasWidth = this.canvasHeight * (16/9);
+
 		this.canvas = createCanvas(this.canvasWidth, this.canvasHeight);
+        // this.canvas.setAttribute('style', "padding-left: 0; "+
+			// "padding-right: 0; "+
+			// "margin-left: auto; "+
+        // 	"margin-right: auto; "+
+        // 	"display: block; "+
+        // 	"width: 800px;");
 		this.canvas.parent('CanvasContainer');
         this.createBackground();
         GUI.recalculateGui();
@@ -85,24 +100,26 @@ function Board(){
 	};//end create background
 
 	this.scaleBOARD = function(){
-        MAZE = MAZE.map(function(l){
-            var scaleW = this.width / SETTINGS.WIDTH;
-            var scaleH = this.height / SETTINGS.HEIGHT;
-            var lx1 = Math.ceil(l.x1*scaleW);
-            var ly1 = Math.ceil(l.y1*scaleH);
-            var lx2 = Math.ceil(l.x2*scaleW);
-            var ly2 = Math.ceil(l.y2*scaleH);
-            return {
-                x1: lx1,
-				y1: ly1,
-				x2: lx2,
-				y2: ly2,
-				color: l.color
-			};
-        });
-        this.snakes.forEach(function(snake){
-			snake.scaleSnake();
-        });
+		if(MAZE && SETTINGS) {
+            MAZE = MAZE.map(function (l) {
+                //console.log(SETTINGS.WIDTH, SETTINGS.HEIGHT, "==>", width, height);
+                var lx1 = Math.round((l.x1 / SETTINGS.WIDTH) * width);
+                var lx2 = Math.round((l.x2 / SETTINGS.WIDTH) * width);
+                var ly1 = Math.round((l.y1 / SETTINGS.HEIGHT) * height);
+                var ly2 = Math.round((l.y2 / SETTINGS.HEIGHT) * height);
+                //console.log(l.x1, l.y1, l.x2, l.y2, " ==> ",lx1, ly1, lx2, ly2);
+                return {
+                    x1: lx1,
+                    y1: ly1,
+                    x2: lx2,
+                    y2: ly2,
+                    color: l.color
+                };
+            });
+            this.snakes.forEach(function (snake) {
+                snake.scaleSnake();
+            });
+        }// make sure MAZE and SETTINGS are not null
 	};
 
 	this.show = function(){
@@ -112,8 +129,9 @@ function Board(){
         if(MAZE && SETTINGS) {
             MAZE.forEach(function (l) {
             	//console.log(l);
-                stroke(l.color);
-                strokeWeight(SETTINGS.GAMEGRIDSCALE / 10);
+				var wallColor = color(l.color[0], l.color[1], l.color[2]);
+                stroke(wallColor);
+                strokeWeight(5);
                 line(l.x1, l.y1, l.x2, l.y2);
             });
         }//if MAZE is generated

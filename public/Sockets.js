@@ -4,8 +4,15 @@ function Socket(){
   this.id = this.socket.id;
   this.pings = [];
   this.avgPing = 10;
+  this.startTime = new Date().getTime();
+  this.currentTick = 0;
+  this.previousTick = 0;
+  this.packetCount = 0;
 
   this.guiState = "startOfGame";
+
+  this.mazeHash = "";
+  this.settingsHash = "";
 
   var that = this;
 
@@ -15,11 +22,25 @@ function Socket(){
   this.socket.on('updateClients', updateGameState);
 
   var once = true;
+  var times = 0;
   function updateGameState(gameState){
+      that.packetCount++;
       if(that.id == null) that.id = that.socket.id;
+      CURRENTGAMESTATE = gameState;
 
-    //CALCULATE PING
+    //CALCULATE PING and packets per second
     var time = new Date().getTime();
+    var timeDiff = time - that.startTime;
+    that.currentTick = Math.floor(timeDiff % 1000);
+    if(that.currentTick < that.previousTick){
+        //once a second?
+        //console.log("test");
+        document.getElementById("packets").innerHTML = "PacketCount: " + that.packetCount;
+        that.packetCount = 0;
+    }
+    //if(times < 100){ console.log(that.currentTick, " < ", that.previousTick); times++; }
+      that.previousTick = that.currentTick;
+
     var ping = Math.abs(time - gameState.time);
     if(that.pings.length < 30) {
         that.pings.push(ping);
@@ -35,14 +56,14 @@ function Socket(){
       document.getElementById("PlayersConnected").innerHTML =
             "Number of Players Connected: " + gameState.playersConnected;
 
-    if(!MAZE){
-        MAZE = gameState.mazeLines;
-        MAZE.forEach(function(line){
-          line['color'] = color(4,255,239);
-        });
+    if(this.mazeHash != gameState.mazeLines.hash){
+        this.mazeHash = gameState.mazeLines.hash;
+        MAZE = gameState.mazeLines.lines;
+        BOARD.scaleBOARD();
     }
 
-    if(!SETTINGS){
+    if(this.settingsHash != gameState.settings.hash){
+        this.settingsHash = gameState.settings.hash;
       SETTINGS = gameState.settings;
       BOARD.init();
     }
@@ -52,6 +73,7 @@ function Socket(){
         this.guiState = gameState.guiState;
     }
 
+    //add or update local snakes
     gameState.snakes.forEach(function(snake) {
       if(BOARD.snakes.has(snake.name)){
           var oldSnake = BOARD.snakes.get(snake.name);
@@ -63,6 +85,18 @@ function Socket(){
           BOARD.snakes.set(snake.name, newSnake);
       }
     });
+
+
+    //remove local snakes if no longer in gameState
+      BOARD.snakes.forEach(function(boardSnake){
+          var snakeFound = false;
+          gameState.snakes.forEach(function (gameSnake) {
+              if(boardSnake.name == gameSnake.name) snakeFound = true;
+          });
+          if(!snakeFound){
+              BOARD.snakes.delete(boardSnake.name);
+          }
+      });
 
     if(once) console.log(gameState); once = false;
 
@@ -83,56 +117,8 @@ function Socket(){
       this.socket.emit('guiState', guiState);
     };
 
-    this.startGame = function(){
-      this.socket.emit("startGame", null);
-    };
-
-
-  // function socketCanvasSize(serverWindow){
-  //   // console.log("socketSetCanvasSize: ", serverWindow);
-  //   // if(serverWindow.width != width || serverWindow.height != height) {
-  //   //     BOARD.setCanvasSize(serverWindow.width, serverWindow.height);
-  //   //     GUI.recalculateGui();
-  //   // }
-  //   // MAZE = serverWindow.mazeLines;
-  //   // MAZE.forEach(function(line){
-  //   //   line['color'] = color(4,255,239);
-  //   // });
-  //   //console.log("mazelines: ", serverWindow.mazeLines);
-  // }
-  //
-  // function changeGuiState(guiState){
-  //   console.log("socket set gameState: ",guiState);
-  //   GUI.guiState(guiState, true);
-  // }
-  //
-  // // function socketKeyPressed(key){
-  // //   console.log("socket key pressed: ", key);
-  // // }
-  // //
-  // function socketAddSnake(snake){
-  //   console.log("socket add snake: ", snake);
-  //     BOARD.addRemoteSnake(snake.name, snake.x, snake.y, snake.startColor, snake.endColor, snake.tail, snake.size);
-  // }
-  //
-  // function applySnakeDir(snakeDir){
-  //   //console.log("socket snake dir: ", snakeDir);
-  //   var snake = BOARD.snakes.get(snakeDir.name);
-  //   snake.x = snakeDir.x;
-  //   snake.y = snakeDir.y;
-  //   snake.xspeed = snakeDir.xspeed;
-  //   snake.yspeed = snakeDir.yspeed;
-  //   BOARD.snakes.set(snakeDir.name, snake);
-  // }
-  //
-  // function applySnakeRespawn(snakeSpawn){
-  //   //console.log("snakeRespawn: ", snakeSpawn);
-  //   var snake = BOARD.snakes.get(snakeSpawn.name);
-  //   snake.createPreviousPosition(this.x, this.y, true, false);
-  //   snake.x = snakeSpawn.x;
-  //   snake.y = snakeSpawn.y;
-  //   snake.createPreviousPosition(this.x, this.y, false, true);
-  //   BOARD.snakes.set(snakeDir.name, snake);
-  // }
+    this.generateNewMaze = function(){
+        this.socket.emit('newMaze', null);
+    }
 
 }//end Sockets class function

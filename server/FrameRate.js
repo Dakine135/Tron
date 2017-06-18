@@ -1,13 +1,14 @@
 //NPM PACKAGES
 var express = require('express');
 var socket = require('socket.io');
+var hash = require('object-hash');
 const gameloop = require('node-gameloop');
 
 //OUR CODE
 var GAMESTATE = require('./GameState');
 var MAZE = require('./Maze');
-var BOARD = require('./Board');
 var SNAKE = require('./Snake');
+var LIB = require('./Lib');
 
 var app = express();
 var server = app.listen(3033);
@@ -17,21 +18,26 @@ var io = socket(server);
 var WALLREMOVALFACTOR = 3;
 var CEARUPSINGLEWALLS = true;
 var LEAVEWALLEDGE = false;
-var GAMEGRIDSCALE = 60;
-var WIDTH = 1400;
-var HEIGHT = 740;
+var HEIGHT = 50*9;
+var WIDTH = 50*16;
+var NUMOFCELLS = 20;
+var GAMEGRIDSCALE = WIDTH / NUMOFCELLS;
 var TICKSPERSECOND = 30;
 
 var CLIENTSETTINGS = {
+    hash: null,
     GAMEGRIDSCALE: GAMEGRIDSCALE,
     WIDTH: WIDTH,
     HEIGHT: HEIGHT
 };
+CLIENTSETTINGS.hash = hash(CLIENTSETTINGS);
+
 var NUMPLAYERSCONNECTED = 0;
 
 //snake Defaults
 var SNAKETAIL = 400;
 var SNAKESIZE = 10;
+var SNAKESPEEDSCALE = 3;
 
 app.use(express.static('../public'));
 console.log("Tron node server running");
@@ -42,39 +48,28 @@ var CLIENTS = new Map();
 var MAZELINES = new MAZE(GAMEGRIDSCALE, WIDTH, HEIGHT,
         WALLREMOVALFACTOR, CEARUPSINGLEWALLS, LEAVEWALLEDGE);
 
-var GAMELOOPID;
-var frameCount = 0;
-var CURRENTGAMESTATE = new GAMESTATE(frameCount, MAZELINES, CLIENTSETTINGS);
-function startGame(){
+//MAIN GAME COUNTER
+//start the loop at 30 fps (1000/30ms per frame) and grab its id
+var FRAMECOUNT = 0;
+var CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
 
-    //MAIN GAME COUNTER
-    //start the loop at 30 fps (1000/30ms per frame) and grab its id
-    frameCount = 0;
-    CURRENTGAMESTATE = new GAMESTATE(frameCount, MAZELINES, CLIENTSETTINGS);
-    //add snakes
-    CLIENTS.forEach(function (client) {
-        client.snake.reset(SNAKETAIL, SNAKESIZE);
-        CURRENTGAMESTATE.addSnake(client.snake);
-    });
+var GAMELOOPID = gameloop.setGameLoop(function(delta) {
+    FRAMECOUNT++;
+    //console.log('Frame=%s', frameCount);
 
-    GAMELOOPID = gameloop.setGameLoop(function(delta) {
-        frameCount++;
-        //console.log('Frame=%s', frameCount);
+    CURRENTGAMESTATE.update(FRAMECOUNT);
 
-        CURRENTGAMESTATE.update(frameCount);
+    var clientPackage = CURRENTGAMESTATE.package(NUMPLAYERSCONNECTED);
+    //console.log(clientPackage);
+    io.sockets.emit('updateClients', clientPackage);
 
-        var clientPackage = CURRENTGAMESTATE.package(NUMPLAYERSCONNECTED);
-        // console.log(clientPackage);
-        io.sockets.emit('updateClients', clientPackage);
+}, 1000 / TICKSPERSECOND); //end game loop 30 updates a second
 
-    }, 1000 / TICKSPERSECOND); //end game loop 30 updates a second
-
-//stop the loop 2 seconds later
+// // stop the loop 2 seconds later
 // setTimeout(function() {
 //     console.log('2000ms passed, stopping the game loop');
 //     gameloop.clearGameLoop(GAMELOOPID);
 // }, 2000);
-}
 
 var randomInt = function(min, max){
     min = Math.ceil(min);
@@ -89,9 +84,10 @@ function newConnection(socket){
     var tempClient = {
         key: socket.id,
         connectedAt: new Date(),
-        snake: new SNAKE(socket.id, SNAKETAIL, SNAKESIZE, WIDTH, HEIGHT, GAMEGRIDSCALE)
+        snake: new SNAKE(socket.id, SNAKETAIL, SNAKESIZE, SNAKESPEEDSCALE, WIDTH, HEIGHT, GAMEGRIDSCALE)
     };
 
+    CURRENTGAMESTATE.addSnake(tempClient.snake);
     CLIENTS.set(socket.id, tempClient);
 
     socket.on('snakeDir', updateSnakeDir);
@@ -105,9 +101,11 @@ function newConnection(socket){
         CURRENTGAMESTATE.updateGuiState(guiState);
     }
 
-    socket.on('startGame', startTheGame);
-    function startTheGame(){
-        startGame();
+    socket.on('newMaze', generateNewMaze);
+    function generateNewMaze(){
+        MAZELINES = new MAZE(GAMEGRIDSCALE, WIDTH, HEIGHT,
+            WALLREMOVALFACTOR, CEARUPSINGLEWALLS, LEAVEWALLEDGE);
+        CURRENTGAMESTATE.mazeLines = MAZELINES;
     }
 
 

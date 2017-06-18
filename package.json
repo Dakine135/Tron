@@ -20,7 +20,9 @@
   "dependencies": {
     "express": "^4.15.3",
     "node-gameloop": "^0.1.4",
+    "object-hash": "^1.1.8",
     "p5": "^0.5.11",
+    "semantic-ui": "^2.2.10",
     "socket.io": "^2.0.2"
   }
 }
