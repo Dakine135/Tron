@@ -60,10 +60,17 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
         this.x = newXPos;
         this.y = newYPos;
         this.createPreviousPosition(this.x, this.y, false, true);
-        this.dir(0, 0);
+        this.dir(0, 0, true);
   };//end spawn
 
-  this.dir = function(x, y) {
+  this.dir = function(x, y, spawn) {
+    var undo = {
+      xdir: this.xdir,
+        ydir: this.ydir,
+        xspeed: this.xspeed,
+        yspeed: this.yspeed,
+        direction: this.direction
+    };
     this.xdir = x;
     this.ydir = y;
     this.xspeed = x*this.speedScale;
@@ -79,6 +86,26 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
     else if(this.xspeed < 0 && this.yspeed == 0) this.direction = "W";
     else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
     else console.log("ERROR in DIRECTION");
+
+    //if you try to move the opposite direction or stop, then undo
+      var triggerUndo = false;
+      if(this.direction == "Stopped" && !spawn) triggerUndo = true;
+      else if(this.direction == "N" && undo.direction == "S") triggerUndo = true;
+      else if(this.direction == "S" && undo.direction == "N") triggerUndo = true;
+      else if(this.direction == "E" && undo.direction == "W") triggerUndo = true;
+      else if(this.direction == "W" && undo.direction == "E") triggerUndo = true;
+      else if(this.direction == "NE" && undo.direction == "SW") triggerUndo = true;
+      else if(this.direction == "SE" && undo.direction == "NW") triggerUndo = true;
+      else if(this.direction == "SW" && undo.direction == "NE") triggerUndo = true;
+      else if(this.direction == "NW" && undo.direction == "SE") triggerUndo = true;
+
+      if(triggerUndo){
+          this.xdir = undo.xdir;
+          this.ydir = undo.ydir;
+          this.xspeed = undo.xspeed;
+          this.yspeed = undo.yspeed;
+          this.direction = undo.direction;
+      }
 
     // if(this.lastXSpeed != this.xspeed || this.lastYSpeed != this.yspeed){
     //     this.lastXSpeed = this.xspeed;

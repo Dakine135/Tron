@@ -66,7 +66,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS){
 
     this.updateSnakeDir = function(snakeName, x, y){
       var snake = this.snakes.get(snakeName);
-      snake.dir(x,y);
+      snake.dir(x,y, false);
       this.snakes.set(snakeName, snake);
     };
 
