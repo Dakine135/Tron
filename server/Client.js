@@ -7,9 +7,35 @@ function Client(key, startScore, snake){
     this.score = startScore;
     this.snake = snake;
 
+    this.pings = [];
+    this.avgPing = 10;
+
     this.startingScore = startScore;
     this.reset = function(){
         this.score = this.startingScore;
     };
+
+    this.updatePing = function(pongTime, pingTime){
+        var ping = Math.abs(pongTime - pingTime);
+        if(this.pings.length < 30) {
+            this.pings.push(ping);
+        } else {
+            var calculateAverage = 0;
+            this.pings.forEach(function(ping){ calculateAverage = calculateAverage + ping});
+            calculateAverage = Math.round(calculateAverage / this.pings.length);
+            this.pings = [];
+            this.avgPing = Math.round((calculateAverage + this.avgPing) / 2);
+        }
+    };
+
+    this.package = function(){
+      var packagedClient = {
+          key: this.key,
+          name: this.name,
+          score: this.score,
+          ping: this.avgPing
+      };
+      return packagedClient;
+    }
 
 }//end Client

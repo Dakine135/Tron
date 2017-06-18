@@ -52,6 +52,12 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS){
         this.clients.set(clientKey, client);
     };
 
+    this.updatePing = function(clientKey, pongTime, pingTime){
+        var client = this.clients.get(clientKey);
+        client.updatePing(pongTime, pingTime);
+        this.clients.set(clientKey, client);
+    };
+
     this.removeSnake = function(snakeName){
         if(this.snakes.has(snakeName)) {
             this.snakes.delete(snakeName);
@@ -151,7 +157,9 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS){
         gameState['snakes'] = Array.from(this.snakes.values()).map(function(snake){
             return snake.package();
         });
-        gameState['clients'] = Array.from(this.clients.values());
+        gameState['clients'] = Array.from(this.clients.values()).map(function(client){
+            return client.package();
+        });
 
         return gameState;
     };

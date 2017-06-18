@@ -105,6 +105,11 @@ function newConnection(socket){
         CURRENTGAMESTATE.mazeLines = MAZELINES;
     }
 
+    socket.on('updatePing', updatePing);
+    function updatePing(time){
+        CURRENTGAMESTATE.updatePing(socket.id, new Date().getTime(), time);
+    }
+
     socket.on('disconnecting', clientDisconnected);
     function clientDisconnected(){
         console.log("client disconnected: ", socket.id);

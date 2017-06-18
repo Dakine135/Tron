@@ -2,8 +2,6 @@ function Socket(){
 
   this.socket = io();
   this.id = this.socket.id;
-  this.pings = [];
-  this.avgPing = 10;
   this.startTime = new Date().getTime();
   this.currentTick = 0;
   this.previousTick = 0;
@@ -24,8 +22,13 @@ function Socket(){
   var once = true;
   var times = 0;
   function updateGameState(gameState){
-      that.packetCount++;
+      that.sendPong(gameState.time);
       if(that.id == null) that.id = that.socket.id;
+      var myClient;
+      gameState.clients.forEach(function(client){
+          if(client.key === that.id) myClient = client;
+      });
+      that.packetCount++;
       CURRENTGAMESTATE = gameState;
 
     //CALCULATE PING and packets per second
@@ -41,24 +44,17 @@ function Socket(){
     //if(times < 100){ console.log(that.currentTick, " < ", that.previousTick); times++; }
       that.previousTick = that.currentTick;
 
-    var ping = Math.abs(time - gameState.time);
-    if(that.pings.length < 30) {
-        that.pings.push(ping);
-    } else {
-      var calculateAverage = 0;
-        that.pings.forEach(function(ping){ calculateAverage = calculateAverage + ping});
-        calculateAverage = Math.round(calculateAverage / that.pings.length);
-        that.pings = [];
-        that.avgPing = Math.round((calculateAverage + that.avgPing) / 2);
-        document.getElementById("ping").innerHTML = "Ping: " + that.avgPing;
-    }
+
+        if(myClient) {
+            document.getElementById("ping").innerHTML = "Ping: " + myClient.ping;
+        }
 
       document.getElementById("PlayersConnected").innerHTML =
             "Players: " + gameState.playersConnected;
 
         var name = that.id.split('');
       document.getElementById("playerName").innerHTML =
-          "You are: " + name[0]+name[1]+name[2]+name[3]+name[4]+name[5];
+          "You are: " + myClient.name;
 
         var scoreString = "Scores: \n";
         gameState.clients.forEach(function(client){
@@ -130,6 +126,10 @@ function Socket(){
 
     this.generateNewMaze = function(){
         this.socket.emit('newMaze', null);
-    }
+    };
+
+    this.sendPong = function(time){
+        this.socket.emit('updatePing', time);
+    };
 
 }//end Sockets class function
