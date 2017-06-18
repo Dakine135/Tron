@@ -1,5 +1,5 @@
 module.exports = GameState;
-var LIB = require('./Lib');
+var LIB = require('./lib.js');
 var hash = require('object-hash');
 function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS){
     this.frame = frame;

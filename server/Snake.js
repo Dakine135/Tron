@@ -1,5 +1,5 @@
 module.exports = Snake;
-var LIB = require('./Lib');
+var LIB = require('./lib.js');
 function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDSCALE){
   this.name = snakeName;
 

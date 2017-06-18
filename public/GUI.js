@@ -31,7 +31,7 @@ function Menu(){
       case "startOfGame":
         this.startOfGame = true;
         this.currentState = "startOfGame";
-        var welcomeText = new createText("Welcome To TRON!", 0.5, 0.4, 5,
+        var welcomeText = new createText("Welcome To FrameRate!", 0.5, 0.4, 5,
             this.buttonColor, this.strokeColor);
         var startButton = new TextButton("Start", 0.5, 0.6, 3,
             this.textColor, this.buttonColor, this.strokeColor, function(){

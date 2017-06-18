@@ -1,4 +1,4 @@
-var LIB = require('./Lib');
+var LIB = require('./lib.js');
 
 exports.randomInt = function(min, max){
     min = Math.ceil(min);

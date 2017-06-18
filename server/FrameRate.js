@@ -9,7 +9,7 @@ var GAMESTATE = require('./GameState');
 var MAZE = require('./Maze');
 var SNAKE = require('./Snake');
 var CLIENT = require('./Client');
-var LIB = require('./Lib');
+var LIB = require('./lib.js');
 
 var app = express();
 var server = app.listen(3033);
