@@ -5,11 +5,11 @@ var hash = require('object-hash');
 const gameloop = require('node-gameloop');
 
 //OUR CODE
-var GAMESTATE = require('./GameState');
-var MAZE = require('./Maze');
-var SNAKE = require('./Snake');
-var CLIENT = require('./Client');
-var LIB = require('./lib.js');
+var GAMESTATE = require('./server/GameState');
+var MAZE = require('./server/Maze');
+var SNAKE = require('./server/Snake');
+var CLIENT = require('./server/Client');
+var LIB = require('./server/lib.js');
 
 var app = express();
 var server = app.listen(3033);
