@@ -56,8 +56,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
         var newXPos = (this.GAMEGRIDSCALE * randomCol) + (this.GAMEGRIDSCALE / 2);
         var newYPos = (this.GAMEGRIDSCALE * randomRow) + (this.GAMEGRIDSCALE / 2);
         //console.log("spawn: ", newXPos, newYPos);
-        //this.tail = [];
-        this.createPreviousPosition(this.x, this.y, true, false);
+        //this.createPreviousPosition(this.x, this.y, true, false);
         this.x = newXPos;
         this.y = newYPos;
         this.createPreviousPosition(this.x, this.y, false, true);
@@ -123,7 +122,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
       this.tail[0].dist < this.maxSegmentDist &&
       !previousPosition.newSegment &&
       !this.tail[0].newSegment &&
-      this.tail[0].dir == previousPosition.dir) combine = true;
+      this.tail[0].dir === previousPosition.dir) combine = true;
 
     //updateTail with new previousPosition
     //var newSegment = this.newSegment(previousPosition);
@@ -136,8 +135,8 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
     }
     else{
       this.tail.unshift(previousPosition);
-      if(this.currentColor == 0) this.colorDirection = true;
-      else if(this.currentColor == (this.tailColors.length - 1)) this.colorDirection = false;
+      if(this.currentColor === 0) this.colorDirection = true;
+      else if(this.currentColor === (this.tailColors.length - 1)) this.colorDirection = false;
       if(this.colorDirection) this.currentColor++;
       else this.currentColor--;
     }
@@ -148,7 +147,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
     var nextX = Math.floor(this.x + this.xspeed);
     var nextY = Math.floor(this.y + this.yspeed);
 
-    if(nextX == this.x && nextY == this.y){
+    if(nextX === this.x && nextY === this.y){
       // dont change tail if you havent moved
       return;
     }
@@ -242,13 +241,15 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
   this.reset = function(tail, size) {
     this.maxTailLength = tail;
     this.size = size;
+    this.tail = [];
+    this.currTailLength = 0;
     this.intializeTailColor();
     this.spawn();
   };//end reset
 
   //takes a collision object (returned from tail collision)
   this.cutTail = function(collision){
-    if(collision == null) return 0;
+    if(collision === null) return 0;
     var oldLastPoint = this.tail[collision.tail];
     this.tail = this.tail.slice(0,collision.tail);
 
@@ -265,7 +266,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
     for(var i=0; i<this.tail.length; i++){
       this.currTailLength = this.currTailLength + this.tail[i].dist;
     }
-    return abs(this.currTailLength - oldTailLength);
+    return Math.abs(this.currTailLength - oldTailLength);
   };//end cutTail
 
   //returns the index of the tail that you collided width
@@ -298,5 +299,18 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
       tailIndex++;
     }
     return null;
+  };
+
+  this.package = function(){
+      var packagedSnake = {
+          name: this.name,
+          size: this.size,
+          x: this.x,
+          y: this.y,
+          tail: this.tail,
+          startColor: this.startColor,
+          endColor: this.endColor
+      }
+      return packagedSnake;
   };
 }//end snake class

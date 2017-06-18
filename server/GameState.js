@@ -1,26 +1,55 @@
 module.exports = GameState;
 var LIB = require('./Lib');
 var hash = require('object-hash');
-function GameState(frame, MAZELINES, CLIENTSETTINGS){
+function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS){
     this.frame = frame;
     this.time = new Date().getTime();
     this.mazeLines = MAZELINES;
     this.clientSettings = CLIENTSETTINGS;
     this.guiState = "startOfGame";
     this.previousState = this.guiState;
+    this.clients = new Map();
     this.snakes = new Map();
+    this.snakeDefaults = SNAKEDEFAULTS;
 
     this.restart = function() {
         console.log("RESTART");
         this.updateGuiState("startOfGame");
+        this.snakes.forEach(function(snake){
+           snake.reset();
+        });
+        this.clients.forEach(function(client){
+            client.reset();
+        });
 
     };// end restart
 
     this.addSnake = function(snake){
+        console.log("addSnake: ", snake.name);
         snake.chngColorRandom();
         snake.intializeTailColor();
         snake.spawn();
         this.snakes.set(snake.name, snake);
+    };
+
+    this.addClient = function(client){
+        this.clients.set(client.key, client);
+        this.addSnake(client.snake);
+    };
+
+    this.removeClient = function(clientKey){
+        if(this.clients.has(clientKey)){
+            this.clients.delete(clientKey);
+        }
+        if(this.snakes.has(clientKey)){
+            this.removeSnake(clientKey);
+        }
+    };
+
+    this.chngScore = function(clientKey, amount){
+        var client = this.clients.get(clientKey);
+        client.score = client.score + amount;
+        this.clients.set(clientKey, client);
     };
 
     this.removeSnake = function(snakeName){
@@ -76,7 +105,9 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                     if(collisionSnake != null){
                         console.log("Snake Tail Collision: ", collisionSnake);
                         snakeTail.tail[collisionSnake.tail].color = [255,255,255];
-                        snakeHead.spawn();
+                        snakeHead.reset(this.snakeDefaults.tailLength, this.snakeDefaults.size);
+                        this.chngScore(snakeHead.name, -1);
+                        this.chngScore(snakeTail.name, 1);
                     }
                 }//check if itself
             }//othersnake loop
@@ -87,8 +118,8 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                     console.log("Wall Collision: ",collisionWall);
                     collisionWall.wall.color = [255,255,255];
                     this.mazeLines.hash = hash(this.mazeLines);
-                    snakeHead.spawn();
-                    //  console.log("wall Hit");
+                    snakeHead.reset(this.snakeDefaults.tailLength, this.snakeDefaults.size);
+                    this.chngScore(snakeHead.name, -1);
                 }
             }//if a maze has been generated
 
@@ -117,7 +148,10 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             settings: this.clientSettings,
             playersConnected: NUMPLAYERSCONNECTED
         };
-        gameState['snakes'] = Array.from(this.snakes.values());
+        gameState['snakes'] = Array.from(this.snakes.values()).map(function(snake){
+            return snake.package();
+        });
+        gameState['clients'] = Array.from(this.clients.values());
 
         return gameState;
     };

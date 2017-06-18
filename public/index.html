@@ -26,22 +26,47 @@
     <!--<script src="../server/GameState.js" type="text/javascript"></script>-->
   </head>
   <body>
-
-    <div class="ui compact info message">
-      <div class="header">
-        STATS
+<br>
+  <div class="ui two column grid container">
+      <div class="right aligned column">
+        <div class="ui compact info message">
+          <div class="header">
+            STATS
+          </div>
+          <div class="ui three column grid">
+            <div class="column">
+              <div id="drawCount">FrameRate: </div>
+              <div id="ping">Ping: </div>
+              <div id="packets">PacketCount: </div>
+            </div>
+            <div class="column">
+              <div id="PlayersConnected">Players: </div>
+              <div id="playerName">You are: </div>
+            </div>
+            <div class="column">
+              <div id="scores">Scores:</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="drawCount">FrameRate: </div>
-      <div id="ping">Ping: </div>
-      <div id="packets">PacketCount: </div>
-      <div id="PlayersConnected">Number of Players Connected: </div>
-    </div>
 
-    <button class="ui green button" id="startGame" type="button" onClick="SOCKET.changeGuiState('gameRunning')">Start/Restart Game</button>
-    <button class="ui yellow button" id="pauseButton" type="button" onclick="GUI.pause()">Pause</button>
-    <button class="ui blue button" id="generateNewMaze" type="button" onclick="SOCKET.generateNewMaze()">New Maze</button>
+      <div class="left aligned column">
+        <div class="ui grid">
+            <div class="centered row">
+              <button class="ui green button" id="startGame" type="button"
+                      onClick="SOCKET.changeGuiState('gameRunning')">Start/Restart Game</button>
+            </div>
+            <div class="centered row">
+              <button class="ui yellow button" id="pauseButton" type="button"
+                      onclick="GUI.pause()">Pause</button>
+              <button class="ui blue button" id="generateNewMaze" type="button"
+                      onclick="SOCKET.generateNewMaze()">New Maze</button>
+            </div>
+        </div>
+      </div>
+    </div> <!-- END Main grid-->
 
-    <div id='CanvasContainer'></div>
+    <div class="ui container" id='CanvasContainer'></div>
 
   </body>
 

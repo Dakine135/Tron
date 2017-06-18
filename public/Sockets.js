@@ -54,7 +54,18 @@ function Socket(){
     }
 
       document.getElementById("PlayersConnected").innerHTML =
-            "Number of Players Connected: " + gameState.playersConnected;
+            "Players: " + gameState.playersConnected;
+
+        var name = that.id.split('');
+      document.getElementById("playerName").innerHTML =
+          "You are: " + name[0]+name[1]+name[2]+name[3]+name[4]+name[5];
+
+        var scoreString = "Scores: \n";
+        gameState.clients.forEach(function(client){
+            scoreString = scoreString + client.name + ": "+client.score+ "\n";
+        });
+      document.getElementById("scores").innerHTML = scoreString;
+
 
     if(this.mazeHash != gameState.mazeLines.hash){
         this.mazeHash = gameState.mazeLines.hash;

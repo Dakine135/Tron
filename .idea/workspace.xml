@@ -18,31 +18,51 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="Client.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/Client.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="40" lean-forward="false" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameState.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/GameState.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="21" column="27" lean-forward="true" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="663">
-              <caret line="39" column="139" lean-forward="false" selection-start-line="39" selection-start-column="139" selection-end-line="39" selection-end-column="139" />
+            <state relative-caret-position="782">
+              <caret line="46" column="44" lean-forward="false" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FrameRate.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/FrameRate.js">
+      <file leaf-file-name="Sockets.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/Sockets.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="663">
-              <caret line="39" column="23" lean-forward="false" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
+            <state relative-caret-position="935">
+              <caret line="64" column="75" lean-forward="false" selection-start-line="64" selection-start-column="75" selection-end-line="64" selection-end-column="75" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameState.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/GameState.js">
+      <file leaf-file-name="GUI.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/GUI.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="986">
-              <caret line="67" column="41" lean-forward="true" selection-start-line="67" selection-start-column="41" selection-end-line="67" selection-end-column="41" />
+            <state relative-caret-position="1479">
+              <caret line="87" column="9" lean-forward="false" selection-start-line="87" selection-start-column="9" selection-end-line="88" selection-end-column="53" />
               <folding />
             </state>
           </provider>
@@ -51,18 +71,18 @@
       <file leaf-file-name="Snake.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/Snake.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="59" column="8" lean-forward="false" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
+            <state relative-caret-position="1236">
+              <caret line="303" column="14" lean-forward="false" selection-start-line="303" selection-start-column="7" selection-end-line="303" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GUI.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/public/GUI.js">
+      <file leaf-file-name="FrameRate.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/FrameRate.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="969">
-              <caret line="87" column="23" lean-forward="false" selection-start-line="87" selection-start-column="23" selection-end-line="87" selection-end-column="23" />
+            <state relative-caret-position="714">
+              <caret line="42" column="14" lean-forward="false" selection-start-line="42" selection-start-column="4" selection-end-line="42" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -93,14 +113,15 @@
         <option value="$PROJECT_DIR$/public/Snake.js" />
         <option value="$PROJECT_DIR$/server/lib.js" />
         <option value="$PROJECT_DIR$/server/Maze.js" />
-        <option value="$PROJECT_DIR$/public/Sockets.js" />
-        <option value="$PROJECT_DIR$/public/Board.js" />
         <option value="$PROJECT_DIR$/public/sketch.js" />
-        <option value="$PROJECT_DIR$/public/index.html" />
-        <option value="$PROJECT_DIR$/server/GameState.js" />
-        <option value="$PROJECT_DIR$/server/Snake.js" />
+        <option value="$PROJECT_DIR$/public/Board.js" />
         <option value="$PROJECT_DIR$/server/FrameRate.js" />
+        <option value="$PROJECT_DIR$/server/Snake.js" />
         <option value="$PROJECT_DIR$/public/GUI.js" />
+        <option value="$PROJECT_DIR$/public/Sockets.js" />
+        <option value="$PROJECT_DIR$/public/index.html" />
+        <option value="$PROJECT_DIR$/server/Client.js" />
+        <option value="$PROJECT_DIR$/server/GameState.js" />
       </list>
     </option>
   </component>
@@ -276,12 +297,12 @@
       <updated>1496273875498</updated>
       <workItem from="1496273876858" duration="244000" />
       <workItem from="1497655059286" duration="126000" />
-      <workItem from="1497655189645" duration="42850000" />
+      <workItem from="1497655189645" duration="49337000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43220000" />
+    <option name="totallyTimeSpent" value="49707000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1058" y="-608" width="1066" height="1696" extended-state="6" />
@@ -353,14 +374,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/Sockets.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="61" column="27" lean-forward="false" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/Maze.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -387,56 +400,72 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/Board.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1717">
-          <caret line="101" column="4" lean-forward="true" selection-start-line="101" selection-start-column="4" selection-end-line="101" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/Snake.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="8" lean-forward="false" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="39" column="139" lean-forward="false" selection-start-line="39" selection-start-column="139" selection-end-line="39" selection-end-column="139" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/GameState.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="986">
-          <caret line="67" column="41" lean-forward="true" selection-start-line="67" selection-start-column="41" selection-end-line="67" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/Snake.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="59" column="8" lean-forward="false" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
+        <state relative-caret-position="595">
+          <caret line="35" column="32" lean-forward="true" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/FrameRate.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="39" column="23" lean-forward="false" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
+        <state relative-caret-position="714">
+          <caret line="42" column="14" lean-forward="false" selection-start-line="42" selection-start-column="4" selection-end-line="42" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/Snake.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="757">
+          <caret line="57" column="5" lean-forward="false" selection-start-line="57" selection-start-column="5" selection-end-line="64" selection-end-column="83" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/Snake.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1236">
+          <caret line="303" column="14" lean-forward="false" selection-start-line="303" selection-start-column="7" selection-end-line="303" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/GUI.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="87" column="23" lean-forward="false" selection-start-line="87" selection-start-column="23" selection-end-line="87" selection-end-column="23" />
+        <state relative-caret-position="1479">
+          <caret line="87" column="9" lean-forward="false" selection-start-line="87" selection-start-column="9" selection-end-line="88" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/Sockets.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="935">
+          <caret line="64" column="75" lean-forward="false" selection-start-line="64" selection-start-column="75" selection-end-line="64" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="782">
+          <caret line="46" column="44" lean-forward="false" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/Client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="40" lean-forward="false" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/GameState.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="27" lean-forward="true" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="27" />
           <folding />
         </state>
       </provider>

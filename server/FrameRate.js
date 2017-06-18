@@ -8,6 +8,7 @@ const gameloop = require('node-gameloop');
 var GAMESTATE = require('./GameState');
 var MAZE = require('./Maze');
 var SNAKE = require('./Snake');
+var CLIENT = require('./Client');
 var LIB = require('./Lib');
 
 var app = express();
@@ -38,20 +39,26 @@ var NUMPLAYERSCONNECTED = 0;
 var SNAKETAIL = 400;
 var SNAKESIZE = 10;
 var SNAKESPEEDSCALE = 3;
+var SNAKEDEFAULTS = {
+    tailLength: SNAKETAIL,
+    size: SNAKESIZE,
+    snakeSpeedScale: SNAKESPEEDSCALE
+};
+
+var STARTSCORE = 10;
 
 app.use(express.static('../public'));
 console.log("Tron node server running");
 
 io.sockets.on('connection', newConnection);
 
-var CLIENTS = new Map();
 var MAZELINES = new MAZE(GAMEGRIDSCALE, WIDTH, HEIGHT,
         WALLREMOVALFACTOR, CEARUPSINGLEWALLS, LEAVEWALLEDGE);
 
 //MAIN GAME COUNTER
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
-var CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
+var CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS);
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;
@@ -71,24 +78,14 @@ var GAMELOOPID = gameloop.setGameLoop(function(delta) {
 //     gameloop.clearGameLoop(GAMELOOPID);
 // }, 2000);
 
-var randomInt = function(min, max){
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-};
-
 function newConnection(socket){
   //Client first connects, create Client object and snake
   console.log("a user connected: ", socket.id);
     NUMPLAYERSCONNECTED++;
-    var tempClient = {
-        key: socket.id,
-        connectedAt: new Date(),
-        snake: new SNAKE(socket.id, SNAKETAIL, SNAKESIZE, SNAKESPEEDSCALE, WIDTH, HEIGHT, GAMEGRIDSCALE)
-    };
+    var snake = new SNAKE(socket.id, SNAKETAIL, SNAKESIZE, SNAKESPEEDSCALE, WIDTH, HEIGHT, GAMEGRIDSCALE);
+    var tempClient = new CLIENT(socket.id, STARTSCORE, snake);
 
-    CURRENTGAMESTATE.addSnake(tempClient.snake);
-    CLIENTS.set(socket.id, tempClient);
+    CURRENTGAMESTATE.addClient(tempClient);
 
     socket.on('snakeDir', updateSnakeDir);
     function updateSnakeDir(snakeDir){
@@ -108,12 +105,10 @@ function newConnection(socket){
         CURRENTGAMESTATE.mazeLines = MAZELINES;
     }
 
-
     socket.on('disconnecting', clientDisconnected);
     function clientDisconnected(){
         console.log("client disconnected: ", socket.id);
-        CLIENTS.delete(socket.id);
-        CURRENTGAMESTATE.removeSnake(socket.id);
+        CURRENTGAMESTATE.removeClient(socket.id);
         NUMPLAYERSCONNECTED--;
     }
 

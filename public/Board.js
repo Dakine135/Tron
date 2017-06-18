@@ -25,13 +25,14 @@ function Board(){
         // this.canvasWidth = this.canvasHeight * (16/9);
 
 		this.canvas = createCanvas(this.canvasWidth, this.canvasHeight);
-        // this.canvas.setAttribute('style', "padding-left: 0; "+
-			// "padding-right: 0; "+
-			// "margin-left: auto; "+
-        // 	"margin-right: auto; "+
-        // 	"display: block; "+
-        // 	"width: 800px;");
 		this.canvas.parent('CanvasContainer');
+        document.getElementById("CanvasContainer").setAttribute('style',
+            "width: "+this.canvasWidth+"px; "+
+            "height: "+this.canvasHeight+"px; "+
+            "min-width: "+this.canvasWidth+"px; "+
+            "min-height: "+this.canvasHeight+"px; "
+			//+ "border:1px solid #000000;"
+        );
         this.createBackground();
         GUI.recalculateGui();
         BOARD.scaleBOARD();
