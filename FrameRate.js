@@ -47,7 +47,7 @@ var SNAKEDEFAULTS = {
 
 var STARTSCORE = 10;
 
-app.use(express.static('../public'));
+app.use(express.static('./public'));
 console.log("Tron node server running");
 
 io.sockets.on('connection', newConnection);
