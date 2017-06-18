@@ -12,11 +12,13 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS){
     this.snakes = new Map();
     this.snakeDefaults = SNAKEDEFAULTS;
 
+    var that = this;
+
     this.restart = function() {
         console.log("RESTART");
         this.updateGuiState("startOfGame");
         this.snakes.forEach(function(snake){
-           snake.reset();
+           snake.reset(that.snakeDefaults.tailLength, that.snakeDefaults.size);
         });
         this.clients.forEach(function(client){
             client.reset();
