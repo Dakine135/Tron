@@ -8,13 +8,8 @@ need to install nodejs recommended https://nodejs.org/en/ then
 
 ```
 npm install express
-```
-
-```
 npm install socketio
-```
-
-```
+npm install node-gameloop
 npm install -g nodemon
 ```
 
@@ -23,7 +18,7 @@ npm install -g nodemon
 In terminal/command navigate to Tron directory. Start node server with
 
 ```
-nodemon server.js
+nodemon FrameRate.js
 ```
 It will automatically detect code changes and refresh the node server.
 Clients will still need to be refreshed.
