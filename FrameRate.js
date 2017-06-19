@@ -33,10 +33,8 @@ var CLIENTSETTINGS = {
 };
 CLIENTSETTINGS.hash = hash(CLIENTSETTINGS);
 
-var NUMPLAYERSCONNECTED = 0;
-
 //snake Defaults
-var SNAKETAIL = 400;
+var SNAKETAIL = 800;
 var SNAKESIZE = 10;
 var SNAKESPEEDSCALE = 3;
 var SNAKEDEFAULTS = {
@@ -58,7 +56,7 @@ var MAZELINES = new MAZE(GAMEGRIDSCALE, WIDTH, HEIGHT,
 //MAIN GAME COUNTER
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
-var CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS);
+var CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS, GAMEGRIDSCALE);
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;
@@ -66,7 +64,7 @@ var GAMELOOPID = gameloop.setGameLoop(function(delta) {
 
     CURRENTGAMESTATE.update(FRAMECOUNT);
 
-    var clientPackage = CURRENTGAMESTATE.package(NUMPLAYERSCONNECTED);
+    var clientPackage = CURRENTGAMESTATE.package();
     //console.log(clientPackage);
     io.sockets.emit('updateClients', clientPackage);
 
@@ -81,7 +79,6 @@ var GAMELOOPID = gameloop.setGameLoop(function(delta) {
 function newConnection(socket){
   //Client first connects, create Client object and snake
   console.log("a user connected: ", socket.id);
-    NUMPLAYERSCONNECTED++;
     var snake = new SNAKE(socket.id, SNAKETAIL, SNAKESIZE, SNAKESPEEDSCALE, WIDTH, HEIGHT, GAMEGRIDSCALE);
     var tempClient = new CLIENT(socket.id, STARTSCORE, snake);
 
@@ -114,66 +111,6 @@ function newConnection(socket){
     function clientDisconnected(){
         console.log("client disconnected: ", socket.id);
         CURRENTGAMESTATE.removeClient(socket.id);
-        NUMPLAYERSCONNECTED--;
     }
-
-
-  // sendNewGuiState("startOfGame");
-  //
-  // socket.on('getCanvasSize', setCanvasSizeOfClients);
-  // socket.on('addSnake', sendNewSnake);
-  // socket.on('snakeDir', sendSnakeDir);
-  // socket.on('snakeRespawn', sendSnakeRespawn);
-  // socket.on('guiState', sendNewGuiState);
-  //
-  //
-  // function setCanvasSizeOfClients(currentWindow){
-  //   console.log("window size of ", socket.id, " is ",currentWindow);
-  //   sessionWindowSizes.set(socket.id, currentWindow);
-  //   setWindow = {
-  //     width: null,
-  //     height: null
-  //   };
-  //   sessionWindowSizes.forEach(function(currentWindow){
-  //     console.log("currentWindow in loop: ", currentWindow);
-  //     var setWidth = Math.round((currentWindow.width - 50)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-  //     var setHeight = Math.round((currentWindow.height - 150)/GAMEGRIDSCALE)*GAMEGRIDSCALE;
-  //     if(setWindow.width == null ||
-  //        setWindow.width > setWidth) setWindow.width = setWidth;
-  //     if(setWindow.height == null ||
-  //        setWindow.height > setHeight) setWindow.height = setHeight;
-  //   });
-  //
-  //   if(setWindowOLD == null || setWindow.mazeLines == null ||
-  //      setWindow.width != setWindowOLD.width || setWindow.height != setWindowOLD.height) {
-  //         setWindow.mazeLines = new MAZE(GAMEGRIDSCALE, setWindow.width, setWindow.height,
-  //                                        WALLREMOVALFACTOR, CEARUPSINGLEWALLS, LEAVEWALLEDGE);
-  //   }
-  //
-  //   setWindowOLD = setWindow;
-  //   io.sockets.emit('getCanvasSize', setWindow);
-  // }//end setCanvasSizeOfClients
-  //
-  //
-  //   function sendNewSnake(snake){
-  //     socket.broadcast.emit('addSnake', snake);
-  //   }//end sendNewSnake
-  //
-  //   function sendSnakeDir(snakeDir){
-  //     socket.broadcast.emit('snakeDir', snakeDir);
-  //   }
-  //
-  //   function sendSnakeRespawn(snakeRespawn){
-  //     socket.broadcast.emit('snakeRespawn', snakeRespawn);
-  //   }
-  //
-  //
-  // function sendNewGuiState(guiState){
-  //   socket.broadcast.emit('guiState', guiState);
-  // }
-
-
-
-
 
 }//new connection "per socket"

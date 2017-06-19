@@ -55,6 +55,7 @@ function draw(){
 
     BOARD.show();
     BOARD.showSnakes();
+    BOARD.showPowerUps();
     GUI.drawGUI();
 
     previousTick = currentTick;

@@ -228,9 +228,9 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
 
   //change increment multiplier for snakes speed up or down
   this.chngSpeed = function(input) {
-    if ((s.speedScale + input) > 0){
-      s.speedScale = Math.round(s.speedScale + input);
-      s.dir(s.xdir,s.ydir);
+    if ((this.speedScale + input) > 0){
+      this.speedScale = Math.round(this.speedScale + input);
+      this.dir(s.xdir,s.ydir);
     } else {
       console.log("cannot reduce speed");
     }
@@ -298,8 +298,10 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
 
   //returns the index of the tail that you collided width
   //returns -1 if did not collide
-  this.checkCollisionWithTail = function(tailInput){
+  this.checkCollisionWithTail = function(snake){
+    var tailInput = snake.tail;
     var tailIndex = 0;
+    if(snake.name == this.name) tailIndex = 2;
     var lineStartX;
     var lineStartY;
     var lineEndX;

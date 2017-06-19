@@ -50,7 +50,7 @@ function Socket(){
         }
 
       document.getElementById("PlayersConnected").innerHTML =
-            "Players: " + gameState.playersConnected;
+            "Players: " + gameState.clients.length;
 
         var name = that.id.split('');
       document.getElementById("playerName").innerHTML =
@@ -93,7 +93,6 @@ function Socket(){
       }
     });
 
-
     //remove local snakes if no longer in gameState
       BOARD.snakes.forEach(function(boardSnake){
           var snakeFound = false;
@@ -105,10 +104,10 @@ function Socket(){
           }
       });
 
+      BOARD.powerUps = gameState.powerUps;
+
     if(once) console.log(gameState); once = false;
 
-    // console.log("gameState = frame:%s time:%s ping:%s",
-    //     gameState.frame, gameState.time, that.avgPing);
 
   }//end updateGameState
 

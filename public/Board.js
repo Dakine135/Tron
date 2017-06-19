@@ -11,6 +11,8 @@ function Board(){
 	//snake stuff
 	this.snakes = new Map();
 
+    this.powerUps = [];
+
 
 	this.init = function() {
         var totalHeight = Math.round((window.innerHeight - 150)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
@@ -45,6 +47,15 @@ function Board(){
 	this.showSnakes = function(){
 		this.snakes.forEach(function(snake,snakeName){
 			snake.show();
+		});
+	};
+
+	this.showPowerUps = function(){
+		this.powerUps.forEach(function(powerUp){
+			fill(255,255,255);
+			stroke(255,255,255);
+			strokeWeight(Math.ceil(powerUp.size / 10));
+			rect(powerUp.x, powerUp.y, (powerUp.size), powerUp.size);
 		});
 	};
 
