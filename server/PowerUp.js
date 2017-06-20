@@ -30,10 +30,10 @@ function PowerUp(GAMEGRIDSCALE){
         //need to create the collideRectCircle or equvalent function, probly the line to rect one
         //put in library
         //var hit = collideRectCircle(this.x,this.y,this.size,this.size,snake.x,snake.y,snake.size);
-        if (hit){
-            this.applyEffect(snake);
-            this.spawn();
-        }
+        // if (hit){
+        //     this.applyEffect(snake);
+        //     this.spawn();
+        // }
     };
     this.applyEffect = function(snake){
         console.log("HIT");
