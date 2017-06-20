@@ -301,7 +301,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
   this.checkCollisionWithTail = function(snake){
     var tailInput = snake.tail;
     var tailIndex = 0;
-    if(snake.name == this.name) tailIndex = 2;
+    if(snake.name == this.name) tailIndex = 4
     var lineStartX;
     var lineStartY;
     var lineEndX;
