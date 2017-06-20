@@ -37,6 +37,9 @@ exports.collidePointLine = function(px,py,x1,y1,x2,y2, buffer){
     return false;
 };//end collidePointLine
 
+
+//returns collide object
+// { x: number, y: number, hit: boolean}
 exports.collideLineLine = function(x1, y1, x2, y2, x3, y3, x4, y4) {
 
     var intersection;
@@ -68,3 +71,29 @@ exports.collideLineLine = function(x1, y1, x2, y2, x3, y3, x4, y4) {
     return intersection;
 
 }; //end collideLineLine
+
+exports.collideLineRect = function(x1, y1, x2, y2, rx, ry, rw, rh) {
+
+    // check if the line has hit any of the rectangle's sides. uses the collideLineLine function above
+    var left, right, top, bottom, intersection;
+
+    left =   LIB.collideLineLine(x1,y1,x2,y2, rx,ry,rx, ry+rh);
+    right =  LIB.collideLineLine(x1,y1,x2,y2, rx+rw,ry, rx+rw,ry+rh);
+    top =    LIB.collideLineLine(x1,y1,x2,y2, rx,ry, rx+rw,ry);
+    bottom = LIB.collideLineLine(x1,y1,x2,y2, rx,ry+rh, rx+rw,ry+rh);
+    intersection = {
+        "left" : left,
+        "right" : right,
+        "top" : top,
+        "bottom" : bottom,
+        "hit": null
+    };
+
+    // if ANY of the above are true, the line has hit the rectangle
+    if (left.hit || right.hit || top.hit || bottom.hit) {
+        intersection.hit = true;
+    } else intersection.hit = false;
+
+    return intersection;
+
+}; //end collideLineRect

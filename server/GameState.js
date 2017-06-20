@@ -2,20 +2,19 @@ module.exports = GameState;
 var LIB = require('./lib.js');
 var PowerUp = require('./PowerUp.js');
 var hash = require('object-hash');
-function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS, GAMEGRIDSCALE){
+var CONFIG = require('./Config.js');
+function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();
     this.mazeLines = MAZELINES;
     this.clientSettings = CLIENTSETTINGS;
-    this.gameGridScale = GAMEGRIDSCALE;
     this.guiState = "startOfGame";
     this.previousState = this.guiState;
     this.clients = new Map();
     this.snakes = new Map();
     this.powerUps = [];
-    this.snakeDefaults = SNAKEDEFAULTS;
 
-    var tempPowerUp = new PowerUp(this.gameGridScale);
+    var tempPowerUp = new PowerUp();
     this.powerUps.push(tempPowerUp);
 
     var that = this;
@@ -24,7 +23,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS, GAMEGRIDSCAL
         console.log("RESTART");
         this.updateGuiState("startOfGame");
         this.snakes.forEach(function(snake){
-           snake.reset(that.snakeDefaults.tailLength, that.snakeDefaults.size);
+           snake.reset();
         });
         this.clients.forEach(function(client){
             client.reset();
@@ -118,9 +117,9 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS, GAMEGRIDSCAL
                     var snakeTail = this.snakes.get(snakeTailKey);
                     var collisionSnake = snakeHead.checkCollisionWithTail(snakeTail);
                     if(collisionSnake != null){
-                        console.log("Snake Tail Collision: ", collisionSnake);
+                        //console.log("Snake Tail Collision: ", collisionSnake);
                         snakeTail.tail[collisionSnake.tail].color = [255,255,255];
-                        snakeHead.reset(this.snakeDefaults.tailLength, this.snakeDefaults.size);
+                        snakeHead.reset();
                         this.chngScore(snakeHead.name, -1);
                         if(snakeHeadKey != snakeTailKey) this.chngScore(snakeTail.name, 1);
                     }
@@ -130,17 +129,18 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS, SNAKEDEFAULTS, GAMEGRIDSCAL
             if(this.mazeLines){
                 var collisionWall = this.checkCollisionWithWalls(snakeHead);
                 if(collisionWall && collisionWall.hit){
-                    console.log("Wall Collision: ",collisionWall);
+                    //console.log("Wall Collision: ",collisionWall);
                     collisionWall.wall.color = [255,255,255];
                     this.mazeLines.hash = hash(this.mazeLines);
-                    snakeHead.reset(this.snakeDefaults.tailLength, this.snakeDefaults.size);
+                    snakeHead.reset();
                     this.chngScore(snakeHead.name, -1);
                 }
             }//if a maze has been generated
 
             //check powerUps for Collision
             this.powerUps.forEach(function(powerUp){
-               powerUp.checkForCollisions(snakeHead);
+               var collision = powerUp.checkForCollisions(snakeHead);
+               //event is handled inside powerUp, but collision contains the location
             });
 
         }//selfsnake loop

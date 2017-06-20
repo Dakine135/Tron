@@ -1,20 +1,21 @@
 module.exports = PowerUp;
 var LIB = require('./lib.js');
-function PowerUp(GAMEGRIDSCALE){
+var CONFIG = require('./Config.js');
+function PowerUp(){
 
     this.x = 30;
     this.y = 30;
     this.type = " ";
-    this.gameGridScale = GAMEGRIDSCALE;
-    this.size = (this.gameGridScale/5);
+    this.gameGridScale = CONFIG.GAMEGRIDSCALE;
+    this.size = (this.gameGridScale/3);
 
     this.spawn = function (){
-        var widthCells = width / this.gameGridScale;
-        var heightCells = height / this.gameGridScale;
-        var randomRow = floor(random(0, heightCells));
-        var randomCol = floor(random(0, widthCells));
-        var newXPos = (this.gameGridScale * randomCol) + (this.gameGridScale/2)-(this.size/2);
-        var newYPos = (this.gameGridScale * randomRow) + (this.gameGridScale/2)-(this.size/2);
+        var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
+        var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
+        var randomRow = LIB.randomInt(0, heightCells);
+        var randomCol = LIB.randomInt(0, widthCells);
+        var newXPos = (CONFIG.GAMEGRIDSCALE * randomCol) + (CONFIG.GAMEGRIDSCALE / 2)-(this.size/2);
+        var newYPos = (CONFIG.GAMEGRIDSCALE * randomRow) + (CONFIG.GAMEGRIDSCALE / 2)-(this.size/2);
         this.x = newXPos;
         this.y = newYPos;
 
@@ -27,13 +28,18 @@ function PowerUp(GAMEGRIDSCALE){
     };
 
     this.checkForCollisions = function(snake){
-        //need to create the collideRectCircle or equvalent function, probly the line to rect one
-        //put in library
-        //var hit = collideRectCircle(this.x,this.y,this.size,this.size,snake.x,snake.y,snake.size);
-        // if (hit){
-        //     this.applyEffect(snake);
-        //     this.spawn();
-        // }
+        if(snake.tail.length < 1) return null;
+        var lineX1 = snake.x;
+        var lineY1 = snake.y;
+        var lineX2 = snake.tail[0].x;
+        var lineY2 = snake.tail[0].y;
+        var collision = LIB.collideLineRect(lineX1, lineY1, lineX2, lineY2, this.x, this.y, this.size, this.size);
+        //console.log(collision);
+        if (collision && collision.hit){
+            this.applyEffect(snake);
+            this.spawn();
+        }
+        return collision;
     };
     this.applyEffect = function(snake){
         console.log("HIT");

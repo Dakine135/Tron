@@ -1,16 +1,17 @@
 module.exports = Client;
-function Client(key, startScore, snake){
+var CONFIG = require('./Config.js');
+function Client(key, snake){
     this.key = key;
     var keySplit = key.split('');
     this.name = ""+keySplit[0]+keySplit[1]+keySplit[2]+keySplit[3]+keySplit[4]+keySplit[5];
     this.connectedAt = new Date();
-    this.score = startScore;
+    this.score = CONFIG.snakeDefaults.STARTSCORE;
     this.snake = snake;
 
     this.pings = [];
     this.avgPing = 10;
 
-    this.startingScore = startScore;
+    this.startingScore = CONFIG.snakeDefaults.STARTSCORE;
     this.reset = function(){
         this.score = this.startingScore;
     };

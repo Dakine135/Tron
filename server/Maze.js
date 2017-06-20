@@ -2,22 +2,22 @@
 // Recursive backtracker
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
 module.exports = Maze;
+var CONFIG = require('./Config.js');
 var hash = require('object-hash');
-function Maze(cellWidth, width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge){
-  console.log("CreateMaze: cellWidth, width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge: ",
-    cellWidth,width, height, RemoveWallsChance, removeLoneWalls, leaveWallEdge);
+function Maze(){
+  console.log("CreateMaze");
 
-this.w = cellWidth;
-this.cols = Math.floor(width/this.w);
-this.rows = Math.floor(height/this.w);
+this.w = CONFIG.GAMEGRIDSCALE;
+this.cols = Math.floor(CONFIG.WIDTH/this.w);
+this.rows = Math.floor(CONFIG.HEIGHT/this.w);
 this.grid = [];
 this.lines = new Map();
 this.current = null;
 this.stack = [];
 this.finished = false;
-this.knockOutWalls = RemoveWallsChance;
-this.removeLoneWalls = removeLoneWalls;
-this.leaveWallEdge = leaveWallEdge;
+this.knockOutWalls = CONFIG.WALLREMOVALFACTOR;
+this.removeLoneWalls = CONFIG.CEARUPSINGLEWALLS;
+this.leaveWallEdge = CONFIG.LEAVEWALLEDGE;
 
 this.generateMaze = function() {
     for (var j = 0; j < this.rows; j++) {

@@ -1,14 +1,12 @@
 module.exports = Snake;
 var LIB = require('./lib.js');
-function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDSCALE){
+var CONFIG = require('./Config.js');
+function Snake(snakeName){
+  console.log("createSnake: ",snakeName);
   this.name = snakeName;
 
-  this.WIDTH = width;
-  this.HEIGHT = height;
-  this.GAMEGRIDSCALE = GAMEGRIDSCALE;
-
   //starting position
-  this.size = size;
+  this.size = CONFIG.snakeDefaults.SNAKESIZE;
   this.x = this.WIDTH/2 - (this.size/2);
   this.y = this.HEIGHT/2 - (this.size/2);
   this.direction = "Stopped";
@@ -20,7 +18,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
   this.yspeed = 0;
   this.lastXSpeed = this.xspeed;
   this.lastYSpeed = this.yspeed;
-  this.speedScale = speedScale;
+  this.speedScale = CONFIG.snakeDefaults.SNAKESPEEDSCALE;
 
   //tail and color stuff
   this.tail = [];
@@ -30,7 +28,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
   this.endColor = [255,255,255];
   this.colorDirection = true;
   this.currTailLength = 0; //length in pixels
-  this.maxTailLength = tailLength;
+  this.maxTailLength = CONFIG.snakeDefaults.SNAKETAIL;
   this.maxSegmentDist = this.maxTailLength / 40;
 
   this.intializeTailColor = function(){
@@ -49,12 +47,12 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
 
 
   this.spawn = function(){
-        var widthCells = this.WIDTH / this.GAMEGRIDSCALE;
-        var heightCells = this.HEIGHT / this.GAMEGRIDSCALE;
+        var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
+        var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
         var randomRow = LIB.randomInt(0, heightCells);
         var randomCol = LIB.randomInt(0, widthCells);
-        var newXPos = (this.GAMEGRIDSCALE * randomCol) + (this.GAMEGRIDSCALE / 2);
-        var newYPos = (this.GAMEGRIDSCALE * randomRow) + (this.GAMEGRIDSCALE / 2);
+        var newXPos = (CONFIG.GAMEGRIDSCALE * randomCol) + (CONFIG.GAMEGRIDSCALE / 2);
+        var newYPos = (CONFIG.GAMEGRIDSCALE * randomRow) + (CONFIG.GAMEGRIDSCALE / 2);
         //console.log("spawn: ", newXPos, newYPos);
         //this.createPreviousPosition(this.x, this.y, true, false);
         this.x = newXPos;
@@ -181,9 +179,9 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
 
     //Wall wrapping code
     var leftWall = -1;
-    var rightWall = width + 1;
+    var rightWall = CONFIG.WIDTH + 1;
     var topWall = -1;
-    var bottomWall = height + 1;
+    var bottomWall = CONFIG.HEIGHT + 1;
     if (this.x >= rightWall){ //right wall
       this.createPreviousPosition(this.x,this.y,true,false);
       this.x = 0;
@@ -191,7 +189,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
       return;
     }else if (this.x <= leftWall){ //left wall
       this.createPreviousPosition(this.x,this.y,true,false);
-      this.x = width;
+      this.x = CONFIG.WIDTH;
       this.createPreviousPosition(this.x,this.y,false,true);
       return;
     }else if (this.y >= bottomWall){ //bottom wall
@@ -201,7 +199,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
       return;
     }else if (this.y <= topWall){ //top wall
       this.createPreviousPosition(this.x,this.y,true,false);
-      this.y = height;
+      this.y = CONFIG.HEIGHT;
       this.createPreviousPosition(this.x,this.y,false,true);
       return;
     }
@@ -230,7 +228,7 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
   this.chngSpeed = function(input) {
     if ((this.speedScale + input) > 0){
       this.speedScale = Math.round(this.speedScale + input);
-      this.dir(s.xdir,s.ydir);
+      this.dir(this.xdir,this.ydir);
     } else {
       console.log("cannot reduce speed");
     }
@@ -266,8 +264,8 @@ function Snake(snakeName, tailLength, size, speedScale, width, height, GAMEGRIDS
 
   //reset to defualt (refresh)
   this.reset = function(tail, size) {
-    this.maxTailLength = tail;
-    this.size = size;
+    this.maxTailLength = CONFIG.snakeDefaults.SNAKETAIL;
+    this.size = CONFIG.snakeDefaults.SNAKESIZE;
     this.tail = [];
     this.currTailLength = 0;
     this.intializeTailColor();
