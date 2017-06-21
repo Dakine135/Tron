@@ -16,12 +16,12 @@ var server = app.listen(3033);
 var io = socket(server);
 
 //CONFIG OPTIONS
-var WALLREMOVALFACTOR = 5;
+var WALLREMOVALFACTOR = `3`;
 var CEARUPSINGLEWALLS = true;
 var LEAVEWALLEDGE = false;
 var HEIGHT = 50*9;
 var WIDTH = 50*16;
-var NUMOFCELLS = 40;
+var NUMOFCELLS = 20;
 var GAMEGRIDSCALE = WIDTH / NUMOFCELLS;
 var TICKSPERSECOND = 30;
 

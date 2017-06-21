@@ -27,36 +27,15 @@
   </head>
   <body style="background-color:#000000;">
 <br>
-  <div class="ui three column grid container">
-      <div class="right aligned column">
-        <div class="ui raised segment">
-          <div class="header">
-            STATS
-          </div>
-          <div class="ui three column grid">
-            <div class="column">
-              <div id="drawCount">FrameRate: </div>
-              <div id="ping">Ping: </div>
-              <div id="packets">PacketCount: </div>
-            </div>
-            <div class="column">
-              <div id="PlayersConnected">Players: </div>
-              <div id="playerName">You are: </div>
-            </div>
-            <div class="column">
-              <div id="scores">Scores:</div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="ui two column grid container">
+
 
       <div class="left aligned column">
         <div class="ui grid">
-            <div class="centered row">
+
+            <div class="row">
               <button class="ui inverted green button" id="startGame" type="button"
                       onClick="SOCKET.changeGuiState('gameRunning')">Start/Restart Game</button>
-            </div>
-            <div class="centered row">
               <button class="ui inverted yellow button" id="pauseButton" type="button"
                       onclick="GUI.pause()">Pause</button>
               <button class="ui inverted blue button" id="generateNewMaze" type="button"
@@ -64,7 +43,16 @@
             </div>
         </div>
       </div>
+
       <div class = "right aligned column">
+          <div>
+          <h6 class="ui icon inverted blue header">
+            <i class="settings icon" onclick=" window.open('https://github.com/Tweasy65/Tron','_blank')"></i>
+              <div class="content">
+                Settings
+              </div>
+          </h6>
+</div>
         <button class="ui icon inverted blue button" onclick=" window.open('https://github.com/Tweasy65/Tron','_blank')">
           <i class="github icon"></i>
         </button>
@@ -72,6 +60,22 @@
     </div> <!-- END Main grid-->
 
     <div class="ui container" id='CanvasContainer'></div>
+
+        <div class="ui compact segment">
+        <div class="ui center aligned header">
+        STATS
+        </div>
+        <div class="ui one column grid">
+
+            <div id="drawCount">FrameRate: </div>
+            <div id="ping">Ping: </div>
+            <div id="packets">PacketCount: </div>
+            <div id="PlayersConnected">Players: </div>
+            <div id="playerName">You are: </div>
+            <div id="scores">Scores:</div>
+
+        </div>
+      </div>
 
   </body>
 
