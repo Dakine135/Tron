@@ -8,6 +8,12 @@ var startTime = new Date().getTime();
 var currentTick = 0;
 var CURRENTGAMESTATE;
 
+var FIRSTPERSON = false;
+function toggleFirstPerson(){
+  FIRSTPERSON = !FIRSTPERSON;
+  BOARD.init();
+}
+
 // function preload() {
 //   bgMusic = loadSound('assets/Derezzed.mp3');
 // }
@@ -19,22 +25,17 @@ function setup(){
   // bgMusic.play();
   // bgMusic.jump(30);
   BOARD = new Board();
-  BOARD.createBackground();
+  //BOARD.createBackground();
   GUI = new Menu();
   GUI.guiState("startOfGame", false);
-  //BOARD.startMenuSnakes();
   SOCKET = new Socket();
-  //SOCKET.startGame();
 }
 
 function mousePressed() {
-  // console.log("clicked", mouseX," , ", mouseY);
-  // SOCKET.sendClicks();
   GUI.checkClicks();
 }
 
 function keyPressed(){
-  //SOCKET.sendKeyboard(totalGameTick);
   BOARD.checkControls();
 }
 
@@ -42,6 +43,16 @@ function keyPressed(){
 var previousTick = 0;
 var drawCount = 0;
 function draw(){
+
+  if(FIRSTPERSON && CURRENTGAMESTATE && CURRENTGAMESTATE.guiState === "gameRunning" &&
+    SOCKET && SOCKET.mySnake){
+      camera.on();
+      camera.zoom = 1;
+      camera.position.x = SOCKET.mySnake.x;
+      camera.position.y = SOCKET.mySnake.y;
+  } else {
+      camera.off();
+  }
   drawCount++;
   var currentTime = new Date().getTime();
   var timeDiff = currentTime - startTime;

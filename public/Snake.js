@@ -15,13 +15,13 @@ function Snake(snakeName){
   this.scaleH = 1;
 
   this.scaleSnake = function(){
-      this.x = Math.round((this.x / SETTINGS.WIDTH)*width);
-      this.y = Math.round((this.y / SETTINGS.HEIGHT)*height);
+      this.x = Math.round((this.x / SETTINGS.WIDTH) * BOARD.cameraWidth);
+      this.y = Math.round((this.y / SETTINGS.HEIGHT) * BOARD.cameraHeight);
       //this.size = Math.round((this.size / SETTINGS.WIDTH)*width);
       this.tail.map(function(prevPoint){
         var scaled = prevPoint;
-        scaled.x = Math.round((scaled.x / SETTINGS.WIDTH)*width);
-        scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT)*height);
+        scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * BOARD.cameraWidth);
+        scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT) * BOARD.cameraHeight);
         return scaled;
       });
   };
@@ -69,11 +69,15 @@ function Snake(snakeName){
   };//end update
 
 
-  this.show = function(){
+  this.show = function(width, height){
+    if(width == null || height == null){
+      width = 0;
+      height = 0;
+    }
     fill(this.startColor);
     stroke(this.endColor);
     strokeWeight(Math.ceil(this.size / 10));
-    ellipse(this.x, this.y, this.size, this.size);
+    ellipse(this.x + width, this.y + height, this.size, this.size);
 
     var prevPt;
     var strokeStartWeight = this.size/3;
@@ -88,7 +92,7 @@ function Snake(snakeName){
           var strokeVar = strokeStartWeight - ((strokeStartWeight * (i / this.tail.length)) - 1);
           strokeWeight(strokeVar);
           // strokeWeight(strokeStartWeight);
-          line(prevPt.x, prevPt.y, curPt.x, curPt.y);
+          line(prevPt.x + width, prevPt.y + height, curPt.x + width, curPt.y + height);
         }
         prevPt = curPt;
       }

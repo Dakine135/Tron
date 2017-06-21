@@ -15,6 +15,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.powerUps = [];
 
     var tempPowerUp = new PowerUp();
+    tempPowerUp.spawn();
     this.powerUps.push(tempPowerUp);
 
     var that = this;
@@ -165,8 +166,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             time: new Date().getTime(),
             guiState: this.guiState,
             mazeLines: this.mazeLines,
-            settings: this.clientSettings,
-            powerUps: this.powerUps
+            settings: this.clientSettings
         };
         gameState['snakes'] = Array.from(this.snakes.values()).map(function(snake){
             return snake.package();
@@ -174,6 +174,11 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         gameState['clients'] = Array.from(this.clients.values()).map(function(client){
             return client.package();
         });
+        gameState["powerUps"] = {
+            powerUps: this.powerUps,
+            hash: hash(this.powerUps)
+        }
+        ;
 
         return gameState;
     };

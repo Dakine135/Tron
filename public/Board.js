@@ -1,8 +1,13 @@
 function Board(){
 	//canvas stuff
-    this.canvasWidth = null;
-    this.canvasHeight = null;
+    this.sceneWidth = null;
+    this.sceneHeight = null;
 	this.canvas = null;
+
+	//cameraStuff
+	this.cameraWidth = null;
+	this.cameraHeight = null;
+	this.cameraZoom = 1;
 
 	//board stuff
 	this.paused = false;
@@ -10,33 +15,62 @@ function Board(){
 
 	//snake stuff
 	this.snakes = new Map();
-  this.powerUps = [];
+	this.powerUps = [];
 
-  //space for stuff
-  this.boarder = 7;
-  this.hud = 175;
+	//space for stuff
+	this.boarder = 3;
+	this.hud = 230;
+
+	var that = this;
 
 	this.init = function() {
-        var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder*2))
-        /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-        var totalWidth = Math.round((window.innerWidth - (this.boarder*2))
-        /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-        var ratioW = totalWidth / 16;
-		var ratioH = totalHeight / 9;
-		var multiplier = Math.min(ratioW, ratioH);
-       this.canvasWidth = 16*multiplier;
-       this.canvasHeight = 9*multiplier;
+		//ORIGINAL
+       //  var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder*2))
+       //  /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+       //  var totalWidth = Math.round((window.innerWidth - (this.boarder*2))
+       //  /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+       //  var ratioW = totalWidth / 16;
+		// var ratioH = totalHeight / 9;
+		// var multiplier = Math.min(ratioW, ratioH);
+       // this.canvasWidth = 16*multiplier;
+       // this.canvasHeight = 9*multiplier;
 
         // this.canvasHeight = Math.round((window.innerHeight - 150)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
         // this.canvasWidth = this.canvasHeight * (16/9);
+		// END ORIGINAL
 
-		this.canvas = createCanvas(this.canvasWidth, this.canvasHeight);
+
+         var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder*2))
+         /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+         var totalWidth = Math.round((window.innerWidth - (this.boarder*2))
+         /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+         var ratioW = totalWidth / 16;
+        var ratioH = totalHeight / 9;
+        var multiplier = Math.min(ratioW, ratioH);
+        this.cameraWidth = Math.floor(16*multiplier);
+        this.cameraHeight = Math.floor(9*multiplier);
+
+
+        if(FIRSTPERSON){
+            this.sceneWidth = this.cameraWidth * 3;
+            this.sceneHeight = this.cameraHeight  * 3;
+		} else {
+            this.sceneWidth = this.cameraWidth;
+            this.sceneHeight = this.cameraHeight;
+		}
+
+		console.log("BOARD init: FIRSTPERSON, cameraWH, sceneWH ",FIRSTPERSON,
+			this.cameraWidth, this.cameraHeight, this.sceneWidth, this.sceneHeight);
+
+
+
+		this.canvas = createCanvas(this.cameraWidth, this.cameraHeight);
 		this.canvas.parent('CanvasContainer');
         document.getElementById("CanvasContainer").setAttribute('style',
-            "width: "+this.canvasWidth+"px; "+
-            "height: "+this.canvasHeight+"px; "+
-            "min-width: "+(this.canvasWidth+(this.boarder*2))+"px; "+
-            "min-height: "+(this.canvasHeight+(this.boarder*2))+"px; "+
+            "width: "+this.cameraWidth+"px; "+
+            "height: "+this.cameraHeight+"px; "+
+            "min-width: "+(this.cameraWidth+(this.boarder*2))+"px; "+
+            "min-height: "+(this.cameraHeight+(this.boarder*2))+"px; "+
             "border-style: solid; "+
             "border-color: #18CAE6;"+
             "border-width: "+this.boarder+"px; "
@@ -45,7 +79,7 @@ function Board(){
         );
         this.createBackground();
         GUI.recalculateGui();
-        BOARD.scaleBOARD();
+        this.scaleBOARD();
 	};
 
 	this.checkControls = function(){
@@ -53,31 +87,59 @@ function Board(){
 	};
 
 	this.showSnakes = function(){
-		this.snakes.forEach(function(snake,snakeName){
-			snake.show();
+		this.snakes.forEach(function(snake){
+			if(FIRSTPERSON) {
+                for (var y = -1; y <= 1; y++) {
+                    var h = that.cameraHeight * y;
+                    for (var x = -1; x <= 1; x++) {
+                        var w = that.cameraWidth * x;
+                        snake.show(w, h);
+                    }//for columns
+                }//for rows
+            } else {
+                snake.show();
+			}
+
 		});
 	};
 
 	this.showPowerUps = function(){
 		this.powerUps.forEach(function(powerUp){
-			fill(255,255,255);
-			stroke(255,255,255);
-			strokeWeight(Math.ceil(powerUp.size / 10));
-			rect(powerUp.x, powerUp.y, (powerUp.size), powerUp.size);
+			if(FIRSTPERSON) {
+                for (var y = -1; y <= 1; y++) {
+                    var h = that.cameraHeight * y;
+                    for (var x = -1; x <= 1; x++) {
+                        var w = that.cameraWidth * x;
+                        fill(255, 255, 255);
+                        stroke(255, 255, 255);
+                        strokeWeight(Math.ceil(powerUp.size / 10));
+                        rect(powerUp.x + w, powerUp.y + h, (powerUp.size), powerUp.size);
+                    }//for columns
+                }//for rows
+            } else {
+                fill(255, 255, 255);
+                stroke(255, 255, 255);
+                strokeWeight(Math.ceil(powerUp.size / 10));
+                rect(powerUp.x, powerUp.y, (powerUp.size), powerUp.size);
+			}
 		});
 	};
 
 	this.createBackground = function(){
-	  console.log("createBackground");
 	  loadImage('assets/backgroundToRepeat.jpg',function(img){
 			//console.log("loaded image: ", img);
-	    var newImage = new p5.Image(width,height);
-	    //newImage.copy(img,0,0,img.width,img.height,0,0,img.width,img.height);
+		//var newImageWidth = CURRENTGAMESTATE.settings.WIDTH;
+		//var newImageHeight = CURRENTGAMESTATE.settings.HEIGHT;
+		var newImageWidth = this.sceneWidth;
+		var newImageHeight = this.sceneHeight;
+	    var newImage = new p5.Image(newImageWidth, newImageHeight);
 
-	    var widthRatio = Math.floor(width / img.width);
-	    var remainingWidth = (width / img.width) - widthRatio;
-	    var heightRatio = Math.floor(height /img.height);
-	    var remainingHeight = (height /img.height) - heightRatio;
+          console.log("createBackground scene: ", width, height, "img: ",newImageWidth, newImageHeight);
+
+	    var widthRatio = Math.floor(newImageWidth / img.width);
+	    var remainingWidth = (newImageWidth / img.width) - widthRatio;
+	    var heightRatio = Math.floor(newImageHeight /img.height);
+	    var remainingHeight = (newImageHeight /img.height) - heightRatio;
 	    // console.log(widthRatio, heightRatio);
 
 	    //copy(srcImage,sx,sy,sw,sh,
@@ -111,7 +173,6 @@ function Board(){
 	    }
 
 	    this.background = newImage;
-	    // BACKGROUNDIMAGE = testImg;
 			//console.log("Finished createing background: ", this.background);
 	  }.bind(this), function(error){
 	    console.log("error createing back: ",error);
@@ -121,13 +182,14 @@ function Board(){
 
 	this.scaleBOARD = function(){
 		if(MAZE && SETTINGS) {
+            MAZE = CURRENTGAMESTATE.mazeLines.lines;
             MAZE = MAZE.map(function (l) {
-                //console.log(SETTINGS.WIDTH, SETTINGS.HEIGHT, "==>", width, height);
-                var lx1 = Math.round((l.x1 / SETTINGS.WIDTH) * width);
-                var lx2 = Math.round((l.x2 / SETTINGS.WIDTH) * width);
-                var ly1 = Math.round((l.y1 / SETTINGS.HEIGHT) * height);
-                var ly2 = Math.round((l.y2 / SETTINGS.HEIGHT) * height);
-                //console.log(l.x1, l.y1, l.x2, l.y2, " ==> ",lx1, ly1, lx2, ly2);
+            	console.log("settings: ",SETTINGS.WIDTH);
+            	console.log("camera: ", that.cameraWidth);
+                var lx1 = Math.round((l.x1 / SETTINGS.WIDTH) * that.cameraWidth);
+                var lx2 = Math.round((l.x2 / SETTINGS.WIDTH) * that.cameraWidth);
+                var ly1 = Math.round((l.y1 / SETTINGS.HEIGHT) * that.cameraHeight);
+                var ly2 = Math.round((l.y2 / SETTINGS.HEIGHT) * that.cameraHeight);
                 return {
                     x1: lx1,
                     y1: ly1,
@@ -136,24 +198,62 @@ function Board(){
                     color: l.color
                 };
             });
+        }// make sure MAZE and SETTINGS are not null
+        if(SETTINGS) {
             this.snakes.forEach(function (snake) {
                 snake.scaleSnake();
             });
-        }// make sure MAZE and SETTINGS are not null
+
+            console.log(this.powerUps);
+			this.powerUps.map(function(powerUp){
+				var scaled = powerUp;
+				scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * that.cameraWidth);
+				scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT) * that.cameraHeight);
+                scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
+				return scaled;
+			});
+            console.log(this.powerUps);
+
+        } // make sure SETTINGS is not null
 	};
 
 	this.show = function(){
+		background(color(0,0,0));
 		if(this.background != null){
-	    	background(this.background);
+            if(FIRSTPERSON) {
+                image(this.background, -this.cameraWidth / 2, -this.cameraHeight / 2,
+                    this.sceneWidth, this.sceneHeight);
+            } else {
+                background(this.background);
+			}
 	  	}//if image is loaded
+
         if(MAZE && SETTINGS) {
-            MAZE.forEach(function (l) {
-            	//console.log(l);
-				var wallColor = color(l.color[0], l.color[1], l.color[2]);
-                stroke(wallColor);
-                strokeWeight(5);
-                line(l.x1, l.y1, l.x2, l.y2);
-            });
+			if(FIRSTPERSON) {
+                for (var y = -1; y <= 1; y++) {
+                    var h = this.cameraHeight * y;
+                    for (var x = -1; x <= 1; x++) {
+                        var w = this.cameraWidth * x;
+                        MAZE.forEach(function (l) {
+                            //console.log(l);
+                            var wallColor = color(l.color[0], l.color[1], l.color[2]);
+							//var wallColor = color((100+(50*x)+(50*y)),(100+(50*x)+(50*y)),(100+(50*x)+(50*y)));
+                            stroke(wallColor);
+                            strokeWeight(5);
+                            line(l.x1 + w, l.y1 + h, l.x2 + w, l.y2 + h);
+                        });
+
+                    }//for columns
+                }//for rows
+            } else {
+                MAZE.forEach(function (l) {
+                    //console.log(l);
+                    var wallColor = color(l.color[0], l.color[1], l.color[2]);
+                    stroke(wallColor);
+                    strokeWeight(5);
+                    line(l.x1, l.y1, l.x2, l.y2);
+                });
+			}
         }//if MAZE is generated
 	}
 

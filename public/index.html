@@ -16,14 +16,13 @@
     <script src="sketch.js" type="text/javascript"></script>
     <script src="Snake.js" type="text/javascript"></script>
     <script src="p5Collide2D/p5.collide2d.js" type="text/javascript"></script>
+    <script src="p5.play/lib/p5.play.js" type="text/javascript"></script>
     <script src="GUI.js" type="text/javascript"></script>
     <script src="TextButton.js" type="text/javascript"></script>
     <script src="TextGui.js" type="text/javascript"></script>
     <script src="editSnake.js" type="text/javascript"></script>
-    <!--<script src="../Maze.js" type="text/javascript"></script>-->
     <script src="/socket.io/socket.io.js"></script>
     <script src="Sockets.js" type="text/javascript"></script>
-    <!--<script src="../server/GameState.js" type="text/javascript"></script>-->
   </head>
   <body style="background-color:#000000;">
 <br>
@@ -40,6 +39,8 @@
                       onclick="GUI.pause()">Pause</button>
               <button class="ui inverted blue button" id="generateNewMaze" type="button"
                       onclick="SOCKET.generateNewMaze()">New Maze</button>
+                <button class="ui inverted orange button" id="firstPerson" type="button"
+                        onclick="toggleFirstPerson()">Change Perspective</button>
             </div>
         </div>
       </div>
