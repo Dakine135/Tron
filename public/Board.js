@@ -10,13 +10,17 @@ function Board(){
 
 	//snake stuff
 	this.snakes = new Map();
+  this.powerUps = [];
 
-    this.powerUps = [];
-
+  //space for stuff
+  this.boarder = 7;
+  this.hud = 175;
 
 	this.init = function() {
-        var totalHeight = Math.round((window.innerHeight - 150)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-        var totalWidth = Math.round((window.innerWidth)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+        var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder*2))
+        /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
+        var totalWidth = Math.round((window.innerWidth - (this.boarder*2))
+        /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
         var ratioW = totalWidth / 16;
 		var ratioH = totalHeight / 9;
 		var multiplier = Math.min(ratioW, ratioH);
@@ -31,8 +35,12 @@ function Board(){
         document.getElementById("CanvasContainer").setAttribute('style',
             "width: "+this.canvasWidth+"px; "+
             "height: "+this.canvasHeight+"px; "+
-            "min-width: "+this.canvasWidth+"px; "+
-            "min-height: "+this.canvasHeight+"px; "
+            "min-width: "+(this.canvasWidth+(this.boarder*2))+"px; "+
+            "min-height: "+(this.canvasHeight+(this.boarder*2))+"px; "+
+            "border-style: solid; "+
+            "border-color: #18CAE6;"+
+            "border-width: "+this.boarder+"px; "
+
 			//+ "border:1px solid #000000;"
         );
         this.createBackground();
