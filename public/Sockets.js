@@ -115,7 +115,7 @@ function Socket(){
       if(that.powerUpsHash != gameState.powerUps.hash){
           that.powerUpsHash = gameState.powerUps.hash;
           BOARD.powerUps = gameState.powerUps.powerUps;
-          BOARD.scaleBOARD();
+          BOARD.init();
       }
       //BOARD.scaleBOARD();
 

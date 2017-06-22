@@ -3,19 +3,21 @@ var LIB = require('./lib.js');
 var CONFIG = require('./Config.js');
 function PowerUp(){
 
-    this.x = 30;
-    this.y = 30;
+    this.x = CONFIG.WIDTH;
+    this.y = CONFIG.HEIGHT;
     this.type = " ";
-    this.gameGridScale = CONFIG.GAMEGRIDSCALE;
-    this.size = (this.gameGridScale/3);
+    this.size = (CONFIG.GAMEGRIDSCALE/3);
 
     this.spawn = function (){
         var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
         var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
+        console.log("WHCells ", widthCells, heightCells);
         var randomRow = LIB.randomInt(0, heightCells);
         var randomCol = LIB.randomInt(0, widthCells);
+        console.log("random: ", randomRow, randomCol);
         var newXPos = (CONFIG.GAMEGRIDSCALE * randomCol) + (CONFIG.GAMEGRIDSCALE / 2)-(this.size/2);
         var newYPos = (CONFIG.GAMEGRIDSCALE * randomRow) + (CONFIG.GAMEGRIDSCALE / 2)-(this.size/2);
+        console.log("newXY: ", newXPos, newYPos);
         this.x = newXPos;
         this.y = newYPos;
 
@@ -23,7 +25,7 @@ function PowerUp(){
         var possibleTypes = ["Speed+","Speed-","Size+","Size-","Tail+","Tail-","Point+","Death"];
         var randIndex = Math.floor(Math.random()*possibleTypes.length);
         this.type = possibleTypes[randIndex];
-        console.log("spawn: ", this.type, newXPos, newYPos);
+        console.log("spawn: ", this.type, this.x, this.y);
 
     };
 

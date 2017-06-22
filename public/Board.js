@@ -59,8 +59,8 @@ function Board(){
             this.sceneHeight = this.cameraHeight;
 		}
 
-		console.log("BOARD init: FIRSTPERSON, cameraWH, sceneWH ",FIRSTPERSON,
-			this.cameraWidth, this.cameraHeight, this.sceneWidth, this.sceneHeight);
+		// console.log("BOARD init: FIRSTPERSON, cameraWH, sceneWH ",FIRSTPERSON,
+		// 	this.cameraWidth, this.cameraHeight, this.sceneWidth, this.sceneHeight);
 
 
 
@@ -184,8 +184,6 @@ function Board(){
 		if(MAZE && SETTINGS) {
             MAZE = CURRENTGAMESTATE.mazeLines.lines;
             MAZE = MAZE.map(function (l) {
-            	console.log("settings: ",SETTINGS.WIDTH);
-            	console.log("camera: ", that.cameraWidth);
                 var lx1 = Math.round((l.x1 / SETTINGS.WIDTH) * that.cameraWidth);
                 var lx2 = Math.round((l.x2 / SETTINGS.WIDTH) * that.cameraWidth);
                 var ly1 = Math.round((l.y1 / SETTINGS.HEIGHT) * that.cameraHeight);
@@ -204,7 +202,7 @@ function Board(){
                 snake.scaleSnake();
             });
 
-            console.log(this.powerUps);
+            BOARD.powerUps = CURRENTGAMESTATE.powerUps.powerUps;
 			this.powerUps.map(function(powerUp){
 				var scaled = powerUp;
 				scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * that.cameraWidth);
@@ -212,7 +210,7 @@ function Board(){
                 scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
 				return scaled;
 			});
-            console.log(this.powerUps);
+
 
         } // make sure SETTINGS is not null
 	};
