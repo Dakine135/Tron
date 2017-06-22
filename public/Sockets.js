@@ -117,7 +117,6 @@ function Socket(){
             BOARD.powerUps = gameState.powerUps.powerUps;
             BOARD.init();
         }
-        //BOARD.scaleBOARD();
 
         if(once) console.log(gameState); once = false;
 

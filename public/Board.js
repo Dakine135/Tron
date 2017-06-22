@@ -14,7 +14,7 @@ function Board(){
 	this.background = null;
   this.currentPowerUp = null;
   var img;
-  img = loadImage('/assets/emptyPowerUp.png');
+  //img = loadImage('/assets/emptyPowerUp.png');
 
   	//snake stuff
 	this.snakes = new Map();
@@ -205,14 +205,16 @@ function Board(){
                 snake.scaleSnake();
             });
 
-            BOARD.powerUps = CURRENTGAMESTATE.powerUps.powerUps;
+            this.powerUps = CURRENTGAMESTATE.powerUps.powerUps;
+            console.log("BEFORE: ",BOARD.powerUps[0]);
 			this.powerUps.map(function(powerUp){
 				var scaled = powerUp;
 				scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * that.cameraWidth);
 				scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT) * that.cameraHeight);
-                scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
+                //scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
 				return scaled;
 			});
+            console.log("AFTER: ",this.powerUps[0]);
 
 
         } // make sure SETTINGS is not null
@@ -234,8 +236,8 @@ function Board(){
         }
          else {
 
-            copy(img,0,0, img.width, img.height, (this.cameraWidth-45), 25, 20, 20);
-            tint(255,127)
+            //copy(img,0,0, img.width, img.height, (this.cameraWidth-45), 25, 20, 20);
+            //tint(255,127)
         }//Power up shown
 
         if(MAZE && SETTINGS) {
