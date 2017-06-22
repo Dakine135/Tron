@@ -7,7 +7,7 @@ var Config = {
     WIDTH: 50*16,
     NUMOFCELLS: 20,
     GAMEGRIDSCALE: null,
-    TICKSPERSECOND: 30
+    TICKSPERSECOND: 20
 };
 Config.GAMEGRIDSCALE = (Config.WIDTH / Config.NUMOFCELLS);
 

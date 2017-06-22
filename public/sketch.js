@@ -7,8 +7,9 @@ var SETTINGS;
 var startTime = new Date().getTime();
 var currentTick = 0;
 var CURRENTGAMESTATE;
+var VIEW;
 
-var FIRSTPERSON = false;
+var FIRSTPERSON = true;
 function toggleFirstPerson(){
   FIRSTPERSON = !FIRSTPERSON;
   BOARD.init();
@@ -46,10 +47,14 @@ function draw(){
 
   if(FIRSTPERSON && CURRENTGAMESTATE && CURRENTGAMESTATE.guiState === "gameRunning" &&
     SOCKET && SOCKET.mySnake){
+    if(VIEW == null){
+      VIEW = new View();
+    }
+      VIEW.update(SOCKET.mySnake);
       camera.on();
       camera.zoom = 1;
-      camera.position.x = SOCKET.mySnake.x;
-      camera.position.y = SOCKET.mySnake.y;
+      camera.position.x = VIEW.x;
+      camera.position.y = VIEW.y;
   } else {
       camera.off();
   }
@@ -72,3 +77,4 @@ function draw(){
     previousTick = currentTick;
 
 } //draw
+

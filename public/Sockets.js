@@ -1,51 +1,51 @@
 function Socket(){
 
-  this.socket = io();
-  this.id = this.socket.id;
-  this.startTime = new Date().getTime();
-  this.currentTick = 0;
-  this.previousTick = 0;
-  this.packetCount = 0;
+    this.socket = io();
+    this.id = this.socket.id;
+    this.startTime = new Date().getTime();
+    this.currentTick = 0;
+    this.previousTick = 0;
+    this.packetCount = 0;
 
-  this.guiState = "startOfGame";
+    this.guiState = "startOfGame";
 
-  this.mazeHash = "";
-  this.settingsHash = "";
-  this.powerUpsHash = "";
+    this.mazeHash = "";
+    this.settingsHash = "";
+    this.powerUpsHash = "";
 
-  this.myClient = null;
-  this.mySnake = null;
+    this.myClient = null;
+    this.mySnake = null;
 
-  var that = this;
+    var that = this;
 
-  //outgoing
+    //outgoing
 
-  //incomming
-  this.socket.on('updateClients', updateGameState);
+    //incomming
+    this.socket.on('updateClients', updateGameState);
 
-  var once = true;
-  var times = 0;
-  function updateGameState(gameState){
-      that.sendPong(gameState.time);
-      if(that.id == null) that.id = that.socket.id;
-      gameState.clients.forEach(function(client){
-          if(client.key === that.id) that.myClient = client;
-      });
-      that.packetCount++;
-      CURRENTGAMESTATE = gameState;
+    var once = true;
+    var times = 0;
+    function updateGameState(gameState){
+        that.sendPong(gameState.time);
+        if(that.id == null) that.id = that.socket.id;
+        gameState.clients.forEach(function(client){
+            if(client.key === that.id) that.myClient = client;
+        });
+        that.packetCount++;
+        CURRENTGAMESTATE = gameState;
 
-    //CALCULATE PING and packets per second
-    var time = new Date().getTime();
-    var timeDiff = time - that.startTime;
-    that.currentTick = Math.floor(timeDiff % 1000);
-    if(that.currentTick < that.previousTick){
-        //once a second?
-        //console.log("test");
-        document.getElementById("packets").innerHTML = "PacketCount: " + that.packetCount;
-        that.packetCount = 0;
-    }
-    //if(times < 100){ console.log(that.currentTick, " < ", that.previousTick); times++; }
-      that.previousTick = that.currentTick;
+        //CALCULATE PING and packets per second
+        var time = new Date().getTime();
+        var timeDiff = time - that.startTime;
+        that.currentTick = Math.floor(timeDiff % 1000);
+        if(that.currentTick < that.previousTick){
+            //once a second?
+            //console.log("test");
+            document.getElementById("packets").innerHTML = "PacketCount: " + that.packetCount;
+            that.packetCount = 0;
+        }
+        //if(times < 100){ console.log(that.currentTick, " < ", that.previousTick); times++; }
+        that.previousTick = that.currentTick;
 
 
         if(this.myClient) {
@@ -56,73 +56,73 @@ function Socket(){
                 "You are: " + that.myClient.name;
         }
 
-      document.getElementById("PlayersConnected").innerHTML =
+        document.getElementById("PlayersConnected").innerHTML =
             "Players: " + gameState.clients.length;
 
         var scoreString = "Scores: \n";
         gameState.clients.forEach(function(client){
             scoreString = scoreString + client.name + ": "+client.score+ "\n";
         });
-      document.getElementById("scores").innerHTML = scoreString;
+        document.getElementById("scores").innerHTML = scoreString;
 
 
-    if(that.mazeHash != gameState.mazeLines.hash){
-        that.mazeHash = gameState.mazeLines.hash;
-        MAZE = gameState.mazeLines.lines;
-        BOARD.scaleBOARD();
-    }
+        if(that.mazeHash != gameState.mazeLines.hash){
+            that.mazeHash = gameState.mazeLines.hash;
+            MAZE = gameState.mazeLines.lines;
+            BOARD.scaleBOARD();
+        }
 
-    if(that.settingsHash != gameState.settings.hash){
-        that.settingsHash = gameState.settings.hash;
-      SETTINGS = gameState.settings;
-      BOARD.init();
-    }
+        if(that.settingsHash != gameState.settings.hash){
+            that.settingsHash = gameState.settings.hash;
+            SETTINGS = gameState.settings;
+            BOARD.init();
+        }
 
-    if(gameState.guiState != that.guiState){
-        GUI.guiState(gameState.guiState);
-        that.guiState = gameState.guiState;
-    }
+        if(gameState.guiState != that.guiState){
+            GUI.guiState(gameState.guiState);
+            that.guiState = gameState.guiState;
+        }
 
-    //add or update local snakes
-    gameState.snakes.forEach(function(snake) {
-      if(BOARD.snakes.has(snake.name)){
-          var oldSnake = BOARD.snakes.get(snake.name);
-          oldSnake.update(snake);
-          BOARD.snakes.set(snake.name, oldSnake);
-          if(that.myClient && snake.name === that.myClient.key){
-              // console.log("setting snake: ", this.mySnake);
-              that.mySnake = BOARD.snakes.get(that.myClient.key);
-          }
-      } else {
-          var newSnake = new Snake(snake.name);
-          newSnake.update(snake);
-          BOARD.snakes.set(snake.name, newSnake);
-      }
-    });
+        //add or update local snakes
+        gameState.snakes.forEach(function(snake) {
+            if(BOARD.snakes.has(snake.name)){
+                var oldSnake = BOARD.snakes.get(snake.name);
+                oldSnake.update(snake);
+                BOARD.snakes.set(snake.name, oldSnake);
+                if(that.myClient && snake.name === that.myClient.key){
+                    // console.log("setting snake: ", this.mySnake);
+                    that.mySnake = BOARD.snakes.get(that.myClient.key);
+                }
+            } else {
+                var newSnake = new Snake(snake.name);
+                newSnake.update(snake);
+                BOARD.snakes.set(snake.name, newSnake);
+            }
+        });
 
-    //remove local snakes if no longer in gameState
-      BOARD.snakes.forEach(function(boardSnake){
-          var snakeFound = false;
-          gameState.snakes.forEach(function (gameSnake) {
-              if(boardSnake.name == gameSnake.name) snakeFound = true;
-          });
-          if(!snakeFound){
-              BOARD.snakes.delete(boardSnake.name);
-          }
-      });
-
-
-      if(that.powerUpsHash != gameState.powerUps.hash){
-          that.powerUpsHash = gameState.powerUps.hash;
-          BOARD.powerUps = gameState.powerUps.powerUps;
-          BOARD.init();
-      }
-      //BOARD.scaleBOARD();
-
-    if(once) console.log(gameState); once = false;
+        //remove local snakes if no longer in gameState
+        BOARD.snakes.forEach(function(boardSnake){
+            var snakeFound = false;
+            gameState.snakes.forEach(function (gameSnake) {
+                if(boardSnake.name == gameSnake.name) snakeFound = true;
+            });
+            if(!snakeFound){
+                BOARD.snakes.delete(boardSnake.name);
+            }
+        });
 
 
-  }//end updateGameState
+        if(that.powerUpsHash != gameState.powerUps.hash){
+            that.powerUpsHash = gameState.powerUps.hash;
+            BOARD.powerUps = gameState.powerUps.powerUps;
+            BOARD.init();
+        }
+        //BOARD.scaleBOARD();
+
+        if(once) console.log(gameState); once = false;
+
+
+    }//end updateGameState
 
     this.changeSnakeDir = function(x, y){
         var snakeDir = {
@@ -133,7 +133,7 @@ function Socket(){
     };
 
     this.changeGuiState = function(guiState){
-      this.socket.emit('guiState', guiState);
+        this.socket.emit('guiState', guiState);
     };
 
     this.generateNewMaze = function(){
