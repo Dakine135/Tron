@@ -12,8 +12,11 @@ function Board(){
 	//board stuff
 	this.paused = false;
 	this.background = null;
+  this.currentPowerUp = null;
+  var img;
+  img = loadImage('/assets/emptyPowerUp.png');
 
-	//snake stuff
+  	//snake stuff
 	this.snakes = new Map();
 	this.powerUps = [];
 
@@ -217,7 +220,7 @@ function Board(){
 
 	this.show = function(){
 		background(color(0,0,0));
-		if(this.background != null){
+		if(this.background){
             if(FIRSTPERSON) {
                 image(this.background, -this.cameraWidth / 2, -this.cameraHeight / 2,
                     this.sceneWidth, this.sceneHeight);
@@ -225,6 +228,15 @@ function Board(){
                 background(this.background);
 			}
 	  	}//if image is loaded
+
+      if(this.currentPowerUp){
+        this.currentPowerUp = null;
+        }
+         else {
+
+            copy(img,0,0, img.width, img.height, (this.cameraWidth-45), 25, 20, 20);
+            tint(255,127)
+        }//Power up shown
 
         if(MAZE && SETTINGS) {
 			if(FIRSTPERSON) {
