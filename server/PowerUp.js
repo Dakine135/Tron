@@ -75,7 +75,8 @@ function PowerUp(){
                 break;
 
             case "Death":
-                snake.spawn();
+                snake.reset();
+
                 break;
         }//end PowerUpType
     };//End of applyEffect

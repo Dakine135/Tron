@@ -7,7 +7,7 @@ function Client(key, snake){
     this.connectedAt = new Date();
     this.score = CONFIG.snakeDefaults.STARTSCORE;
     this.snake = snake;
-
+    this.currentPowerUp = null;
     this.pings = [];
     this.avgPing = 10;
 
