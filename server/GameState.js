@@ -7,6 +7,7 @@ var GLOBALS = require('./Globals');
 function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();
+    this.lastTime = this.time;
     this.mazeLines = MAZELINES;
     this.clientSettings = CLIENTSETTINGS;
     this.guiState = "startOfGame";
@@ -98,9 +99,12 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.checkCollisionWithWalls = function(snake){
         if (snake.tail.length < 1) return null;
         var collision = null;
+        //adjust snake "current position" to extend to the tip, from center and previous point
+        var snakeHeadX = snake.x + (snake.xdir * (snake.size/2));
+        var snakeHeadY = snake.y + (snake.ydir * (snake.size/2));
         for (var i=0; i < this.mazeLines.lines.length; i++ ){
             var l = this.mazeLines.lines[i];
-            collision = LIB.collideLineLine(snake.x, snake.y, snake.tail[0].x, snake.tail[0].y,
+            collision = LIB.collideLineLine(snakeHeadX, snakeHeadY, snake.tail[0].x, snake.tail[0].y,
                                         l.x1, l.y1, l.x2, l.y2);
             if(collision && collision.hit){
                 collision["wall"] = l;
@@ -150,7 +154,9 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
 
     this.update = function(frame) {
         this.frame = frame;
-        //this.time = new Date().getTime();
+        this.lastTime = this.time;
+        this.time = new Date().getTime();
+        this.deltaTime = this.time - this.lastTime;
 
         if(this.guiState === "gameRunning"){
             //updateSnakes

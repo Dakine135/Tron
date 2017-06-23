@@ -27,6 +27,7 @@ function Board(){
     var that = this;
 
     this.init = function() {
+        console.log("BOARD.init() Called");
 
         if(SETTINGS) {
             var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder * 2))

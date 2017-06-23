@@ -28,17 +28,17 @@ function PowerUp(){
         this.type = possibleTypes[randIndex];
         console.log("spawn: ", this.type, this.x, this.y);
 
-        console.log("test: ", GLOBALS.CURRENTGAMESTATE);
+        //console.log("test: ", GLOBALS.CURRENTGAMESTATE);
 
     };
 
     this.checkForCollisions = function(snake){
         if(snake.tail.length < 1) return null;
-        var lineX1 = snake.x;
-        var lineY1 = snake.y;
+        var snakeHeadX = snake.x + (snake.xdir * (snake.size/2));
+        var snakeHeadY = snake.y + (snake.ydir * (snake.size/2));
         var lineX2 = snake.tail[0].x;
         var lineY2 = snake.tail[0].y;
-        var collision = LIB.collideLineRect(lineX1, lineY1, lineX2, lineY2, this.x, this.y, this.size, this.size);
+        var collision = LIB.collideLineRect(snakeHeadX, snakeHeadY, lineX2, lineY2, this.x, this.y, this.size, this.size);
         //console.log(collision);
         if (collision && collision.hit){
             this.applyEffect(snake);
@@ -50,11 +50,11 @@ function PowerUp(){
         console.log("HIT");
         switch(this.type){
             case "Speed+":
-                snake.chngSpeed(1);
+                snake.chngSpeed(20); //pixels per second
                 break;
 
             case "Speed-":
-                snake.chngSpeed(-1);
+                snake.chngSpeed(-20);
                 break;
 
             case "Size+":
@@ -74,11 +74,12 @@ function PowerUp(){
                 break;
 
             case "Point+":
-                snake.chngSpeed(-3);
+                //add point to client
                 break;
 
             case "Death":
                 snake.reset();
+                //subtract point from client
 
                 break;
         }//end PowerUpType

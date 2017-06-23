@@ -17,7 +17,7 @@ function Snake(snakeName){
     this.scaleSnake = function(){
         this.x = Math.round((this.x / SETTINGS.WIDTH) * BOARD.cameraWidth);
         this.y = Math.round((this.y / SETTINGS.HEIGHT) * BOARD.cameraHeight);
-        //this.size = Math.round((this.size / SETTINGS.WIDTH)*width);
+        this.size = Math.round((this.size / SETTINGS.WIDTH) * BOARD.cameraWidth);
         this.tail.map(function(prevPoint){
             var scaled = prevPoint;
             scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * BOARD.cameraWidth);
@@ -82,7 +82,7 @@ function Snake(snakeName){
         }
         fill(this.startColor);
         stroke(this.endColor);
-        strokeWeight(Math.ceil(this.size / 10));
+        strokeWeight(Math.ceil(this.size / 15)+1);
         ellipse(this.x + width, this.y + height, this.size, this.size);
 
         var prevPt;

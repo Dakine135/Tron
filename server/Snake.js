@@ -15,10 +15,10 @@ function Snake(snakeName){
     //starting direction and speed
     this.xdir = 0;
     this.ydir = 0;
-    this.xspeed = 0;
-    this.yspeed = 0;
-    this.lastXSpeed = this.xspeed;
-    this.lastYSpeed = this.yspeed;
+    //speedscale is pixels per second
+    // //xspeed and yspeed and number of pixels to move in this update
+    // this.xspeed = 0;
+    // this.yspeed = 0;
     this.speedScale = CONFIG.snakeDefaults.SNAKESPEEDSCALE;
 
     //tail and color stuff
@@ -66,24 +66,20 @@ function Snake(snakeName){
         var undo = {
             xdir: this.xdir,
             ydir: this.ydir,
-            xspeed: this.xspeed,
-            yspeed: this.yspeed,
             direction: this.direction
         };
         this.xdir = x;
         this.ydir = y;
-        this.xspeed = x*this.speedScale;
-        this.yspeed = y*this.speedScale;
 
-        if(this.xspeed == 0 && this.yspeed == 0) this.direction = "Stopped";
-        else if(this.xspeed == 0 && this.yspeed < 0) this.direction = "N";
-        else if(this.xspeed > 0 && this.yspeed < 0) this.direction = "NE";
-        else if(this.xspeed > 0 && this.yspeed == 0) this.direction = "E";
-        else if(this.xspeed > 0 && this.yspeed > 0) this.direction = "SE";
-        else if(this.xspeed == 0 && this.yspeed > 0) this.direction = "S";
-        else if(this.xspeed < 0 && this.yspeed > 0) this.direction = "SW";
-        else if(this.xspeed < 0 && this.yspeed == 0) this.direction = "W";
-        else if(this.xspeed < 0 && this.yspeed < 0) this.direction = "NW";
+        if(this.xdir == 0 && this.ydir == 0) this.direction = "Stopped";
+        else if(this.xdir == 0 && this.ydir < 0) this.direction = "N";
+        else if(this.xdir > 0 && this.ydir < 0) this.direction = "NE";
+        else if(this.xdir > 0 && this.ydir == 0) this.direction = "E";
+        else if(this.xdir > 0 && this.ydir > 0) this.direction = "SE";
+        else if(this.xdir == 0 && this.ydir > 0) this.direction = "S";
+        else if(this.xdir < 0 && this.ydir > 0) this.direction = "SW";
+        else if(this.xdir < 0 && this.ydir == 0) this.direction = "W";
+        else if(this.xdir < 0 && this.ydir < 0) this.direction = "NW";
         else console.log("ERROR in DIRECTION");
 
         //if you try to move the opposite direction or stop, then undo
@@ -101,19 +97,10 @@ function Snake(snakeName){
         if(triggerUndo){
             this.xdir = undo.xdir;
             this.ydir = undo.ydir;
-            this.xspeed = undo.xspeed;
-            this.yspeed = undo.yspeed;
             this.direction = undo.direction;
         }
 
-        // if(this.lastXSpeed != this.xspeed || this.lastYSpeed != this.yspeed){
-        //     this.lastXSpeed = this.xspeed;
-        //     this.lastYSpeed = this.yspeed;
-        //     SOCKET.changeSnakeDir(this.name, this.x, this.y, this.xspeed, this.yspeed);
-        // }
-
         if(this.direction != "Stopped") this.createPreviousPosition(this.x,this.y,false,true);
-        //console.log("Direction: ", this.xspeed,":",this.yspeed, " ==> ", this.direction);
     };
 
     //currently just for turning and jumping
@@ -170,8 +157,11 @@ function Snake(snakeName){
     };//end createPreviousPosition
 
     this.update = function() {
-        var nextX = Math.floor(this.x + this.xspeed);
-        var nextY = Math.floor(this.y + this.yspeed);
+        var seconds = GLOBALS.CURRENTGAMESTATE.deltaTime/1000;
+        var distX = this.xdir * (seconds * this.speedScale);
+        var distY = this.ydir * (seconds * this.speedScale);
+        var nextX = Math.round((this.x + distX)*100)/100;
+        var nextY = Math.round((this.y + distY)*100)/100;
 
         if(nextX === this.x && nextY === this.y){
             // dont change tail if you havent moved
@@ -222,7 +212,12 @@ function Snake(snakeName){
 
     //increase or decrease size of snake
     this.chngSize = function(input){
-        this.size = this.size + input;
+        if ((this.size + input) > 0){
+            this.size = this.size + input;
+        } else {
+            console.log("cannot reduce size");
+        }
+
     };
 
     //change increment multiplier for snakes speed up or down
@@ -269,6 +264,7 @@ function Snake(snakeName){
         this.size = CONFIG.snakeDefaults.SNAKESIZE;
         this.tail = [];
         this.currTailLength = 0;
+        this.speedScale = CONFIG.snakeDefaults.SNAKESPEEDSCALE;
         this.intializeTailColor();
         this.spawn();
     };//end reset
@@ -296,11 +292,11 @@ function Snake(snakeName){
     };//end cutTail
 
     //returns the index of the tail that you collided width
-    //returns -1 if did not collide
+    //and the location on the grid
     this.checkCollisionWithTail = function(snake){
         var tailInput = snake.tail;
         var tailIndex = 0;
-        if(snake.name == this.name) tailIndex = 4
+        if(snake.name == this.name) tailIndex = 4;
         var lineStartX;
         var lineStartY;
         var lineEndX;
@@ -309,14 +305,23 @@ function Snake(snakeName){
         if(this.tail.length < 1) return null;
         var snakeLineX = this.tail[0].x;
         var snakeLineY = this.tail[0].y;
+        //adjust snake "current position" to extend to the tip, from center and previous point
+        var snakeHeadX = this.x + (this.xdir * (this.size/2));
+        var snakeHeadY = this.y + (this.ydir * (this.size/2));
+
+        //make another line the width of the head and check collision
+        // var snakeWidthX1
+        // var snakeWidthY1
+        // var snakeWidthX2
+        // var snakeWidthY2
+        //console.log("start => extended: ", this.x, this.y, " => ", snakeHeadX, snakeHeadY);
         while(tailIndex < (tailInput.length - 1)){
             if(!tailInput[tailIndex + 1].jump){
                 lineStartX = tailInput[tailIndex].x;
                 lineStartY = tailInput[tailIndex].y;
                 lineEndX = tailInput[tailIndex + 1].x;
                 lineEndY = tailInput[tailIndex + 1].y;
-                //hit = collidePointLine(this.x, this.y, lineStartX, lineStartY, lineEndX, lineEndY, this.size)
-                collision = LIB.collideLineLine(this.x, this.y, snakeLineX, snakeLineY,
+                collision = LIB.collideLineLine(snakeHeadX, snakeHeadY, snakeLineX, snakeLineY,
                     lineStartX,lineStartY,lineEndX,lineEndY);
             }
             //console.log("hit: ", hit);
