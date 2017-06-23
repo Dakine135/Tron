@@ -1,5 +1,6 @@
 module.exports = Client;
 var CONFIG = require('./Config.js');
+var GLOBALS = require('./Globals');
 function Client(key, snake){
     this.key = key;
     var keySplit = key.split('');

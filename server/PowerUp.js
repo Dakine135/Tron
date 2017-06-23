@@ -1,6 +1,7 @@
 module.exports = PowerUp;
 var LIB = require('./lib.js');
 var CONFIG = require('./Config.js');
+var GLOBALS = require('./Globals');
 function PowerUp(){
 
     this.x = CONFIG.WIDTH;
@@ -26,6 +27,8 @@ function PowerUp(){
         var randIndex = Math.floor(Math.random()*possibleTypes.length);
         this.type = possibleTypes[randIndex];
         console.log("spawn: ", this.type, this.x, this.y);
+
+        console.log("test: ", GLOBALS.CURRENTGAMESTATE);
 
     };
 

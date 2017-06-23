@@ -3,6 +3,7 @@ var LIB = require('./lib.js');
 var PowerUp = require('./PowerUp.js');
 var hash = require('object-hash');
 var CONFIG = require('./Config.js');
+var GLOBALS = require('./Globals');
 function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();

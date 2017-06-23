@@ -1,4 +1,6 @@
 var LIB = require('./lib.js');
+var CONFIG = require('./Config.js');
+var GLOBALS = require('./Globals');
 
 exports.randomInt = function(min, max){
     min = Math.ceil(min);

@@ -1,6 +1,7 @@
 module.exports = Snake;
 var LIB = require('./lib.js');
 var CONFIG = require('./Config.js');
+var GLOBALS = require('./Globals');
 function Snake(snakeName){
     console.log("createSnake: ",snakeName);
     this.name = snakeName;

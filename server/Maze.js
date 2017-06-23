@@ -3,6 +3,7 @@
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm
 module.exports = Maze;
 var CONFIG = require('./Config.js');
+var GLOBALS = require('./Globals');
 var hash = require('object-hash');
 function Maze(){
   console.log("CreateMaze");

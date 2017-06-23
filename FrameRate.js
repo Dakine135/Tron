@@ -11,6 +11,7 @@ var SNAKE = require('./server/Snake');
 var CLIENT = require('./server/Client');
 var LIB = require('./server/lib.js');
 var CONFIG = require('./server/Config.js');
+var GLOBALS = require('./server/Globals');
 
 var app = express();
 var server = app.listen(3033);
@@ -36,15 +37,15 @@ var MAZELINES = new MAZE();
 //MAIN GAME COUNTER
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
-CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
+GLOBALS.CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;
     //console.log('Frame=%s', frameCount);
 
-    CURRENTGAMESTATE.update(FRAMECOUNT);
+    GLOBALS.CURRENTGAMESTATE.update(FRAMECOUNT);
 
-    var clientPackage = CURRENTGAMESTATE.package();
+    var clientPackage = GLOBALS.CURRENTGAMESTATE.package();
     //console.log(clientPackage);
     io.sockets.emit('updateClients', clientPackage);
 
@@ -63,34 +64,34 @@ function newConnection(socket){
     // console.log(snake);
     var tempClient = new CLIENT(socket.id, snake);
 
-    CURRENTGAMESTATE.addClient(tempClient);
+    GLOBALS.CURRENTGAMESTATE.addClient(tempClient);
 
     socket.on('snakeDir', updateSnakeDir);
     function updateSnakeDir(snakeDir){
         //console.log("change snake direction: ", snakeDir);
-        CURRENTGAMESTATE.updateSnakeDir(socket.id, snakeDir.x, snakeDir.y);
+        GLOBALS.CURRENTGAMESTATE.updateSnakeDir(socket.id, snakeDir.x, snakeDir.y);
     }
 
     socket.on('guiState', updateGuiState);
     function updateGuiState(guiState){
-        CURRENTGAMESTATE.updateGuiState(guiState);
+        GLOBALS.CURRENTGAMESTATE.updateGuiState(guiState);
     }
 
     socket.on('newMaze', generateNewMaze);
     function generateNewMaze(){
         MAZELINES = new MAZE();
-        CURRENTGAMESTATE.mazeLines = MAZELINES;
+        GLOBALS.CURRENTGAMESTATE.mazeLines = MAZELINES;
     }
 
     socket.on('updatePing', updatePing);
     function updatePing(time){
-        CURRENTGAMESTATE.updatePing(socket.id, new Date().getTime(), time);
+        GLOBALS.CURRENTGAMESTATE.updatePing(socket.id, new Date().getTime(), time);
     }
 
     socket.on('disconnecting', clientDisconnected);
     function clientDisconnected(){
         console.log("client disconnected: ", socket.id);
-        CURRENTGAMESTATE.removeClient(socket.id);
+        GLOBALS.CURRENTGAMESTATE.removeClient(socket.id);
     }
 
 }//new connection "per socket"

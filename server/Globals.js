@@ -1,0 +1,5 @@
+//CONFIG OPTIONS
+var GLOBALS = {};
+GLOBALS.CURRENTGAMESTATE = null;
+
+module.exports = GLOBALS;
