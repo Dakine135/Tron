@@ -7,8 +7,6 @@ function Socket(){
     this.previousTick = 0;
     this.packetCount = 0;
 
-    this.guiState = "startOfGame";
-
     this.mazeHash = "";
     this.settingsHash = "";
     this.powerUpsHash = "";
@@ -27,6 +25,7 @@ function Socket(){
     var times = 0;
     function updateGameState(gameState){
         that.sendPong(gameState.time);
+        if(once) console.log(gameState); once = false;
         if(that.id == null) that.id = that.socket.id;
         gameState.clients.forEach(function(client){
             if(client.key === that.id) that.myClient = client;
@@ -69,18 +68,19 @@ function Socket(){
         if(that.mazeHash != gameState.mazeLines.hash){
             that.mazeHash = gameState.mazeLines.hash;
             MAZE = gameState.mazeLines.lines;
-            BOARD.scaleBOARD();
+            //console.log("BOARD.init CALLED FROM Maze update");
+            BOARD.init();
         }
 
         if(that.settingsHash != gameState.settings.hash){
             that.settingsHash = gameState.settings.hash;
             SETTINGS = gameState.settings;
+            //console.log("BOARD.init CALLED FROM settings update");
             BOARD.init();
         }
 
-        if(gameState.guiState != that.guiState){
+        if(gameState.guiState != GUI.currentState){
             GUI.guiState(gameState.guiState);
-            that.guiState = gameState.guiState;
         }
 
         //add or update local snakes
@@ -115,10 +115,9 @@ function Socket(){
         if(that.powerUpsHash != gameState.powerUps.hash){
             that.powerUpsHash = gameState.powerUps.hash;
             BOARD.powerUps = gameState.powerUps.powerUps;
+            //console.log("BOARD.init CALLED FROM powerUps update");
             BOARD.init();
         }
-
-        if(once) console.log(gameState); once = false;
 
 
     }//end updateGameState

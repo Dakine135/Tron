@@ -1,74 +1,64 @@
 function Board(){
-	//canvas stuff
+    //canvas stuff
     this.sceneWidth = null;
     this.sceneHeight = null;
-	this.canvas = null;
+    this.canvas = null;
 
-	//cameraStuff
-	this.cameraWidth = null;
-	this.cameraHeight = null;
-	this.cameraZoom = 1;
+    //cameraStuff
+    this.cameraWidth = null;
+    this.cameraHeight = null;
+    this.cameraZoom = 1;
 
-	//board stuff
-	this.paused = false;
-	this.background = null;
-  this.currentPowerUp = null;
-  var img;
-  //img = loadImage('/assets/emptyPowerUp.png');
+    //board stuff
+    this.paused = false;
+    this.background = null;
+    this.currentPowerUp = null;
+    var img;
+    //img = loadImage('/assets/emptyPowerUp.png');
 
-  	//snake stuff
-	this.snakes = new Map();
-	this.powerUps = [];
+    //snake stuff
+    this.snakes = new Map();
+    this.powerUps = [];
 
-	//space for stuff
-	this.boarder = 3;
-	this.hud = 230;
+    //space for stuff
+    this.boarder = 3;
+    this.hud = 230;
 
-	var that = this;
+    var that = this;
 
-	this.init = function() {
-		//ORIGINAL
-       //  var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder*2))
-       //  /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-       //  var totalWidth = Math.round((window.innerWidth - (this.boarder*2))
-       //  /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-       //  var ratioW = totalWidth / 16;
-		// var ratioH = totalHeight / 9;
-		// var multiplier = Math.min(ratioW, ratioH);
-       // this.canvasWidth = 16*multiplier;
-       // this.canvasHeight = 9*multiplier;
+    this.init = function() {
 
-        // this.canvasHeight = Math.round((window.innerHeight - 150)/SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-        // this.canvasWidth = this.canvasHeight * (16/9);
-		// END ORIGINAL
-
-
-         var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder*2))
-         /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-         var totalWidth = Math.round((window.innerWidth - (this.boarder*2))
-         /SETTINGS.GAMEGRIDSCALE)*SETTINGS.GAMEGRIDSCALE;
-         var ratioW = totalWidth / 16;
-        var ratioH = totalHeight / 9;
-        var multiplier = Math.min(ratioW, ratioH);
-        this.cameraWidth = Math.floor(16*multiplier);
-        this.cameraHeight = Math.floor(9*multiplier);
+        if(SETTINGS) {
+            var totalHeight = Math.round((window.innerHeight - this.hud - (this.boarder * 2))
+                    / SETTINGS.GAMEGRIDSCALE) * SETTINGS.GAMEGRIDSCALE;
+            var totalWidth = Math.round((window.innerWidth - (this.boarder * 2))
+                    / SETTINGS.GAMEGRIDSCALE) * SETTINGS.GAMEGRIDSCALE;
+            var ratioW = totalWidth / 16;
+            var ratioH = totalHeight / 9;
+            var multiplier = Math.min(ratioW, ratioH);
+            this.cameraWidth = Math.floor(16 * multiplier);
+            this.cameraHeight = Math.floor(9 * multiplier);
+        } else {
+            this.cameraWidth = 800;
+            this.cameraHeight = 450;
+        }
 
 
         if(FIRSTPERSON){
             this.sceneWidth = this.cameraWidth * 3;
             this.sceneHeight = this.cameraHeight  * 3;
-		} else {
+        } else {
             this.sceneWidth = this.cameraWidth;
             this.sceneHeight = this.cameraHeight;
-		}
+        }
 
-		// console.log("BOARD init: FIRSTPERSON, cameraWH, sceneWH ",FIRSTPERSON,
-		// 	this.cameraWidth, this.cameraHeight, this.sceneWidth, this.sceneHeight);
+        // console.log("BOARD init: FIRSTPERSON, cameraWH, sceneWH ",FIRSTPERSON,
+        // 	this.cameraWidth, this.cameraHeight, this.sceneWidth, this.sceneHeight);
 
 
 
-		this.canvas = createCanvas(this.cameraWidth, this.cameraHeight);
-		this.canvas.parent('CanvasContainer');
+        this.canvas = createCanvas(this.cameraWidth, this.cameraHeight);
+        this.canvas.parent('CanvasContainer');
         document.getElementById("CanvasContainer").setAttribute('style',
             "width: "+this.cameraWidth+"px; "+
             "height: "+this.cameraHeight+"px; "+
@@ -78,20 +68,20 @@ function Board(){
             "border-color: #18CAE6;"+
             "border-width: "+this.boarder+"px; "
 
-			//+ "border:1px solid #000000;"
+            //+ "border:1px solid #000000;"
         );
         this.createBackground();
         GUI.recalculateGui();
         this.scaleBOARD();
-	};
+    };
 
-	this.checkControls = function(){
-		this.snakes.get(SOCKET.id).checkControls();
-	};
+    this.checkControls = function(){
+        this.snakes.get(SOCKET.id).checkControls();
+    };
 
-	this.showSnakes = function(){
-		this.snakes.forEach(function(snake){
-			if(FIRSTPERSON) {
+    this.showSnakes = function(){
+        this.snakes.forEach(function(snake){
+            if(FIRSTPERSON) {
                 for (var y = -1; y <= 1; y++) {
                     var h = that.cameraHeight * y;
                     for (var x = -1; x <= 1; x++) {
@@ -101,14 +91,14 @@ function Board(){
                 }//for rows
             } else {
                 snake.show();
-			}
+            }
 
-		});
-	};
+        });
+    };
 
-	this.showPowerUps = function(){
-		this.powerUps.forEach(function(powerUp){
-			if(FIRSTPERSON) {
+    this.showPowerUps = function(){
+        this.powerUps.forEach(function(powerUp){
+            if(FIRSTPERSON) {
                 for (var y = -1; y <= 1; y++) {
                     var h = that.cameraHeight * y;
                     for (var x = -1; x <= 1; x++) {
@@ -124,67 +114,64 @@ function Board(){
                 stroke(255, 255, 255);
                 strokeWeight(Math.ceil(powerUp.size / 10));
                 rect(powerUp.x, powerUp.y, (powerUp.size), powerUp.size);
-			}
-		});
-	};
+            }
+        });
+    };
 
-	this.createBackground = function(){
-	  loadImage('assets/backgroundToRepeat.jpg',function(img){
-			//console.log("loaded image: ", img);
-		//var newImageWidth = CURRENTGAMESTATE.settings.WIDTH;
-		//var newImageHeight = CURRENTGAMESTATE.settings.HEIGHT;
-		var newImageWidth = this.sceneWidth;
-		var newImageHeight = this.sceneHeight;
-	    var newImage = new p5.Image(newImageWidth, newImageHeight);
+    this.createBackground = function(){
+        //console.log("RAWBACKGROUDIMG: ", RAWBACKGROUDIMG);
+        if(this.background == null ||
+            this.background.width != this.sceneWidth ||
+            this.background.height != this.sceneHeight) {
+            var img = RAWBACKGROUDIMG;
+            var newImageWidth = this.sceneWidth;
+            var newImageHeight = this.sceneHeight;
+            var newImage = new p5.Image(newImageWidth, newImageHeight);
 
-          console.log("createBackground scene: ", width, height, "img: ",newImageWidth, newImageHeight);
+            //console.log("createBackground scene: ", width, height, "img: ",newImageWidth, newImageHeight);
 
-	    var widthRatio = Math.floor(newImageWidth / img.width);
-	    var remainingWidth = (newImageWidth / img.width) - widthRatio;
-	    var heightRatio = Math.floor(newImageHeight /img.height);
-	    var remainingHeight = (newImageHeight /img.height) - heightRatio;
-	    // console.log(widthRatio, heightRatio);
+            var widthRatio = Math.floor(newImageWidth / img.width);
+            var remainingWidth = (newImageWidth / img.width) - widthRatio;
+            var heightRatio = Math.floor(newImageHeight / img.height);
+            var remainingHeight = (newImageHeight / img.height) - heightRatio;
 
-	    //copy(srcImage,sx,sy,sw,sh,
-	    //dx,dy,dw,dh)
-	    for(var h=0; h<heightRatio; h++){
-	      //draw full row
-	      for(var w=0; w<widthRatio; w++){
-	        //full image
-	        newImage.copy(img,0,0,img.width,img.height,
-	          img.width*w,img.height*h,img.width,img.height);
-	      }
-	      //remaining of row
-	      if(remainingWidth > 0){
-	        newImage.copy(img,0,0,img.width*remainingWidth,img.height,
-	          img.width*widthRatio,img.height*h,img.width*remainingWidth,img.height);
-	      }
-	      //end draw full row
-	    }
-	    //draw last partial row
-	    if(remainingHeight > 0){
-	      for(var w=0; w<widthRatio; w++){
-	        //full image
-	        newImage.copy(img,0,0,img.width,img.height*remainingHeight,
-	          img.width*w,img.height*h,img.width,img.height*remainingHeight);
-	      }
-	      //remaing of row
-	      if(remainingWidth > 0){
-	        newImage.copy(img,0,0,img.width*remainingWidth,img.height*remainingHeight,
-	          img.width*widthRatio,img.height*heightRatio,img.width*remainingWidth,img.height*remainingHeight);
-	      }
-	    }
+            for (var h = 0; h < heightRatio; h++) {
+                //draw full row
+                for (var w = 0; w < widthRatio; w++) {
+                    //full image
+                    newImage.copy(img, 0, 0, img.width, img.height,
+                        img.width * w, img.height * h, img.width, img.height);
+                }
+                //remaining of row
+                if (remainingWidth > 0) {
+                    newImage.copy(img, 0, 0, img.width * remainingWidth, img.height,
+                        img.width * widthRatio, img.height * h, img.width * remainingWidth, img.height);
+                }
+                //end draw full row
+            }
+            //draw last partial row
+            if (remainingHeight > 0) {
+                for (var w = 0; w < widthRatio; w++) {
+                    //full image
+                    newImage.copy(img, 0, 0, img.width, img.height * remainingHeight,
+                        img.width * w, img.height * h, img.width, img.height * remainingHeight);
+                }
+                //remaing of row
+                if (remainingWidth > 0) {
+                    newImage.copy(img, 0, 0, img.width * remainingWidth, img.height * remainingHeight,
+                        img.width * widthRatio, img.height * heightRatio, img.width * remainingWidth, img.height * remainingHeight);
+                }
+            }
 
-	    this.background = newImage;
-			//console.log("Finished createing background: ", this.background);
-	  }.bind(this), function(error){
-	    console.log("error createing back: ",error);
-	  });
+            this.background = newImage;
+            //console.log("Finished creating background: ", this.background);
+        }
 
-	};//end create background
 
-	this.scaleBOARD = function(){
-		if(MAZE && SETTINGS) {
+    };//end create background
+
+    this.scaleBOARD = function(){
+        if(MAZE && SETTINGS) {
             MAZE = CURRENTGAMESTATE.mazeLines.lines;
             MAZE = MAZE.map(function (l) {
                 var lx1 = Math.round((l.x1 / SETTINGS.WIDTH) * that.cameraWidth);
@@ -205,43 +192,43 @@ function Board(){
                 snake.scaleSnake();
             });
 
-            this.powerUps = CURRENTGAMESTATE.powerUps.powerUps;
-            console.log("BEFORE: ",BOARD.powerUps[0]);
-			this.powerUps.map(function(powerUp){
-				var scaled = powerUp;
-				scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * that.cameraWidth);
-				scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT) * that.cameraHeight);
-                //scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
-				return scaled;
-			});
-            console.log("AFTER: ",this.powerUps[0]);
+            if(CURRENTGAMESTATE && this.powerUps.length > 0) {
+                this.powerUps = CURRENTGAMESTATE.powerUps.powerUps;
+                //console.log("BEFORE: ", BOARD.powerUps[0]);
+                this.powerUps.forEach(function (powerUp) {
+                    powerUp.x = Math.round((powerUp.x / SETTINGS.WIDTH) * that.cameraWidth);
+                    powerUp.y = Math.round((powerUp.y / SETTINGS.HEIGHT) * that.cameraHeight);
+                    //scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
+                });
+                //console.log("AFTER: ", this.powerUps[0]);
+            }
 
 
         } // make sure SETTINGS is not null
-	};
+    };
 
-	this.show = function(){
-		background(color(0,0,0));
-		if(this.background){
+    this.show = function(){
+        background(color(0,0,0));
+        if(this.background){
             if(FIRSTPERSON) {
                 image(this.background, -this.cameraWidth / 2, -this.cameraHeight / 2,
                     this.sceneWidth, this.sceneHeight);
             } else {
                 background(this.background);
-			}
-	  	}//if image is loaded
+            }
+        }//if image is loaded
 
-      if(this.currentPowerUp){
-        this.currentPowerUp = null;
+        if(this.currentPowerUp){
+            this.currentPowerUp = null;
         }
-         else {
+        else {
 
             //copy(img,0,0, img.width, img.height, (this.cameraWidth-45), 25, 20, 20);
             //tint(255,127)
         }//Power up shown
 
         if(MAZE && SETTINGS) {
-			if(FIRSTPERSON) {
+            if(FIRSTPERSON) {
                 for (var y = -1; y <= 1; y++) {
                     var h = this.cameraHeight * y;
                     for (var x = -1; x <= 1; x++) {
@@ -249,7 +236,7 @@ function Board(){
                         MAZE.forEach(function (l) {
                             //console.log(l);
                             var wallColor = color(l.color[0], l.color[1], l.color[2]);
-							//var wallColor = color((100+(50*x)+(50*y)),(100+(50*x)+(50*y)),(100+(50*x)+(50*y)));
+                            //var wallColor = color((100+(50*x)+(50*y)),(100+(50*x)+(50*y)),(100+(50*x)+(50*y)));
                             stroke(wallColor);
                             strokeWeight(5);
                             line(l.x1 + w, l.y1 + h, l.x2 + w, l.y2 + h);
@@ -265,9 +252,9 @@ function Board(){
                     strokeWeight(5);
                     line(l.x1, l.y1, l.x2, l.y2);
                 });
-			}
+            }
         }//if MAZE is generated
-	}
+    }
 
 
 }//end board

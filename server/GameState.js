@@ -175,10 +175,11 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             return client.package();
         });
         gameState["powerUps"] = {
-            powerUps: this.powerUps,
+            powerUps: this.powerUps.map(function(powerUp){
+                return powerUp.package();
+            }),
             hash: hash(this.powerUps)
-        }
-        ;
+        };
 
         return gameState;
     };

@@ -18,7 +18,7 @@ function Menu(){
   this.textColor = color(255, 255, 255);
 
   this.guiState = function(state){
-    console.log("GuiState: ", state);
+    if(this.currentState != state) console.log("GuiState: ", state);
     this.liveButtons.clear();
     this.liveText.clear();
     this.snakeEditor.reset();

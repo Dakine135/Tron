@@ -81,4 +81,14 @@ function PowerUp(){
         }//end PowerUpType
     };//End of applyEffect
 
+    this.package = function(){
+        var package = {
+            x: Math.round(this.x),
+            y: Math.round(this.y),
+            type: this.type,
+            size: Math.round(this.size)
+        };
+        return package;
+    }
+
 }//End of PowerUp
