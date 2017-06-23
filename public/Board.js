@@ -80,6 +80,15 @@ function Board(){
         this.snakes.get(SOCKET.id).checkControls();
     };
 
+    this.updateSnakes = function(){
+        if(GUI.currentState === "gameRunning"){
+            //updateSnakes
+            this.snakes.forEach(function(snake){
+                snake.update();
+            });
+        }//guiState is gameRunning
+    };
+
     this.showSnakes = function(){
         this.snakes.forEach(function(snake){
             if(FIRSTPERSON) {

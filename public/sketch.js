@@ -4,7 +4,10 @@ var GUI;
 var MAZE;
 var SOCKET;
 var SETTINGS;
-var startTime = new Date().getTime();
+var STARTTIME = new Date().getTime();
+var CURRENTTIME = new Date().getTime();
+var LASTTIME = CURRENTTIME;
+var DELTATIME = 0;
 var currentTick = 0;
 var CURRENTGAMESTATE;
 var VIEW;
@@ -64,9 +67,11 @@ function draw(){
         VIEW = null;
     }
     drawCount++;
-    var currentTime = new Date().getTime();
-    var timeDiff = currentTime - startTime;
-    currentTick = Math.floor((timeDiff % 1000) / 25);
+    LASTTIME = CURRENTTIME;
+    CURRENTTIME = new Date().getTime();
+    var timeDiffFromStart = CURRENTTIME - STARTTIME;
+    DELTATIME = CURRENTTIME - LASTTIME;
+    currentTick = Math.floor((timeDiffFromStart % 1000) / 25);
     //console.log("currentTick: ", currentTick);
     if(currentTick == 0 && previousTick != currentTick) {
         document.getElementById("drawCount").innerHTML = "FrameRate: " + drawCount;
@@ -74,6 +79,7 @@ function draw(){
         //console.log("updateCount: ", updateCount);
     }
 
+    BOARD.updateSnakes();
     BOARD.show();
     BOARD.showSnakes();
     BOARD.showPowerUps();

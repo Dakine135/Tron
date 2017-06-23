@@ -55,21 +55,41 @@ function Snake(snakeName){
     this.update = function(snake) {
 
         if(snake) {
-
+            //console.log("server update Snake BEFORE: ", this.x, this.y, this.speedScale);
             this.size = snake.size;
             this.x = snake.x;
             this.y = snake.y;
-            this.speedScale = snake.speedScale;
+            this.xdir = snake.xdir;
+            this.ydir = snake.ydir;
+            this.speedScale = Math.round((snake.speedScale / SETTINGS.HEIGHT) * BOARD.cameraHeight);
 
             //tail and color stuff
             this.tail = snake.tail;
             this.startColor = color(snake.startColor[0], snake.startColor[1], snake.startColor[2]);
             this.endColor = color(snake.endColor[0], snake.endColor[1], snake.endColor[2]);
 
+            //console.log("server update Snake AFTER: ", this.x, this.y, this.speedScale);
+
             this.scaleSnake();
 
         } else {
             //simulate moving straight
+            //console.log("simulate BEFORE: ", this.x, this.y, this.speedScale);
+            var seconds = DELTATIME/1000;
+            //console.log("seconds: ", seconds);
+            //console.log("dirXY: ", this.xdir, this.ydir);
+            var distX = this.xdir * (seconds * this.speedScale);
+            var distY = this.ydir * (seconds * this.speedScale);
+            //console.log("distXY: ", distX, distY);
+            var nextX = Math.round((this.x + distX)*100)/100;
+            var nextY = Math.round((this.y + distY)*100)/100;
+
+            this.x = nextX;
+            this.y = nextY;
+
+            this.tail[0].x = this.x;
+            this.tail[0].y = this.y;
+            //console.log("simulate AFTER: ", this.x, this.y, this.speedScale);
         }
 
     };//end update

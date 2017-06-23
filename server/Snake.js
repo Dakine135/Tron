@@ -340,6 +340,8 @@ function Snake(snakeName){
             size: this.size,
             x: this.x,
             y: this.y,
+            xdir: this.xdir,
+            ydir: this.ydir,
             speedScale: this.speedScale,
             tail: this.tail,
             startColor: this.startColor,
