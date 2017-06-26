@@ -3,6 +3,8 @@ var express = require('express');
 var socket = require('socket.io');
 var hash = require('object-hash');
 const gameloop = require('node-gameloop');
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
 
 //OUR CODE
 var GAMESTATE = require('./server/GameState');
@@ -17,6 +19,18 @@ var app = express();
 var server = app.listen(3033);
 var io = socket(server);
 
+var url = 'mongodb://localhost:27017/FrameRate';
+MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    console.log("Connected correctly to MongoDB server.");
+    db.close();
+});
+
+app.use(express.static('./public'));
+console.log("Tron node server running");
+
+io.sockets.on('connection', newConnection);
+
 console.log("CONFIG", CONFIG);
 
 var CLIENTSETTINGS = {
@@ -26,11 +40,6 @@ var CLIENTSETTINGS = {
     HEIGHT: CONFIG.HEIGHT
 };
 CLIENTSETTINGS.hash = hash(CLIENTSETTINGS);
-
-app.use(express.static('./public'));
-console.log("Tron node server running");
-
-io.sockets.on('connection', newConnection);
 
 var MAZELINES = new MAZE();
 
