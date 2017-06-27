@@ -14,7 +14,7 @@ function Board(){
     this.background = null;
     this.currentPowerUp = null;
     var img;
-    //img = loadImage('/assets/emptyPowerUp.png');
+    img = loadImage('/assets/powerUps/emptyPowerUp.png');
 
     //snake stuff
     this.snakes = new Map();
@@ -233,8 +233,8 @@ function Board(){
         }
         else {
 
-            //copy(img,0,0, img.width, img.height, (this.cameraWidth-45), 25, 20, 20);
-            //tint(255,127)
+            copy(img,0,0, img.width, img.height, (this.cameraWidth-65), 25, 40, 40);
+            // tint(127,255)
         }//Power up shown
 
         if(MAZE && SETTINGS) {
