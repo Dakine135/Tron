@@ -11,6 +11,7 @@ npm install express
 npm install socketio
 npm install node-gameloop
 npm install -g nodemon
+npm install mongodb
 ```
 
 ## Running
@@ -18,6 +19,7 @@ npm install -g nodemon
 In terminal/command navigate to Tron directory. Start node server with
 
 ```
+mongod --dbpath=Path/to/data/
 nodemon FrameRate.js
 ```
 It will automatically detect code changes and refresh the node server.
@@ -36,6 +38,7 @@ Hosted at welbornhome.duckdns.org on Unbunut 17 Sever running pm2 node package m
 
 * JavaScript
 * Nodejs
+* MongoDB
 * P5 js
 
 ## Authors

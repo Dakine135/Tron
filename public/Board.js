@@ -19,6 +19,7 @@ function Board(){
     //snake stuff
     this.snakes = new Map();
     this.powerUps = [];
+    this.snakeGoal = null;
 
     //space for stuff
     this.boarder = 3;
@@ -264,6 +265,19 @@ function Board(){
                 });
             }
         }//if MAZE is generated
+
+        if(this.snakeGoal){
+            //scale snake goal
+            var goalX = Math.round((this.snakeGoal.x / SETTINGS.WIDTH) * that.cameraWidth);
+            var goalY = Math.round((this.snakeGoal.y / SETTINGS.WIDTH) * that.cameraWidth);
+            var goalSize = Math.round((this.snakeGoal.size / SETTINGS.WIDTH) * that.cameraWidth);
+
+            fill(255,0,0);
+            stroke(0, 0, 255);
+            strokeWeight(goalSize/5);
+            rect(goalX, goalY, goalSize, goalSize);
+
+        }
     }
 
 

@@ -14,7 +14,7 @@ var VIEW;
 
 var RAWBACKGROUDIMG;
 
-var FIRSTPERSON = true;
+var FIRSTPERSON = false;
 function toggleFirstPerson(){
     FIRSTPERSON = !FIRSTPERSON;
     //console.log("BOARD.init CALLED FROM toggleFirstPerson");

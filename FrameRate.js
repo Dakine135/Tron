@@ -47,6 +47,7 @@ var MAZELINES = new MAZE();
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
 GLOBALS.CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
+GLOBALS.CURRENTGAMESTATE.createCPUsnakes(50, 300);
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;

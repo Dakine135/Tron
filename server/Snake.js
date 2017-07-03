@@ -8,17 +8,14 @@ function Snake(snakeName){
 
     //starting position
     this.size = CONFIG.snakeDefaults.SNAKESIZE;
-    this.x = this.WIDTH/2 - (this.size/2);
-    this.y = this.HEIGHT/2 - (this.size/2);
+    this.x = CONFIG.WIDTH/2 - (CONFIG.snakeDefaults.SNAKESIZE/2);
+    this.y = CONFIG.HEIGHT/2 - (CONFIG.snakeDefaults.SNAKESIZE/2);
     this.direction = "Stopped";
 
     //starting direction and speed
     this.xdir = 0;
     this.ydir = 0;
     //speedscale is pixels per second
-    // //xspeed and yspeed and number of pixels to move in this update
-    // this.xspeed = 0;
-    // this.yspeed = 0;
     this.speedScale = CONFIG.snakeDefaults.SNAKESPEEDSCALE;
 
     //tail and color stuff

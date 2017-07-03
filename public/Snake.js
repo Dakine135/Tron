@@ -73,23 +73,23 @@ function Snake(snakeName){
             this.scaleSnake();
 
         } else {
-            //simulate moving straight
-            //console.log("simulate BEFORE: ", this.x, this.y, this.speedScale);
-            var seconds = DELTATIME/1000;
-            //console.log("seconds: ", seconds);
-            //console.log("dirXY: ", this.xdir, this.ydir);
-            var distX = this.xdir * (seconds * this.speedScale);
-            var distY = this.ydir * (seconds * this.speedScale);
-            //console.log("distXY: ", distX, distY);
-            var nextX = Math.round((this.x + distX)*100)/100;
-            var nextY = Math.round((this.y + distY)*100)/100;
-
-            this.x = nextX;
-            this.y = nextY;
-
-            this.tail[0].x = this.x;
-            this.tail[0].y = this.y;
-            //console.log("simulate AFTER: ", this.x, this.y, this.speedScale);
+            // //simulate moving straight
+            // //console.log("simulate BEFORE: ", this.x, this.y, this.speedScale);
+            // var seconds = DELTATIME/1000;
+            // //console.log("seconds: ", seconds);
+            // //console.log("dirXY: ", this.xdir, this.ydir);
+            // var distX = this.xdir * (seconds * this.speedScale);
+            // var distY = this.ydir * (seconds * this.speedScale);
+            // //console.log("distXY: ", distX, distY);
+            // var nextX = Math.round((this.x + distX)*100)/100;
+            // var nextY = Math.round((this.y + distY)*100)/100;
+            //
+            // this.x = nextX;
+            // this.y = nextY;
+            //
+            // this.tail[0].x = this.x;
+            // this.tail[0].y = this.y;
+            // //console.log("simulate AFTER: ", this.x, this.y, this.speedScale);
         }
 
     };//end update

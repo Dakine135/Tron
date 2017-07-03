@@ -4,6 +4,8 @@ var PowerUp = require('./PowerUp.js');
 var hash = require('object-hash');
 var CONFIG = require('./Config.js');
 var GLOBALS = require('./Globals');
+var SNAKE = require('./Snake');
+var CPUsnake = require('./CPUsnake');
 function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();
@@ -19,6 +21,39 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     var tempPowerUp = new PowerUp();
     tempPowerUp.spawn();
     this.powerUps.push(tempPowerUp);
+
+    this.cpuSnakeTotalLifeSpan = 0;
+    this.cpuSnakeCurrentLifeSpan = 0;
+    this.numberOfSnakes = 0;
+    this.CPUsnakes = new Map();
+    this.createCPUsnakes = function(numOfSnakes,numOfMovements){
+        this.cpuSnakeTotalLifeSpan = numOfMovements;
+        this.numberOfSnakes = numOfSnakes;
+      for(var i=0; i < numOfSnakes; i++){
+          var tempCPUsnake = new CPUsnake(i, numOfMovements);
+          tempCPUsnake.chngColorRandom();
+          tempCPUsnake.initalizeMovement();
+          //console.log(tempCPUsnake);
+          this.CPUsnakes.set(i, tempCPUsnake);
+      }
+    };
+
+    this.snakeGoal = {
+        x: CONFIG.WIDTH*(3/4),
+        y: CONFIG.HEIGHT*(3/4),
+        size: 20
+    };
+
+    this.pickOneParentSnake = function(list, totalScore){
+      var index = 0;
+      var r = LIB.randomInt(0,totalScore);
+      while (r >= 0){
+          r = r - list[index].score;
+          index++;
+      }
+      index--;
+      return list[index];
+    };
 
     var that = this;
 
@@ -136,7 +171,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                 var collisionWall = this.checkCollisionWithWalls(snakeHead);
                 if(collisionWall && collisionWall.hit){
                     //console.log("Wall Collision: ",collisionWall);
-                    collisionWall.wall.color = [255,255,255];
+                    //collisionWall.wall.color = [255,255,255];
                     this.mazeLines.hash = hash(this.mazeLines);
                     snakeHead.reset();
                     this.chngScore(snakeHead.name, -1);
@@ -164,6 +199,43 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                 snake.update();
             });
             this.checkForCollisions();
+
+            if(this.cpuSnakeCurrentLifeSpan < this.cpuSnakeTotalLifeSpan) {
+                this.CPUsnakes.forEach(function (cpuSnake) {
+                    cpuSnake.update(this.cpuSnakeCurrentLifeSpan);
+                });
+                this.cpuSnakeCurrentLifeSpan++;
+            } else {
+                console.log("NEW GENERATION");
+
+                //calculate scores
+                var totalScore = 0;
+                var bestScore = 0;
+                this.CPUsnakes.forEach(function(snake){
+                    snake.calculateScore();
+                    totalScore += snake.score;
+                    if(snake.score > bestScore) bestScore = snake.score;
+                });
+                console.log("Best Score: ",bestScore, " Total: ",totalScore);
+
+                //breed new generation
+                var lastGeneration = Array.from(this.CPUsnakes.values());
+                for(var i=0; i< this.numberOfSnakes; i++){
+                    var tempCPUsnake = new CPUsnake(i, this.cpuSnakeTotalLifeSpan);
+                    tempCPUsnake.chngColorRandom();
+                    var snake1 = this.pickOneParentSnake(lastGeneration, totalScore);
+                    var snake2 = this.pickOneParentSnake(lastGeneration, totalScore);
+                    tempCPUsnake.breed(snake1, snake2);
+                    //console.log(tempCPUsnake);
+                    this.CPUsnakes.set(i, tempCPUsnake);
+                }
+
+                //reset simulation
+                this.CPUsnakes.forEach(function(snake){
+                    snake.reset();
+                });
+                this.cpuSnakeCurrentLifeSpan = 0;
+            }
         }//guiState is gameRunning
     };
 
@@ -173,10 +245,14 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             time: new Date().getTime(),
             guiState: this.guiState,
             mazeLines: this.mazeLines,
-            settings: this.clientSettings
+            settings: this.clientSettings,
+            snakeGoal: this.snakeGoal
         };
         gameState['snakes'] = Array.from(this.snakes.values()).map(function(snake){
             return snake.package();
+        });
+        gameState['cpuSnakes'] = Array.from(this.CPUsnakes.values()).map(function(cpuSnake){
+           return cpuSnake.package();
         });
         gameState['clients'] = Array.from(this.clients.values()).map(function(client){
             return client.package();
