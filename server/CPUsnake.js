@@ -173,6 +173,7 @@ function CPUsnake(snakeName, numOfMovements) {
     };//end createPreviousPosition
 
     this.update = function(currentLifespanTick) {
+        //console.log("currentLifespanTick: ", currentLifespanTick);
         if(this.currentMovement < this.movement.length &&
                 this.triggerDir == 0 && this.madeItToGoal < 0 && !this.crashed) {
             this.dir(this.movement[this.currentMovement].x, this.movement[this.currentMovement].y, false);
@@ -180,8 +181,7 @@ function CPUsnake(snakeName, numOfMovements) {
             this.triggerDir = 1;
 
         } else {
-            if(this.currentMovement >= this.movement.length){
-                this.dir(0,0,true);
+            if(this.currentMovement >= this.movement.length || this.madeItToGoal > 0 || this.crashed){
                 this.xdir = 0;
                 this.ydir = 0;
                 this.triggerDir = 10;
@@ -275,7 +275,7 @@ function CPUsnake(snakeName, numOfMovements) {
           else this.movement[i] = snake2.movement[i];
 
           var r = LIB.randomInt(0,101);
-          if(r <= 1){
+          if(r <= 2){
               this.movement[i] = {
                   x: LIB.randomInt(-1,2),
                   y: LIB.randomInt(-1,2)
@@ -288,8 +288,8 @@ function CPUsnake(snakeName, numOfMovements) {
         var goal = GLOBALS.CURRENTGAMESTATE.snakeGoal;
         this.score = Math.floor(Math.pow((1 / (LIB.dist(this.x, this.y, goal.x, goal.y)+1))*1000, 2));
         if(this.madeItToGoal > 0){
-            var multiplier = 1000*(1/this.madeItToGoal);
-            console.log("multiplier: ",multiplier);
+            var multiplier = Math.round(Math.pow(1000*(1/this.madeItToGoal),2)*10)/10;
+            //console.log("multiplier: ",multiplier, "madeItToGoal: ", this.madeItToGoal);
             this.score = this.score * multiplier;
         }
         //console.log(this.score);
@@ -326,7 +326,7 @@ function CPUsnake(snakeName, numOfMovements) {
 
         if(collision && collision.hit){
             this.madeItToGoal = currentLifespanTick;
-            console.log("this.madeItToGoal: ", this.madeItToGoal);
+            //console.log("this.madeItToGoal: ", this.madeItToGoal);
         }
     };
 

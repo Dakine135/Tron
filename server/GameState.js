@@ -39,8 +39,8 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     };
 
     this.snakeGoal = {
-        x: CONFIG.WIDTH*(3/4),
-        y: CONFIG.HEIGHT*(3/4),
+        x: CONFIG.WIDTH*(2/4),
+        y: CONFIG.HEIGHT*(2/4),
         size: 20
     };
 
@@ -202,7 +202,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
 
             if(this.cpuSnakeCurrentLifeSpan < this.cpuSnakeTotalLifeSpan) {
                 this.CPUsnakes.forEach(function (cpuSnake) {
-                    cpuSnake.update(this.cpuSnakeCurrentLifeSpan);
+                    cpuSnake.update(that.cpuSnakeCurrentLifeSpan);
                 });
                 this.cpuSnakeCurrentLifeSpan++;
             } else {
