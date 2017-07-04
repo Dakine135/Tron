@@ -38,9 +38,15 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
       }
     };
 
+    var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
+    var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
+    var rowNum = Math.floor(heightCells*(3/4));
+    var colNum = Math.floor(widthCells*(3/4));
+    var goalX = (CONFIG.GAMEGRIDSCALE * colNum) + (CONFIG.GAMEGRIDSCALE / 4);
+    var goalY = (CONFIG.GAMEGRIDSCALE * rowNum) + (CONFIG.GAMEGRIDSCALE / 4);
     this.snakeGoal = {
-        x: CONFIG.WIDTH*(2/4),
-        y: CONFIG.HEIGHT*(2/4),
+        x: goalX,
+        y: goalY,
         size: 20
     };
 
@@ -66,6 +72,8 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         this.clients.forEach(function(client){
             client.reset();
         });
+        this.CPUsnakes = new Map();
+        this.createCPUsnakes(200, 200);
 
     };// end restart
 
@@ -204,9 +212,13 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                 this.CPUsnakes.forEach(function (cpuSnake) {
                     cpuSnake.update(that.cpuSnakeCurrentLifeSpan);
                 });
+                this.CPUsnakes.forEach(function (cpuSnake) {
+                    var collision = that.checkCollisionWithWalls(cpuSnake);
+                    if(collision && collision.hit) cpuSnake.crashed = true;
+                });
                 this.cpuSnakeCurrentLifeSpan++;
             } else {
-                console.log("NEW GENERATION");
+                //console.log("NEW GENERATION");
 
                 //calculate scores
                 var totalScore = 0;
@@ -225,7 +237,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                     tempCPUsnake.chngColorRandom();
                     var snake1 = this.pickOneParentSnake(lastGeneration, totalScore);
                     var snake2 = this.pickOneParentSnake(lastGeneration, totalScore);
-                    tempCPUsnake.breed(snake1, snake2);
+                    tempCPUsnake.breed(snake1, snake2, bestScore);
                     //console.log(tempCPUsnake);
                     this.CPUsnakes.set(i, tempCPUsnake);
                 }

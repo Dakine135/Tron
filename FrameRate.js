@@ -19,12 +19,12 @@ var app = express();
 var server = app.listen(3033);
 var io = socket(server);
 
-var url = 'mongodb://localhost:27017/FrameRate';
-MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    console.log("Connected correctly to MongoDB server.");
-    db.close();
-});
+// var url = 'mongodb://localhost:27017/FrameRate';
+// MongoClient.connect(url, function(err, db) {
+//     assert.equal(null, err);
+//     console.log("Connected correctly to MongoDB server.");
+//     db.close();
+// });
 
 app.use(express.static('./public'));
 console.log("Tron node server running");
@@ -47,7 +47,7 @@ var MAZELINES = new MAZE();
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
 GLOBALS.CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
-GLOBALS.CURRENTGAMESTATE.createCPUsnakes(100, 300);
+GLOBALS.CURRENTGAMESTATE.createCPUsnakes(200, 200);
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;
@@ -91,6 +91,7 @@ function newConnection(socket){
     function generateNewMaze(){
         MAZELINES = new MAZE();
         GLOBALS.CURRENTGAMESTATE.mazeLines = MAZELINES;
+        GLOBALS.CURRENTGAMESTATE.restart();
     }
 
     socket.on('updatePing', updatePing);

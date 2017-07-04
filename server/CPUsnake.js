@@ -8,8 +8,12 @@ function CPUsnake(snakeName, numOfMovements) {
 
     //starting position
     this.size = CONFIG.snakeDefaults.SNAKESIZE/2;
-    this.x = CONFIG.WIDTH*(1/4);
-    this.y = CONFIG.HEIGHT*(1/4);
+    var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
+    var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
+    var rowNum = Math.floor(heightCells*(1/4));
+    var colNum = Math.floor(widthCells*(1/4));
+    this.x = (CONFIG.GAMEGRIDSCALE * colNum) + (CONFIG.GAMEGRIDSCALE / 2);
+    this.y = (CONFIG.GAMEGRIDSCALE * rowNum) + (CONFIG.GAMEGRIDSCALE / 2);
     this.direction = "Stopped";
 
     //ai stuff
@@ -56,7 +60,8 @@ function CPUsnake(snakeName, numOfMovements) {
         for(var i=0; i < this.numOfMovements; i++){
             var tempDir = {
                 x: LIB.randomInt(-1,2),
-                y: LIB.randomInt(-1,2)
+                y: LIB.randomInt(-1,2),
+                noChange: LIB.randomInt(0,101)
             };
             this.movement[i] = tempDir;
         }
@@ -176,7 +181,12 @@ function CPUsnake(snakeName, numOfMovements) {
         //console.log("currentLifespanTick: ", currentLifespanTick);
         if(this.currentMovement < this.movement.length &&
                 this.triggerDir == 0 && this.madeItToGoal < 0 && !this.crashed) {
-            this.dir(this.movement[this.currentMovement].x, this.movement[this.currentMovement].y, false);
+            if(this.movement[this.currentMovement].noChange < 50){
+                //dont change direction
+            }
+            else{
+                this.dir(this.movement[this.currentMovement].x, this.movement[this.currentMovement].y, false);
+            }
             this.currentMovement++;
             this.triggerDir = 1;
 
@@ -268,31 +278,42 @@ function CPUsnake(snakeName, numOfMovements) {
         this.intializeTailColor();
     };
 
-    this.breed = function(snake1, snake2){
+    this.breed = function(snake1, snake2, bestScore){
         var midpoint = LIB.randomInt(0,numOfMovements);
+        var avgScoreOfParents = Math.round((snake1.score + snake2.score)/2);
+        //chance between 0 and 5 percent depending on parents score compared to best
+        var chance = 5 - (Math.floor(5*(avgScoreOfParents/bestScore)));
+       // console.log(chance, " => ", avgScoreOfParents);
+        var numOfMutations = 0;
       for(var i=0; i < numOfMovements; i++){
           if(i < midpoint) this.movement[i] = snake1.movement[i];
           else this.movement[i] = snake2.movement[i];
 
-          var r = LIB.randomInt(0,101);
-          if(r <= 2){
+          var r = LIB.randomInt(0,100); //between 0-99
+          if(r <= chance){
+              numOfMutations++;
               this.movement[i] = {
                   x: LIB.randomInt(-1,2),
-                  y: LIB.randomInt(-1,2)
+                  y: LIB.randomInt(-1,2),
+                  noChange: LIB.randomInt(0,101)
               };
           }
       }
+      //console.log(numOfMutations, " num of Mutations");
     };
 
     this.calculateScore = function(){
         var goal = GLOBALS.CURRENTGAMESTATE.snakeGoal;
-        this.score = Math.floor(Math.pow((1 / (LIB.dist(this.x, this.y, goal.x, goal.y)+1))*1000, 2));
+        this.score = (1 / (LIB.dist(this.x, this.y, goal.x, goal.y)+1))*1000;
+        //console.log("inital: ", this.score);
         if(this.madeItToGoal > 0){
-            var multiplier = Math.round(Math.pow(1000*(1/this.madeItToGoal),2)*10)/10;
-            //console.log("multiplier: ",multiplier, "madeItToGoal: ", this.madeItToGoal);
-            this.score = this.score * multiplier;
+            var multiplier = Math.round(100*(1/this.madeItToGoal)*100)/100;
+            //console.log("multiplier: ", multiplier, "madeItToGoal: ", this.madeItToGoal);
+            this.score = this.score + (this.score * multiplier);
         }
-        //console.log(this.score);
+        if(this.crashed) this.score = this.score * 0.5;
+        this.score = Math.round(Math.pow(this.score, 2)*10)/10;
+        //console.log("final: ", this.score);
     };
 
     //reset to default (refresh)
