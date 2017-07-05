@@ -14,6 +14,7 @@ var CLIENT = require('./server/Client');
 var LIB = require('./server/lib.js');
 var CONFIG = require('./server/Config.js');
 var GLOBALS = require('./server/Globals');
+var GENETICLEARNING = require('./server/GeneticLearning.js');
 
 var app = express();
 var server = app.listen(3033);
@@ -47,13 +48,15 @@ var MAZELINES = new MAZE();
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
 GLOBALS.CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
-GLOBALS.CURRENTGAMESTATE.createCPUsnakes(200, 200);
+GLOBALS.GENETICLEARNING = new GENETICLEARNING();
+GLOBALS.GENETICLEARNING.createCPUsnakes(200, 200);
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;
     //console.log('Frame=%s', frameCount);
 
     GLOBALS.CURRENTGAMESTATE.update(FRAMECOUNT);
+    GLOBALS.GENETICLEARNING.update();
 
     var clientPackage = GLOBALS.CURRENTGAMESTATE.package();
     //console.log(clientPackage);

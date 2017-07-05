@@ -2,6 +2,7 @@ module.exports = CPUsnake;
 var LIB = require('./lib.js');
 var CONFIG = require('./Config.js');
 var GLOBALS = require('./Globals');
+
 function CPUsnake(snakeName, numOfMovements) {
     //console.log("createCPUsnake: ", snakeName);
     this.name = snakeName;
@@ -39,7 +40,7 @@ function CPUsnake(snakeName, numOfMovements) {
     this.endColor = [255,255,255];
     this.colorDirection = true;
     this.currTailLength = 0; //length in pixels
-    this.maxTailLength = 20;
+    this.maxTailLength = 15;
     this.maxSegmentDist = this.maxTailLength / 40;
 
     this.intializeTailColor = function(){
@@ -181,7 +182,7 @@ function CPUsnake(snakeName, numOfMovements) {
         //console.log("currentLifespanTick: ", currentLifespanTick);
         if(this.currentMovement < this.movement.length &&
                 this.triggerDir == 0 && this.madeItToGoal < 0 && !this.crashed) {
-            if(this.movement[this.currentMovement].noChange < 50){
+            if(this.movement[this.currentMovement].noChange < 90){
                 //dont change direction
             }
             else{
@@ -280,16 +281,17 @@ function CPUsnake(snakeName, numOfMovements) {
 
     this.breed = function(snake1, snake2, bestScore){
         var midpoint = LIB.randomInt(0,numOfMovements);
-        var avgScoreOfParents = Math.round((snake1.score + snake2.score)/2);
-        //chance between 0 and 5 percent depending on parents score compared to best
-        var chance = 5 - (Math.floor(5*(avgScoreOfParents/bestScore)));
+        //var avgScoreOfParents = Math.round((snake1.score + snake2.score)/2);
+        //chance between 1 and 5 percent depending on parents score compared to best
+        //var chance = 5 - (Math.floor(4*(avgScoreOfParents/bestScore)));
+        var chance = 1;
        // console.log(chance, " => ", avgScoreOfParents);
         var numOfMutations = 0;
       for(var i=0; i < numOfMovements; i++){
           if(i < midpoint) this.movement[i] = snake1.movement[i];
           else this.movement[i] = snake2.movement[i];
 
-          var r = LIB.randomInt(0,100); //between 0-99
+          var r = LIB.randomInt(1,101); //between 1-100
           if(r <= chance){
               numOfMutations++;
               this.movement[i] = {
@@ -303,7 +305,7 @@ function CPUsnake(snakeName, numOfMovements) {
     };
 
     this.calculateScore = function(){
-        var goal = GLOBALS.CURRENTGAMESTATE.snakeGoal;
+        var goal = GLOBALS.GENETICLEARNING.snakeGoal;
         this.score = (1 / (LIB.dist(this.x, this.y, goal.x, goal.y)+1))*1000;
         //console.log("inital: ", this.score);
         if(this.madeItToGoal > 0){
@@ -321,8 +323,12 @@ function CPUsnake(snakeName, numOfMovements) {
         //reset values
         this.tail = [];
         this.currTailLength = 0;
-        this.x = CONFIG.WIDTH*(1/4);
-        this.y = CONFIG.HEIGHT*(1/4);
+        var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
+        var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
+        var rowNum = Math.floor(heightCells*(1/4));
+        var colNum = Math.floor(widthCells*(1/4));
+        this.x = (CONFIG.GAMEGRIDSCALE * colNum) + (CONFIG.GAMEGRIDSCALE / 2);
+        this.y = (CONFIG.GAMEGRIDSCALE * rowNum) + (CONFIG.GAMEGRIDSCALE / 2);
         this.direction = "Stopped";
         this.xdir = 0;
         this.ydir = 0;
@@ -338,9 +344,9 @@ function CPUsnake(snakeName, numOfMovements) {
         var snakeEndX = this.tail[0].x;
         var snakeEndY = this.tail[0].y;
 
-        var goalX = GLOBALS.CURRENTGAMESTATE.snakeGoal.x;
-        var goalY = GLOBALS.CURRENTGAMESTATE.snakeGoal.y;
-        var goalSize = GLOBALS.CURRENTGAMESTATE.snakeGoal.size;
+        var goalX = GLOBALS.GENETICLEARNING.snakeGoal.x;
+        var goalY = GLOBALS.GENETICLEARNING.snakeGoal.y;
+        var goalSize = GLOBALS.GENETICLEARNING.snakeGoal.size;
 
         var collision = LIB.collideLineRect(snakeStartX, snakeStartY, snakeEndX, snakeEndY,
             goalX, goalY, goalSize, goalSize);

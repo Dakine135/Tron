@@ -101,24 +101,26 @@ function Socket(){
         });
 
         //add or update local snakes
-        gameState.cpuSnakes.forEach(function(snake) {
-            if(BOARD.snakes.has(snake.name)){
-                //console.log("update cpu snake: ", snake.name);
-                var oldSnake = BOARD.snakes.get(snake.name);
-                oldSnake.update(snake);
-                BOARD.snakes.set(snake.name, oldSnake);
-                if(that.myClient && snake.name === that.myClient.key){
-                    // console.log("setting snake: ", this.mySnake);
-                    that.mySnake = BOARD.snakes.get(that.myClient.key);
+        if(gameState.cpuSnakes != null) {
+            gameState.cpuSnakes.forEach(function (snake) {
+                if (BOARD.snakes.has(snake.name)) {
+                    //console.log("update cpu snake: ", snake.name);
+                    var oldSnake = BOARD.snakes.get(snake.name);
+                    oldSnake.update(snake);
+                    BOARD.snakes.set(snake.name, oldSnake);
+                    if (that.myClient && snake.name === that.myClient.key) {
+                        // console.log("setting snake: ", this.mySnake);
+                        that.mySnake = BOARD.snakes.get(that.myClient.key);
+                    }
+                } else {
+                    console.log("add cpu snake: ", snake.name);
+                    var newSnake = new Snake(snake.name);
+                    console.log("new cpu snake: ", newSnake);
+                    newSnake.update(snake);
+                    BOARD.snakes.set(snake.name, newSnake);
                 }
-            } else {
-                console.log("add cpu snake: ", snake.name);
-                var newSnake = new Snake(snake.name);
-                console.log("new cpu snake: ",newSnake);
-                newSnake.update(snake);
-                BOARD.snakes.set(snake.name, newSnake);
-            }
-        });
+            });
+        }
 
         //remove local snakes if no longer in gameState
         BOARD.snakes.forEach(function(boardSnake){
@@ -126,15 +128,19 @@ function Socket(){
             gameState.snakes.forEach(function (gameSnake) {
                 if(boardSnake.name == gameSnake.name) snakeFound = true;
             });
-            gameState.cpuSnakes.forEach(function (gameSnake) {
-                if(boardSnake.name == gameSnake.name) snakeFound = true;
-            });
+            if(gameState.cpuSnakes != null) {
+                gameState.cpuSnakes.forEach(function (gameSnake) {
+                    if(boardSnake.name == gameSnake.name) snakeFound = true;
+                });
+            }
             if(!snakeFound){
                 BOARD.snakes.delete(boardSnake.name);
             }
         });
 
-        BOARD.snakeGoal = gameState.snakeGoal;
+        if(gameState.snakeGoal != null) {
+            BOARD.snakeGoal = gameState.snakeGoal;
+        }
 
 
         if(that.powerUpsHash != gameState.powerUps.hash){

@@ -15,13 +15,13 @@ function Snake(snakeName){
     this.scaleH = 1;
 
     this.scaleSnake = function(){
-        this.x = Math.round((this.x / SETTINGS.WIDTH) * BOARD.cameraWidth);
-        this.y = Math.round((this.y / SETTINGS.HEIGHT) * BOARD.cameraHeight);
-        this.size = Math.round((this.size / SETTINGS.WIDTH) * BOARD.cameraWidth);
+        this.x = (this.x / SETTINGS.WIDTH) * BOARD.cameraWidth;
+        this.y = (this.y / SETTINGS.HEIGHT) * BOARD.cameraHeight;
+        this.size = (this.size / SETTINGS.WIDTH) * BOARD.cameraWidth;
         this.tail.map(function(prevPoint){
             var scaled = prevPoint;
-            scaled.x = Math.round((scaled.x / SETTINGS.WIDTH) * BOARD.cameraWidth);
-            scaled.y = Math.round((scaled.y / SETTINGS.HEIGHT) * BOARD.cameraHeight);
+            scaled.x = (scaled.x / SETTINGS.WIDTH) * BOARD.cameraWidth;
+            scaled.y = (scaled.y / SETTINGS.HEIGHT) * BOARD.cameraHeight;
             return scaled;
         });
     };

@@ -185,10 +185,10 @@ function Board(){
         if(MAZE && SETTINGS) {
             MAZE = CURRENTGAMESTATE.mazeLines.lines;
             MAZE = MAZE.map(function (l) {
-                var lx1 = Math.round((l.x1 / SETTINGS.WIDTH) * that.cameraWidth);
-                var lx2 = Math.round((l.x2 / SETTINGS.WIDTH) * that.cameraWidth);
-                var ly1 = Math.round((l.y1 / SETTINGS.HEIGHT) * that.cameraHeight);
-                var ly2 = Math.round((l.y2 / SETTINGS.HEIGHT) * that.cameraHeight);
+                var lx1 = (l.x1 / SETTINGS.WIDTH) * that.cameraWidth;
+                var lx2 = (l.x2 / SETTINGS.WIDTH) * that.cameraWidth;
+                var ly1 = (l.y1 / SETTINGS.HEIGHT) * that.cameraHeight;
+                var ly2 = (l.y2 / SETTINGS.HEIGHT) * that.cameraHeight;
                 return {
                     x1: lx1,
                     y1: ly1,
@@ -207,8 +207,8 @@ function Board(){
                 this.powerUps = CURRENTGAMESTATE.powerUps.powerUps;
                 //console.log("BEFORE: ", BOARD.powerUps[0]);
                 this.powerUps.forEach(function (powerUp) {
-                    powerUp.x = Math.round((powerUp.x / SETTINGS.WIDTH) * that.cameraWidth);
-                    powerUp.y = Math.round((powerUp.y / SETTINGS.HEIGHT) * that.cameraHeight);
+                    powerUp.x = (powerUp.x / SETTINGS.WIDTH) * that.cameraWidth;
+                    powerUp.y = (powerUp.y / SETTINGS.HEIGHT) * that.cameraHeight;
                     //scaled.size = Math.round((scaled.size / SETTINGS.WIDTH) * that.cameraWidth);
                 });
                 //console.log("AFTER: ", this.powerUps[0]);
