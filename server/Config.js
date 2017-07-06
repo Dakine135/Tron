@@ -14,7 +14,7 @@ Config.GAMEGRIDSCALE = (Config.WIDTH / Config.NUMOFCELLS);
 Config.snakeDefaults = {
     SNAKETAIL: 700,
     SNAKESIZE: 15,
-    SNAKESPEEDSCALE: 100,  //pixel positions per second (server "pixels")
+    SNAKESPEEDSCALE: 3,
     STARTSCORE: 10
 };
 module.exports = Config;

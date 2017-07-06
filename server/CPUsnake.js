@@ -30,7 +30,6 @@ function CPUsnake(snakeName, numOfMovements) {
     //starting direction and speed
     this.xdir = 0;
     this.ydir = 0;
-    //speedscale is pixels per second
     this.speedScale = CONFIG.snakeDefaults.SNAKESPEEDSCALE;
 
     //tail and color stuff
@@ -180,7 +179,7 @@ function CPUsnake(snakeName, numOfMovements) {
     };//end createPreviousPosition
 
     this.update = function(currentLifespanTick) {
-        //console.log("currentLifespanTick: ", currentLifespanTick);
+        //console.log("currentLifespanTick and secondsPerUpdate: ", currentLifespanTick, secondsPerUpdate);
         if(this.currentMovement < this.movement.length &&
                 this.triggerDir == 0 && this.madeItToGoal < 0 && !this.crashed) {
             if(this.movement[this.currentMovement].noChange < 90){
@@ -202,10 +201,8 @@ function CPUsnake(snakeName, numOfMovements) {
             }
         }
 
-
-        var seconds = GLOBALS.CURRENTGAMESTATE.deltaTime / 1000;
-        var distX = this.xdir * (seconds * this.speedScale);
-        var distY = this.ydir * (seconds * this.speedScale);
+        var distX = this.xdir * this.speedScale;
+        var distY = this.ydir * this.speedScale;
         var nextX = Math.round((this.x + distX) * 100) / 100;
         var nextY = Math.round((this.y + distY) * 100) / 100;
 

@@ -31,7 +31,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
 
     this.restart = function() {
         console.log("RESTART");
-        this.updateGuiState("startOfGame");
+        //this.updateGuiState("startOfGame");
         this.snakes.forEach(function(snake){
            snake.reset();
         });
@@ -44,7 +44,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
 
     this.runSimulation = function(){
         GLOBALS.GENETICLEARNING = new GENETICLEARNING();
-        GLOBALS.GENETICLEARNING.createCPUsnakes(200, 100);
+        GLOBALS.GENETICLEARNING.createCPUsnakes(300, 200);
         GLOBALS.GENETICLEARNING.simulate();
     };
 
@@ -172,6 +172,8 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         this.lastTime = this.time;
         this.time = new Date().getTime();
         this.deltaTime = this.time - this.lastTime;
+
+        //console.log("deltaTimeUpdate: ", this.deltaTime);
 
         if(this.guiState === "gameRunning"){
             //updateSnakes

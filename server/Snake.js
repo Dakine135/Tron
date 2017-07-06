@@ -15,7 +15,6 @@ function Snake(snakeName){
     //starting direction and speed
     this.xdir = 0;
     this.ydir = 0;
-    //speedscale is pixels per second
     this.speedScale = CONFIG.snakeDefaults.SNAKESPEEDSCALE;
 
     //tail and color stuff
@@ -154,9 +153,9 @@ function Snake(snakeName){
     };//end createPreviousPosition
 
     this.update = function() {
-        var seconds = GLOBALS.CURRENTGAMESTATE.deltaTime/1000;
-        var distX = this.xdir * (seconds * this.speedScale);
-        var distY = this.ydir * (seconds * this.speedScale);
+        //var seconds = GLOBALS.CURRENTGAMESTATE.deltaTime/1000;
+        var distX = this.xdir * this.speedScale;
+        var distY = this.ydir * this.speedScale;
         var nextX = Math.round((this.x + distX)*100)/100;
         var nextY = Math.round((this.y + distY)*100)/100;
 
