@@ -25,7 +25,7 @@ function CPUsnake(snakeName, numOfMovements) {
     this.score = 0;
     this.crashed = false;
     this.madeItToGoal = -1;
-    this.stoppedAtMovementIndex = numOfMovements-1;
+    this.stoppedAtMovementIndex = numOfMovements - 1;
 
     //starting direction and speed
     this.xdir = 0;
@@ -322,6 +322,7 @@ function CPUsnake(snakeName, numOfMovements) {
     //reset to default (refresh)
     this.reset = function() {
         //reset values
+        //console.log("reset: stoppedAtMovementIndex: ", this.stoppedAtMovementIndex);
         this.tail = [];
         this.currTailLength = 0;
         var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
@@ -335,6 +336,8 @@ function CPUsnake(snakeName, numOfMovements) {
         this.ydir = 0;
         this.currentMovement = 0;
         this.triggerDir = 0;
+        this.crashed = false;
+        this.madeItToGoal = -1;
         //this.intializeTailColor();
 
     };//end reset
@@ -354,7 +357,8 @@ function CPUsnake(snakeName, numOfMovements) {
 
         if(collision && collision.hit){
             this.madeItToGoal = currentLifespanTick;
-            //console.log("this.madeItToGoal: ", this.madeItToGoal);
+            this.stoppedAtMovementIndex = this.currentMovement;
+            //console.log("this.madeItToGoal: ", this.madeItToGoal, this.stoppedAtMovementIndex);
         }
     };
 
@@ -401,6 +405,16 @@ function CPUsnake(snakeName, numOfMovements) {
     //     }
     //     return null;
     // };
+
+    this.genes = function(){
+        return {
+            movement: this.movement,
+            numOfMovements: this.numOfMovements,
+            stoppedAtMovementIndex: this.stoppedAtMovementIndex,
+            score: this.score,
+            name: this.name
+        }
+    };
 
     this.package = function(){
         var packagedSnake = {

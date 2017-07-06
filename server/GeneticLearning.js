@@ -12,7 +12,8 @@ function GeneticLearning(){
     this.numberOfSnakes = 0;
     this.generationCount = 0;
     this.CPUsnakes = new Map();
-    this.run = true;
+    this.foundSolution = false;
+    this.bestSnake = null;
 
     var that = this;
 
@@ -26,7 +27,6 @@ function GeneticLearning(){
             //console.log(tempCPUsnake);
             this.CPUsnakes.set(i, tempCPUsnake);
         }
-        //this.simulate();
     };
 
     var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
@@ -55,16 +55,12 @@ function GeneticLearning(){
     };
 
     this.simulate = function(){
-        while(this.run){
+        while(!this.foundSolution) {
             this.update();
         }
     };
 
     this.update = function(){
-        this.lastTime = this.time;
-        this.time = new Date().getTime();
-        this.deltaTime = this.time - this.lastTime;
-
         if(this.cpuSnakeCurrentLifeSpan < this.cpuSnakeTotalLifeSpan) {
             this.CPUsnakes.forEach(function (cpuSnake) {
                 cpuSnake.update(that.cpuSnakeCurrentLifeSpan);
@@ -74,40 +70,53 @@ function GeneticLearning(){
                 if(collision && collision.hit){
                     cpuSnake.crashed = true;
                     cpuSnake.stoppedAtMovementIndex = cpuSnake.currentMovement;
-                    //console.log(cpuSnake.stoppedAtMovementIndex, " at crash");
+                    //console.log("wall collision: ",cpuSnake.stoppedAtMovementIndex, cpuSnake.crashed, cpuSnake.name);
                 }
             });
             this.cpuSnakeCurrentLifeSpan++;
         } else {
             //console.log("NEW GENERATION");
-            this.updateClient--;
+            if(this.generationCount >= 20) this.foundSolution = true;
+            this.lastTime = this.time;
+            this.time = new Date().getTime();
+            this.deltaTime = this.time - this.lastTime;
 
 
             //calculate scores
             var totalScore = 0;
             var bestScore = 0;
-            var bestSnake = null;
+            var snakesToSend = [];
+            var snakeGenes = [];
             this.CPUsnakes.forEach(function(snake){
                 snake.calculateScore();
-                totalScore += snake.score;
+                totalScore = totalScore + snake.score;
                 if(snake.score > bestScore) {
                     bestScore = snake.score;
-                    bestSnake = snake;
+                    if(that.bestSnake == null || that.bestSnake.score < bestScore) {
+                        that.bestSnake = snake.genes();
+                        //console.log("bestSnakeFound.index: ", snake.stoppedAtMovementIndex, snake.crashed, snake.name, snake.score);
+                    }
                 }
             });
-            if(this.updateClient <= 0) {
-                this.updateClient = 0;
-                var snakesToSend = [];
-                snakesToSend.push(bestSnake);
-                snakesToSend.forEach(function (snake) {
-                   snake.currentMovement = 0;
-                   console.log(snake.stoppedAtMovementIndex);
+
+            console.log("Generation: ",this.generationCount," Time: ", this.deltaTime,
+                "ms Best Score: ", bestScore, "SnakeName: ", this.bestSnake.name, " Total: ", totalScore);
+
+
+            if(this.foundSolution) {
+                snakeGenes.push(this.bestSnake);
+                snakeGenes.forEach(function (snakeGene) {
+                    var snake = new CPUsnake("bestSnakeSolutionGene", snakeGene.numOfMovements);
+                    snake.movement = snakeGene.movement;
+                    snake.stoppedAtMovementIndex = snakeGene.stoppedAtMovementIndex;
+                    snake.chngColorRandom();
+                    //snake.reset();
+                    //console.log("genes.index: ", snakeGene.stoppedAtMovementIndex);
+                    //console.log("snakeToSend.index: ", snake.stoppedAtMovementIndex);
+                    snakesToSend.push(snake);
                 });
                 GLOBALS.CURRENTGAMESTATE.geneticLeaningSnakes = snakesToSend;
             }
-
-            console.log("Generation: ",this.generationCount," Time: ", this.deltaTime,
-                "ms Best Score: ", bestScore, " Total: ",totalScore);
 
             //breed new generation
             var lastGeneration = Array.from(this.CPUsnakes.values());

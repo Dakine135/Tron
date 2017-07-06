@@ -5,6 +5,7 @@ var hash = require('object-hash');
 var CONFIG = require('./Config.js');
 var GLOBALS = require('./Globals');
 var SNAKE = require('./Snake');
+var GENETICLEARNING = require('./GeneticLearning.js');
 function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();
@@ -24,6 +25,8 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     tempPowerUp.spawn();
     this.powerUps.push(tempPowerUp);
 
+    this.resetBuffer = 0;
+
     var that = this;
 
     this.restart = function() {
@@ -35,9 +38,15 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         this.clients.forEach(function(client){
             client.reset();
         });
-        GLOBALS.GENETICLEARNING.createCPUsnakes(200, 200);
+        this.runSimulation();
 
     };// end restart
+
+    this.runSimulation = function(){
+        GLOBALS.GENETICLEARNING = new GENETICLEARNING();
+        GLOBALS.GENETICLEARNING.createCPUsnakes(200, 100);
+        GLOBALS.GENETICLEARNING.simulate();
+    };
 
     this.addSnake = function(snake){
         console.log("addSnake: ", snake.name);
@@ -157,6 +166,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         }//selfsnake loop
     };// checkForCollisions
 
+
     this.update = function(frame) {
         this.frame = frame;
         this.lastTime = this.time;
@@ -175,6 +185,12 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
                     if(snake.stoppedAtMovementIndex > snake.currentMovement) {
                         //console.log("index > movement: ", snake.stoppedAtMovementIndex, snake.currentMovement);
                         snake.update();
+                    } else {
+                        that.resetBuffer++;
+                        if(that.resetBuffer >= 100) {
+                            snake.reset();
+                            that.resetBuffer = 0;
+                        }
                     }
                 });
             }

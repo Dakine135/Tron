@@ -48,15 +48,17 @@ var MAZELINES = new MAZE();
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
 var FRAMECOUNT = 0;
 GLOBALS.CURRENTGAMESTATE = new GAMESTATE(FRAMECOUNT, MAZELINES, CLIENTSETTINGS);
-GLOBALS.GENETICLEARNING = new GENETICLEARNING();
-GLOBALS.GENETICLEARNING.createCPUsnakes(200, 200);
+var runOnce = true;
 
 var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     FRAMECOUNT++;
     //console.log('Frame=%s', frameCount);
 
     GLOBALS.CURRENTGAMESTATE.update(FRAMECOUNT);
-    GLOBALS.GENETICLEARNING.update();
+    if(runOnce){
+        runOnce = false;
+        GLOBALS.CURRENTGAMESTATE.runSimulation();
+    }
 
     var clientPackage = GLOBALS.CURRENTGAMESTATE.package();
     //console.log(clientPackage);
