@@ -25,6 +25,7 @@ function CPUsnake(snakeName, numOfMovements) {
     this.score = 0;
     this.crashed = false;
     this.madeItToGoal = -1;
+    this.stoppedAtMovementIndex = numOfMovements-1;
 
     //starting direction and speed
     this.xdir = 0;

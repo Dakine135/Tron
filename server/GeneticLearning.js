@@ -6,6 +6,7 @@ var CPUsnake = require('./CPUsnake');
 function GeneticLearning(){
     this.time = new Date().getTime();
     this.lastTime = this.time;
+    this.updateClient = 0;
     this.cpuSnakeTotalLifeSpan = 0;
     this.cpuSnakeCurrentLifeSpan = 0;
     this.numberOfSnakes = 0;
@@ -70,21 +71,40 @@ function GeneticLearning(){
             });
             this.CPUsnakes.forEach(function (cpuSnake) {
                 var collision = GLOBALS.CURRENTGAMESTATE.checkCollisionWithWalls(cpuSnake);
-                if(collision && collision.hit) cpuSnake.crashed = true;
+                if(collision && collision.hit){
+                    cpuSnake.crashed = true;
+                    cpuSnake.stoppedAtMovementIndex = cpuSnake.currentMovement;
+                    //console.log(cpuSnake.stoppedAtMovementIndex, " at crash");
+                }
             });
             this.cpuSnakeCurrentLifeSpan++;
         } else {
             //console.log("NEW GENERATION");
-            //GLOBALS.CURRENTGAMESTATE.geneticLeaningSnakes = this.CPUsnakes;
+            this.updateClient--;
+
 
             //calculate scores
             var totalScore = 0;
             var bestScore = 0;
+            var bestSnake = null;
             this.CPUsnakes.forEach(function(snake){
                 snake.calculateScore();
                 totalScore += snake.score;
-                if(snake.score > bestScore) bestScore = snake.score;
+                if(snake.score > bestScore) {
+                    bestScore = snake.score;
+                    bestSnake = snake;
+                }
             });
+            if(this.updateClient <= 0) {
+                this.updateClient = 0;
+                var snakesToSend = [];
+                snakesToSend.push(bestSnake);
+                snakesToSend.forEach(function (snake) {
+                   snake.currentMovement = 0;
+                   console.log(snake.stoppedAtMovementIndex);
+                });
+                GLOBALS.CURRENTGAMESTATE.geneticLeaningSnakes = snakesToSend;
+            }
 
             console.log("Generation: ",this.generationCount," Time: ", this.deltaTime,
                 "ms Best Score: ", bestScore, " Total: ",totalScore);

@@ -170,6 +170,15 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             });
             this.checkForCollisions();
 
+            if(this.geneticLeaningSnakes != null && this.geneticLeaningSnakes.length > 0){
+                this.geneticLeaningSnakes.forEach(function(snake){
+                    if(snake.stoppedAtMovementIndex > snake.currentMovement) {
+                        //console.log("index > movement: ", snake.stoppedAtMovementIndex, snake.currentMovement);
+                        snake.update();
+                    }
+                });
+            }
+
         }//guiState is gameRunning
     };
 
@@ -186,7 +195,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             return snake.package();
         });
         if(this.geneticLeaningSnakes != null) {
-            gameState['cpuSnakes'] = Array.from(this.geneticLeaningSnakes.values()).map(function (cpuSnake) {
+            gameState['cpuSnakes'] = this.geneticLeaningSnakes.map(function (cpuSnake) {
                 return cpuSnake.package();
             });
         }
