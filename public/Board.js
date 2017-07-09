@@ -69,8 +69,21 @@ function Board(){
             "border-style: solid; "+
             "border-color: #18CAE6;"+
             "border-width: "+this.boarder+"px; "
-
             //+ "border:1px solid #000000;"
+        );
+        document.getElementById("Stats").setAttribute('style',
+          "width: "+this.cameraWidth+"px; "+
+          "min-width: "+(this.cameraWidth+(this.boarder*2))+"px; "+
+          "left: 0; "+
+          "right: 0; "+
+          "margin: auto;"
+        );
+        document.getElementById("TopGrid").setAttribute('style',
+          "width: "+this.cameraWidth+"px; "+
+          "min-width: "+(this.cameraWidth+(this.boarder*2))+"px; "+
+          "left: 0; "+
+          "right: 0; "+
+          "margin: auto;"
         );
         this.createBackground();
         GUI.recalculateGui();

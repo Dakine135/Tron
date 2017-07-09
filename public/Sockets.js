@@ -58,10 +58,21 @@ function Socket(){
         document.getElementById("PlayersConnected").innerHTML =
             "Players: " + gameState.clients.length;
 
-        var scoreString = "Scores: \n";
-        gameState.clients.forEach(function(client){
-            scoreString = scoreString + client.name + ": "+client.score+ "\n";
-        });
+        // var scoreString = "Scores: \n";
+        // gameState.clients.forEach(function(client){
+        //     scoreString = scoreString + client.name + ": "+client.score+ "\n";
+        // });
+        var scoreString =
+          "<table class='ui very basic celled table'>"+
+            "<thead>"+"<th>Scores</th>"+"</thead>"+"<tbody>";
+          gameState.clients.forEach(function(client){
+              scoreString = scoreString +
+                "<tr>"+
+                  "<td>"+client.name+"</td>"+
+                  "<td>"+client.score+"</td>"+
+                "</tr>";
+          });
+          scoreString = scoreString + "</tbody>"+"</table>";
         document.getElementById("scores").innerHTML = scoreString;
 
 

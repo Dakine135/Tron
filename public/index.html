@@ -27,7 +27,7 @@
 </head>
 <body style="background-color:#000000;">
 <br>
-<div class="ui three column grid container">
+<div class="ui three column grid container" id='TopGrid'>
 
 
     <div class="left aligned column">
@@ -60,33 +60,39 @@
                 </div>
             </h6>
         </div>
-        <button class="ui icon inverted blue button" onclick=" window.open('https://github.com/Tweasy65/Tron','_blank')">
-            <i class="github icon"></i>
-        </button>
-        <a class="ui image  blue label">
+        <!-- <button class="ui icon compact inverted blue button" onclick=" window.open('https://github.com/Tweasy65/Tron','_blank')">
+            <i class="github large icon"></i>
+        </button> -->
+        <a class="ui icon small blue label" onclick=" window.open('https://github.com/Tweasy65/Tron','_blank')">
+            <i class="github Medium icon"></i>
+            GitHub
+        </a>
+        <a class="ui image small blue label" onclick=" window.open('https://github.com/Tweasy65','_blank')">
             <img src="/assets/batman.jpg">
             Tweasy
+        </a>
+        <a class="ui image small blue label" onclick=" window.open('https://github.com/Dakine135','_blank')">
+            <img src="/assets/tardisOnWhiteGitHub.jpeg">
+            Dakine135
         </a>
     </div>
 </div> <!-- END Main grid-->
 
 <div class="ui container" id='CanvasContainer'></div>
 
-<div class="ui compact segment">
-    <div class="ui center aligned header">
-        STATS
-    </div>
-    <div class="ui one column grid">
-        <div class="sixteen wide column"></div>
-        <div id="drawCount">FrameRate: </div>
-        <div id="ping">Ping: </div>
-        <div id="packets">PacketCount: </div>
-        <div id="PlayersConnected">Players: </div>
-        <div id="playerName">You are: </div>
-        <div id="scores">Scores:</div>
-
-    </div>
-</div>
+  <div class="ui grey inverted very compact container segment" id='Stats'>
+      <div class="ui center aligned header">
+          STATS
+      </div>
+      <div class="ui seven column grid">
+          <div class="column" id="drawCount">FrameRate: </div>
+          <div class="column" id="ping">Ping: </div>
+          <div class="column" id="packets">PacketCount: </div>
+          <div class="column" id="PlayersConnected">Players: </div>
+          <div class="column" id="playerName">You are: </div>
+          <div class="two wide column" id="scores">Scores:</div>
+      </div>
+  </div>
 
 </body>
 
