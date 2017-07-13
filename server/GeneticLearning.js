@@ -2,31 +2,32 @@ module.exports = GeneticLearning;
 var LIB = require('./lib.js');
 var CONFIG = require('./Config.js');
 var GLOBALS = require('./Globals');
-var CPUsnake = require('./CPUsnake');
+var GeneticSnake = require('./GeneticSnake');
 function GeneticLearning(){
     this.time = new Date().getTime();
     this.lastTime = this.time;
     this.updateClient = 0;
-    this.cpuSnakeTotalLifeSpan = 0;
-    this.cpuSnakeCurrentLifeSpan = 0;
+    this.geneticSnakesTotalLifeSpan = 0;
+    this.geneticSnakesCurrentLifeSpan = 0;
     this.numberOfSnakes = 0;
     this.generationCount = 0;
-    this.CPUsnakes = new Map();
+    this.geneticSnakes = new Map();
     this.foundSolution = false;
     this.allCrashed = false;
     this.bestSnake = null;
+    this.bestGlobalScore = 0;
+    this.bestGeneration = 0;
 
     var that = this;
 
-    this.createCPUsnakes = function(numOfSnakes,numOfMovements){
-        this.cpuSnakeTotalLifeSpan = numOfMovements;
+    this.createGeneticSnakes = function(numOfSnakes,numOfMovements){
+        this.geneticSnakesTotalLifeSpan = numOfMovements;
         this.numberOfSnakes = numOfSnakes;
         for(var i=0; i < numOfSnakes; i++){
-            var tempCPUsnake = new CPUsnake(i, numOfMovements);
-            tempCPUsnake.chngColorRandom();
-            tempCPUsnake.initalizeMovement();
-            //console.log(tempCPUsnake);
-            this.CPUsnakes.set(i, tempCPUsnake);
+            var tempGeneticSnake = new GeneticSnake(i, numOfMovements);
+            tempGeneticSnake.chngColorRandom();
+            tempGeneticSnake.initalizeMovement();
+            this.geneticSnakes.set(i, tempGeneticSnake);
         }
     };
 
@@ -62,18 +63,19 @@ function GeneticLearning(){
     };
 
     this.update = function(){
-        if(this.cpuSnakeCurrentLifeSpan < this.cpuSnakeTotalLifeSpan && !this.allCrashed) {
+        if(this.geneticSnakesCurrentLifeSpan < this.geneticSnakesTotalLifeSpan && !this.allCrashed) {
             this.allCrashed = true;
-            this.CPUsnakes.forEach(function (cpuSnake) {
-                cpuSnake.update(that.cpuSnakeCurrentLifeSpan);
+            this.geneticSnakes.forEach(function (snake) {
+                snake.update(that.geneticSnakesCurrentLifeSpan);
             });
-            this.CPUsnakes.forEach(function (cpuSnake) {
-                if(!cpuSnake.crashed) { //if not already crashed, check if crashed
-                    var collision = GLOBALS.CURRENTGAMESTATE.checkCollisionWithWalls(cpuSnake);
+            this.geneticSnakes.forEach(function (snake) {
+                if(!snake.crashed) { //if not already crashed, check if crashed
+                    var collision = GLOBALS.CURRENTGAMESTATE.checkCollisionWithWalls(snake);
                     if (collision && collision.hit) {
-                        cpuSnake.crashed = true;
-                        cpuSnake.stoppedAtMovementIndex = cpuSnake.currentMovement;
-                        //console.log("wall collision: ",cpuSnake.stoppedAtMovementIndex, cpuSnake.crashed, cpuSnake.name);
+                        snake.crashed = true;
+                        snake.stoppedAtMovementIndex = snake.currentMovement;
+                        // console.log("wall collision: ",snake.stoppedAtMovementIndex, snake.crashed,
+                        // "Name: ",snake.name, that.generationCount;
                     } else if(collision && !collision.hit){
                         //someone is still going
                         that.allCrashed = false;
@@ -82,7 +84,7 @@ function GeneticLearning(){
 
             });
             //if(this.allCrashed) console.log("everyone Crashed");
-            this.cpuSnakeCurrentLifeSpan++;
+            this.geneticSnakesCurrentLifeSpan++;
 
         } else {
             //end of generation simulation
@@ -96,14 +98,17 @@ function GeneticLearning(){
             var snakesToSend = [];
             var snakeGenes = [];
             var madeItToGoal = false;
-            this.CPUsnakes.forEach(function(snake){
+            this.geneticSnakes.forEach(function(snake){
                 snake.calculateScore();
                 totalScore = totalScore + snake.score;
                 if(snake.score > bestScore) {
                     bestScore = snake.score;
-                    if(that.bestSnake == null || that.bestSnake.score < bestScore) {
+                    if(that.bestSnake == null || that.bestGlobalScore < bestScore) {
                         that.bestSnake = snake.genes();
-                        //console.log("bestSnakeFound.index: ", snake.stoppedAtMovementIndex, snake.crashed, snake.name, snake.score);
+                        that.bestGlobalScore = bestScore;
+                        that.bestGeneration = that.generationCount;
+                        console.log("bestSnakeFound.index: ",
+                        snake.stoppedAtMovementIndex, snake.crashed, snake.name, snake.score);
                     }
                 }
                 if(snake.madeItToGoal > 0) madeItToGoal = true;
@@ -112,7 +117,7 @@ function GeneticLearning(){
             console.log("Generation: ",this.generationCount," Time: ", this.deltaTime,
                 "ms Best Score: ", bestScore, " Total: ", totalScore, "AllCrashed: ", this.allCrashed);
 
-            if(madeItToGoal || this.generationCount >= 30){
+            if(madeItToGoal || this.generationCount >= 5){
                 this.foundSolution = true;
             }
 
@@ -120,37 +125,38 @@ function GeneticLearning(){
             if(this.foundSolution) {
                 snakeGenes.push(this.bestSnake);
                 snakeGenes.forEach(function (snakeGene) {
-                    var snake = new CPUsnake("bestSnakeSolutionGene", snakeGene.numOfMovements);
+                    var snake = new GeneticSnake("bestSnakeSolutionGene"+snakeGene.name, snakeGene.numOfMovements);
                     snake.movement = snakeGene.movement;
                     snake.stoppedAtMovementIndex = snakeGene.stoppedAtMovementIndex;
                     snake.chngColorRandom();
                     //snake.reset();
-                    console.log("genes.index: ", snakeGene.stoppedAtMovementIndex);
-                    console.log("snakeToSend.index: ", snake.stoppedAtMovementIndex);
+                    console.log("Sending Snake: -----------");
+                    console.log("snakeName and bestGeneration: ", snake.name, that.bestGeneration);
+                    console.log("genes.stoppedAtMovementIndex: ", snakeGene.stoppedAtMovementIndex);
+                    console.log("snakeToSend.stoppedAtMovementIndex: ", snake.stoppedAtMovementIndex);
+                    console.log("--------------------------")
                     snakesToSend.push(snake);
                 });
-                GLOBALS.CURRENTGAMESTATE.geneticLeaningSnakes = snakesToSend;
+                GLOBALS.CURRENTGAMESTATE.geneticLearningSnakes = snakesToSend;
             } else {
 
                 //breed new generation
-                var lastGeneration = Array.from(this.CPUsnakes.values());
+                var lastGeneration = Array.from(this.geneticSnakes.values());
                 //console.log("last Generation: ", lastGeneration.length);
                 for(var i=0; i< this.numberOfSnakes; i++){
-                    var tempCPUsnake = new CPUsnake(i, this.cpuSnakeTotalLifeSpan);
-                    tempCPUsnake.chngColorRandom();
-                    //console.log("function: ", this.pickOneParentSnake([1,2], 3));
+                    var tempGeneticSnake = new GeneticSnake(i, this.geneticSnakesTotalLifeSpan);
+                    tempGeneticSnake.chngColorRandom();
                     var snake1 = this.pickOneParentSnake(lastGeneration, totalScore);
                     var snake2 = this.pickOneParentSnake(lastGeneration, totalScore);
-                    tempCPUsnake.breed(snake1, snake2, bestScore);
-                    //console.log(tempCPUsnake);
-                    this.CPUsnakes.set(i, tempCPUsnake);
+                    tempGeneticSnake.breed(snake1, snake2, bestScore);
+                    this.geneticSnakes.set(i, tempGeneticSnake);
                 }
 
                 //reset simulation
-                this.CPUsnakes.forEach(function(snake){
+                this.geneticSnakes.forEach(function(snake){
                     snake.reset();
                 });
-                this.cpuSnakeCurrentLifeSpan = 0;
+                this.geneticSnakesCurrentLifeSpan = 0;
                 this.allCrashed = false;
                 this.generationCount++;
             }

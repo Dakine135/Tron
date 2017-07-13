@@ -1,9 +1,9 @@
-module.exports = CPUsnake;
+module.exports = GeneticSnake;
 var LIB = require('./lib.js');
 var CONFIG = require('./Config.js');
 var GLOBALS = require('./Globals');
 
-function CPUsnake(snakeName, numOfMovements) {
+function GeneticSnake(snakeName, numOfMovements) {
     //console.log("createCPUsnake: ", snakeName);
     this.name = snakeName;
 
@@ -21,7 +21,7 @@ function CPUsnake(snakeName, numOfMovements) {
     this.movement = [];
     this.numOfMovements = numOfMovements;
     this.currentMovement = 0;
-    this.triggerDir = 0;
+    //this.triggerDir = 0;
     this.score = 0;
     this.crashed = false;
     this.madeItToGoal = -1;
@@ -181,7 +181,7 @@ function CPUsnake(snakeName, numOfMovements) {
     this.update = function(currentLifespanTick) {
         //console.log("currentLifespanTick and secondsPerUpdate: ", currentLifespanTick, secondsPerUpdate);
         if(this.currentMovement < this.movement.length &&
-                this.triggerDir == 0 && this.madeItToGoal < 0 && !this.crashed) {
+                this.madeItToGoal < 0 && !this.crashed) {
             if(this.movement[this.currentMovement].noChange < 90){
                 //dont change direction
             }
@@ -189,15 +189,15 @@ function CPUsnake(snakeName, numOfMovements) {
                 this.dir(this.movement[this.currentMovement].x, this.movement[this.currentMovement].y, false);
             }
             this.currentMovement++;
-            this.triggerDir = 1;
+            //this.triggerDir = 1;
 
         } else {
             if(this.currentMovement >= this.movement.length || this.madeItToGoal > 0 || this.crashed){
                 this.xdir = 0;
                 this.ydir = 0;
-                this.triggerDir = 10;
+                //this.triggerDir = 10;
             }else{
-                this.triggerDir--;
+                //this.triggerDir--;
             }
         }
 
@@ -332,7 +332,7 @@ function CPUsnake(snakeName, numOfMovements) {
         this.xdir = 0;
         this.ydir = 0;
         this.currentMovement = 0;
-        this.triggerDir = 0;
+        //this.triggerDir = 0;
         this.crashed = false;
         this.madeItToGoal = -1;
         //this.intializeTailColor();

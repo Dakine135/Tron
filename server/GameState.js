@@ -12,13 +12,13 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.lastTime = this.time;
     this.mazeLines = MAZELINES;
     this.clientSettings = CLIENTSETTINGS;
-    this.guiState = "startOfGame";
+    this.guiState = "gameRunning"; //startOfGame
     this.previousState = this.guiState;
     this.clients = new Map();
     this.snakes = new Map();
     this.powerUps = [];
 
-    this.geneticLeaningSnakes = null;
+    this.geneticLearningSnakes = null;
     this.snakeGoal = null;
 
     var tempPowerUp = new PowerUp();
@@ -44,7 +44,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
 
     this.runSimulation = function(){
         GLOBALS.GENETICLEARNING = new GENETICLEARNING();
-        GLOBALS.GENETICLEARNING.createCPUsnakes(300, 200);
+        GLOBALS.GENETICLEARNING.createGeneticSnakes(300, 200);
         GLOBALS.GENETICLEARNING.simulate();
     };
 
@@ -166,7 +166,7 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         }//selfsnake loop
     };// checkForCollisions
 
-
+    var timesOut = 0;
     this.update = function(frame) {
         this.frame = frame;
         this.lastTime = this.time;
@@ -182,19 +182,31 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
             });
             this.checkForCollisions();
 
-            if(this.geneticLeaningSnakes != null && this.geneticLeaningSnakes.length > 0){
-                this.geneticLeaningSnakes.forEach(function(snake){
+            //if there are snakes to render/simulate
+            if(this.geneticLearningSnakes != null && this.geneticLearningSnakes.length > 0){
+                this.geneticLearningSnakes.forEach(function(snake){ //for each of them
                     if(snake.stoppedAtMovementIndex > snake.currentMovement) {
-                        //console.log("index > movement: ", snake.stoppedAtMovementIndex, snake.currentMovement);
+                      if(timesOut > 0){
+                        console.log("index > movement: ", snake.stoppedAtMovementIndex, snake.currentMovement);
+                        timesOut--;
+                      }
+
+                        //while they havent hit their stopped index from reaching goal or crashing, keep updateing
                         snake.update();
                     } else {
+                      //count attempts to reset, only reset after 100 ticks (to create delay to see where it stopped)
                         that.resetBuffer++;
                         if(that.resetBuffer >= 100) {
                             snake.reset();
+                            //console.log("resetBuffer");
                             that.resetBuffer = 0;
                         }
                     }
                 });
+            //end move computer snakes
+            } else {
+              //no computer snakes
+              //console.log("no computer snakes");
             }
 
         }//guiState is gameRunning
@@ -212,8 +224,8 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         gameState['snakes'] = Array.from(this.snakes.values()).map(function(snake){
             return snake.package();
         });
-        if(this.geneticLeaningSnakes != null) {
-            gameState['cpuSnakes'] = this.geneticLeaningSnakes.map(function (cpuSnake) {
+        if(this.geneticLearningSnakes != null) {
+            gameState['cpuSnakes'] = this.geneticLearningSnakes.map(function (cpuSnake) {
                 return cpuSnake.package();
             });
         }

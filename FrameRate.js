@@ -42,7 +42,8 @@ var CLIENTSETTINGS = {
 };
 CLIENTSETTINGS.hash = hash(CLIENTSETTINGS);
 
-var MAZELINES = new MAZE();
+var MAZELINES = null;
+MAZELINES = new MAZE();
 
 //MAIN GAME COUNTER
 //start the loop at 30 fps (1000/30ms per frame) and grab its id
@@ -55,7 +56,7 @@ var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     //console.log('Frame=%s', frameCount);
 
     GLOBALS.CURRENTGAMESTATE.update(FRAMECOUNT);
-    if(runOnce){
+    if(runOnce && MAZELINES != null){
         runOnce = false;
         GLOBALS.CURRENTGAMESTATE.runSimulation();
     }
