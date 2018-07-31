@@ -1,8 +1,8 @@
 //CONFIG OPTIONS
 var Config = {
-    WALLREMOVALFACTOR: 2,
+    WALLREMOVALFACTOR: 4,
     CEARUPSINGLEWALLS: true,
-    LEAVEWALLEDGE: true,
+    LEAVEWALLEDGE: false,
     HEIGHT: 50*9,
     WIDTH: 50*16,
     NUMOFCELLS: 20,
@@ -12,7 +12,7 @@ var Config = {
 Config.GAMEGRIDSCALE = (Config.WIDTH / Config.NUMOFCELLS);
 
 Config.snakeDefaults = {
-    SNAKETAIL: 700,
+    SNAKETAIL: 300,
     SNAKESIZE: 15,
     SNAKESPEEDSCALE: 3,
     STARTSCORE: 10
