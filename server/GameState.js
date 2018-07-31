@@ -5,7 +5,7 @@ var hash = require('object-hash');
 var CONFIG = require('./Config.js');
 var GLOBALS = require('./Globals');
 var SNAKE = require('./Snake');
-var GENETICLEARNING = require('./GeneticLearning.js');
+// var GENETICLEARNING = require('./GeneticLearning.js');
 function GameState(frame, MAZELINES, CLIENTSETTINGS){
     this.frame = frame;
     this.time = new Date().getTime();
@@ -38,15 +38,15 @@ function GameState(frame, MAZELINES, CLIENTSETTINGS){
         this.clients.forEach(function(client){
             client.reset();
         });
-        this.runSimulation();
+        // this.runSimulation();
 
     };// end restart
 
-    this.runSimulation = function(){
-        GLOBALS.GENETICLEARNING = new GENETICLEARNING();
-        GLOBALS.GENETICLEARNING.createGeneticSnakes(300, 200);
-        GLOBALS.GENETICLEARNING.simulate();
-    };
+    // this.runSimulation = function(){
+    //     GLOBALS.GENETICLEARNING = new GENETICLEARNING();
+    //     GLOBALS.GENETICLEARNING.createGeneticSnakes(300, 200);
+    //     GLOBALS.GENETICLEARNING.simulate();
+    // };
 
     this.addSnake = function(snake){
         console.log("addSnake: ", snake.name);

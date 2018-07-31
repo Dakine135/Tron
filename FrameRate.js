@@ -3,7 +3,7 @@ var express = require('express');
 var socket = require('socket.io');
 var hash = require('object-hash');
 const gameloop = require('node-gameloop');
-var MongoClient = require('mongodb').MongoClient;
+// var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 
 //OUR CODE
@@ -14,7 +14,7 @@ var CLIENT = require('./server/Client');
 var LIB = require('./server/lib.js');
 var CONFIG = require('./server/Config.js');
 var GLOBALS = require('./server/Globals');
-var GENETICLEARNING = require('./server/GeneticLearning.js');
+// var GENETICLEARNING = require('./server/GeneticLearning.js');
 
 var app = express();
 var server = app.listen(3033);
@@ -58,7 +58,7 @@ var GAMELOOPID = gameloop.setGameLoop(function(delta) {
     GLOBALS.CURRENTGAMESTATE.update(FRAMECOUNT);
     if(runOnce && MAZELINES != null){
         runOnce = false;
-        GLOBALS.CURRENTGAMESTATE.runSimulation();
+        // GLOBALS.CURRENTGAMESTATE.runSimulation();
     }
 
     var clientPackage = GLOBALS.CURRENTGAMESTATE.package();
