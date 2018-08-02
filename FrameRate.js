@@ -3,8 +3,11 @@ var express = require('express');
 var socket = require('socket.io');
 var hash = require('object-hash');
 const gameloop = require('node-gameloop');
-// var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
+//multiThread stuff
+// const cluster = require('cluster');
+// const numCPUs = require('os').cpus().length;
+// var redis = require("redis"),
+//     client = redis.createClient();
 
 //OUR CODE
 var GAMESTATE = require('./server/GameState');
@@ -20,6 +23,9 @@ var app = express();
 var server = app.listen(3033);
 var io = socket(server);
 
+//MongoDB stuff
+// var MongoClient = require('mongodb').MongoClient;
+// var assert = require('assert');
 // var url = 'mongodb://localhost:27017/FrameRate';
 // MongoClient.connect(url, function(err, db) {
 //     assert.equal(null, err);
