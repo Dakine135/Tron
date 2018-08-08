@@ -122,11 +122,13 @@ function Board(){
 
     this.showPowerUps = function(){
         this.powerUps.forEach(function(powerUp){
+          //console.log("THIS IS POWERUP", powerUp);
             if(FIRSTPERSON) {
                 for (var y = -1; y <= 1; y++) {
                     var h = that.cameraHeight * y;
                     for (var x = -1; x <= 1; x++) {
                         var w = that.cameraWidth * x;
+
                         fill(255, 255, 255);
                         stroke(255, 255, 255);
                         strokeWeight(Math.ceil(powerUp.size / 10));
@@ -134,8 +136,8 @@ function Board(){
                     }//for columns
                 }//for rows
             } else {
-                fill(255, 255, 255);
-                stroke(255, 255, 255);
+                fill(powerUp.color[0],powerUp.color[1],powerUp.color[2]);
+                stroke(255, 255, 0);
                 strokeWeight(Math.ceil(powerUp.size / 10));
                 rect(powerUp.x, powerUp.y, (powerUp.size), powerUp.size);
             }
