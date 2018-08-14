@@ -136,8 +136,8 @@ function Board(){
                     }//for columns
                 }//for rows
             } else {
-                fill(powerUp.color[0],powerUp.color[1],powerUp.color[2]);
-                stroke(255, 255, 0);
+                fill(powerUp.fillColor[0],powerUp.fillColor[1],powerUp.fillColor[2]);
+                stroke(powerUp.strokeColor[0],powerUp.strokeColor[1],powerUp.strokeColor[2]);
                 strokeWeight(Math.ceil(powerUp.size / 10));
                 rect(powerUp.x, powerUp.y, (powerUp.size), powerUp.size);
             }

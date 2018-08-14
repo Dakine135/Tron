@@ -23,7 +23,7 @@ function toggleFirstPerson(){
 
 function preload() {
     //bgMusic = loadSound('assets/Derezzed.mp3');
-    RAWBACKGROUDIMG = loadImage('assets/backgroundToRepeat.jpg');
+    RAWBACKGROUDIMG = loadImage('assets/backgroundToRepeat.png');
 }
 
 //runs once at the beggining
@@ -88,4 +88,3 @@ function draw(){
     previousTick = currentTick;
 
 } //draw
-

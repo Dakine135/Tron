@@ -8,11 +8,13 @@ function PowerUp(){
     this.y = CONFIG.HEIGHT;
     this.type = " ";
     this.size = (CONFIG.GAMEGRIDSCALE/3);
-    this.color = [195, 73, 224];
+    this.fillColor = [195, 73, 224];
+    this.strokeColor = [195, 73, 224];
     //console.log("COLOR OF POWERUP "+this.color);
 
 
     this.spawn = function (){
+      this.size = (CONFIG.GAMEGRIDSCALE/3);
         var widthCells = CONFIG.WIDTH / CONFIG.GAMEGRIDSCALE;
         var heightCells = CONFIG.HEIGHT / CONFIG.GAMEGRIDSCALE;
         //console.log("WHCells ", widthCells, heightCells);
@@ -32,47 +34,48 @@ function PowerUp(){
 
             switch(this.type){
                 case "Speed+":
-                this.color = [195, 0, 0];
+                this.fillColor = [155, 244, 66];
+                this.strokeColor = [255, 255, 255];
                     break;
 
                 case "Speed-":
-                this.color = [195, 0, 0];
+                this.fillColor = [244, 229, 65];
+                this.strokeColor = [255, 255, 255];
                     break;
 
                 case "Size+":
-                this.color = [195, 0, 0];
+                this.fillColor = [65, 235, 244];
+                this.strokeColor = [255, 255, 255];
                     break;
 
                 case "Size-":
-                this.color = [195, 0, 0];
+                this.fillColor = [0, 21, 99];
+                this.strokeColor = [255, 255, 255];
                     break;
 
                 case "Tail+":
-                this.color = [195, 0, 0];
+                this.fillColor = [249, 0, 201];
+                this.strokeColor = [255, 255, 255];
                     break;
 
                 case "Tail-":
-                this.color = [195, 0, 0];
+                this.fillColor = [99, 0, 80];
+                this.strokeColor = [255, 255, 255];
                     break;
 
                 case "Point+":
-                this.color = [249, 241, 1];
-                    //add point to client
-                    break;
+                this.fillColor = [249, 241, 1];
+                this.strokeColor = [255, 255, 255];
+                  break;
 
                 case "Death":
-                this.color = [195, 0, 0];
-                    //subtract point from client
-
-                    break;
+                this.fillColor = [0, 0, 0];
+                this.strokeColor = [188, 0, 0];
+                this.size = (CONFIG.GAMEGRIDSCALE);
+                  break;
             }//end PowerUpType
 
         console.log("Powerup Spawned:",this.type," ",this.x," ",this.y);
-        if (this.type == "Death"){
-          this.color = [195, 0, 0];
-          console.log(this.color);
-        }
-        //console.log("test: ", GLOBALS.CURRENTGAMESTATE);
 
     };
 
@@ -94,12 +97,12 @@ function PowerUp(){
         console.log("HIT");
         switch(this.type){
             case "Speed+":
-                snake.chngSpeed(20); //pixels per seconds
+                snake.chngSpeed(2); //pixels per seconds
                  //this.text("Speed +", (50), (50));
                 break;
 
             case "Speed-":
-                snake.chngSpeed(-20);
+                snake.chngSpeed(-2);
                 break;
 
             case "Size+":
@@ -136,7 +139,8 @@ function PowerUp(){
             y: Math.round(this.y),
             type: this.type,
             size: Math.round(this.size),
-            color: this.color
+            fillColor: this.fillColor,
+            strokeColor: this.strokeColor
         };
         return package;
     }

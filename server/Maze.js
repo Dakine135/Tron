@@ -63,7 +63,7 @@ this.generateMaze = function() {
                   y1: line.y1,
                   x2: line.x2,
                   y2: line.y2,
-                  color: [4,255,239]
+                  color: [50, 112, 135]
               };
               //console.log("newline: ", newLine);
               output.lines.push(newLine);
