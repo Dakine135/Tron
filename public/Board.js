@@ -78,13 +78,13 @@ function Board(){
           "right: 0; "+
           "margin: auto;"
         );
-        document.getElementById("TopGrid").setAttribute('style',
-          "width: "+this.cameraWidth+"px; "+
-          "min-width: "+(this.cameraWidth+(this.boarder*2))+"px; "+
-          "left: 0; "+
-          "right: 0; "+
-          "margin: auto;"
-        );
+        // document.getElementById("TopGrid").setAttribute('style',
+        //   "width: "+this.cameraWidth+"px; "+
+        //   "min-width: "+(this.cameraWidth+(this.boarder*2))+"px; "+
+        //   "left: 0; "+
+        //   "right: 0; "+
+        //   "margin: auto;"
+        // );
         this.createBackground();
         GUI.recalculateGui();
         this.scaleBOARD();
