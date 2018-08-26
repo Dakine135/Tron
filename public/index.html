@@ -75,17 +75,64 @@ html, body{overflow:hidden;}
 
       <div class="ui segments">
         <div class="ui segment">
-          <div class="ui grid">
-            <div class="row">
-              <div class="two wide column" id="drawCount">FrameRate: </div>
-              <div class="one wide column" id="ping">Ping: </div>
-              <div class="two wide column" id="packets">PacketCount: </div>
-              <div class="two wide column" id="PlayersConnected">Players: </div>
-              <div class="two wide column" id="playerName">You are: </div>
-              <div class="two wide column" id="scores">Scores:</div>
-            </div>
-          </div>
+
+              <div class="ui statistics">
+
+                <div class="ui statistic">
+                  <div class="label">
+                    You are
+                  </div>
+                  <div class="value" id="playerName">
+                    <!-- You are: -->
+                  </div>
+                </div>
+
+              <div class="ui statistic">
+                <div class="label">
+                  FrameRate
+                </div>
+                <div class="value" id="drawCount">
+                  <!-- FrameRate: -->
+                </div>
+              </div>
+              <div class="ui statistic">
+                <div class="label">
+                  Ping
+                </div>
+                <div class="value" id="ping">
+                  <!-- Ping: -->
+                </div>
+              </div>
+
+              <div class="ui statistic">
+                <div class="label">
+                  Packets
+                </div>
+                <div class="value" id="packets">
+                  <!-- PacketCount: -->
+                </div>
+              </div>
+
+              <div class="ui statistic">
+                <div class="label">
+                  Players
+                </div>
+                <div class="value" id="PlayersConnected">
+                  <!-- Players: -->
+                </div>
+              </div>
+
+              <div class="ui statistic">
+                <div class="label">
+                  Scores
+                </div>
+                <div class="value" id="scores">
+                  <!-- Scores: -->
+                </div>
+              </div>
+        
         </div>
+      </div>
       <div class="ui center aligned segment">
           <div class="ui grid">
 

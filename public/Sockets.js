@@ -40,7 +40,7 @@ function Socket(){
         if(that.currentTick < that.previousTick){
             //once a second?
             //console.log("test");
-            document.getElementById("packets").innerHTML = "PacketCount: " + that.packetCount;
+            document.getElementById("packets").innerHTML = that.packetCount;
             that.packetCount = 0;
         }
         //if(times < 100){ console.log(that.currentTick, " < ", that.previousTick); times++; }
@@ -48,31 +48,23 @@ function Socket(){
 
 
         if(that.myClient) {
-            document.getElementById("ping").innerHTML = "Ping: " + that.myClient.ping;
+            document.getElementById("ping").innerHTML = that.myClient.ping;
 
             var name = that.id.split('');
-            document.getElementById("playerName").innerHTML =
-                "You are: " + that.myClient.name;
+            document.getElementById("playerName").innerHTML = that.myClient.name;
         }
 
-        document.getElementById("PlayersConnected").innerHTML =
-            "Players: " + gameState.clients.length;
+        document.getElementById("PlayersConnected").innerHTML = gameState.clients.length;
 
         // var scoreString = "Scores: \n";
         // gameState.clients.forEach(function(client){
         //     scoreString = scoreString + client.name + ": "+client.score+ "\n";
         // });
-        var scoreString =
-          "<table class='ui very basic celled table'>"+
-            "<thead>"+"<th>Scores</th>"+"</thead>"+"<tbody>";
+        var scoreString = "";
           gameState.clients.forEach(function(client){
-              scoreString = scoreString +
-                "<tr>"+
-                  "<td>"+client.name+"</td>"+
-                  "<td>"+client.score+"</td>"+
-                "</tr>";
+              scoreString = scoreString + client.name + " - " +client.score
+
           });
-          scoreString = scoreString + "</tbody>"+"</table>";
         document.getElementById("scores").innerHTML = scoreString;
 
 

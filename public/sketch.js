@@ -74,7 +74,7 @@ function draw(){
     currentTick = Math.floor((timeDiffFromStart % 1000) / 25);
     //console.log("currentTick: ", currentTick);
     if(currentTick == 0 && previousTick != currentTick) {
-        document.getElementById("drawCount").innerHTML = "FrameRate: " + drawCount;
+        document.getElementById("drawCount").innerHTML = drawCount;
         drawCount = 0;
         //console.log("updateCount: ", updateCount);
     }
