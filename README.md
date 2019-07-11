@@ -7,11 +7,7 @@ Snake/Tron/Whatever
 need to install nodejs recommended https://nodejs.org/en/ then
 
 ```
-npm install express
-npm install socketio
-npm install node-gameloop
-npm install -g nodemon
-npm install mongodb
+npm install express socketio node-gameloop -g nodemon mongodb
 ```
 
 ## Running
