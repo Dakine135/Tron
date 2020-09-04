@@ -19,7 +19,7 @@
   "homepage": "https://github.com/Tweasy65/Tron#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "mongodb": "^2.2.29",
+    "mongodb": "^3.6.1",
     "node-gameloop": "^0.1.4",
     "object-hash": "^1.1.8",
     "p5": "^0.5.11",
